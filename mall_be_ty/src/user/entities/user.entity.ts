@@ -8,7 +8,7 @@ import { Follow } from "src/store/entities/follow.entity";
 export enum Deleted {
     TRUE = 'TRUE',
     FALSE = 'FALSE',
-  }
+}
 
 export enum Role {
     ADMIN = 'ADMIN',

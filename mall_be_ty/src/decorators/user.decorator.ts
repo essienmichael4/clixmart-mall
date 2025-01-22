@@ -4,7 +4,8 @@ export interface UserInfo{
     username: string,
     sub: {
       id: number,
-      name: string
+      name: string,
+      role: string
     }
   }
 

@@ -1,7 +1,12 @@
-import { Deleted } from "src/user/entities/user.entity";
+// import { Deleted } from "src/user/entities/user.entity";
 import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { SubCategory } from "./subcategory.entity";
 import { Product } from "src/product/entities/product.entity";
+
+export enum Deleted {
+    TRUE = 'TRUE',
+    FALSE = 'FALSE',
+}
 
 @Entity({name: "category"})
 export class Category {

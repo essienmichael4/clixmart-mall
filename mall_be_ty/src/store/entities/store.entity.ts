@@ -1,9 +1,14 @@
 import { Product } from "src/product/entities/product.entity";
-import { Deleted, User } from "src/user/entities/user.entity";
+import { User } from "src/user/entities/user.entity";
 import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm"
 import { StoreReview } from "./storeReview.entity";
 import { StoreImage } from "./storeImage.entity";
 import { Follow } from "./follow.entity";
+
+export enum Deleted {
+    TRUE = 'TRUE',
+    FALSE = 'FALSE',
+}
 
 @Entity({name: "store"})
 export class Store {

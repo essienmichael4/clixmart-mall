@@ -1,4 +1,4 @@
-import logo from '../assets/logo.webp'
+import logo from '../assets/logo.jpeg'
 import { LayoutDashboard, Package, Ship, Users } from 'lucide-react'
 import { Link, NavLink } from 'react-router-dom'
 
@@ -13,7 +13,7 @@ const SideNav = ({isToggled}:SideNavProps) => {
         <div className="flex flex-col items-start">
           <Link to={"/"} className="flex items-center flex-shrink-0 mb-8">
             <img src={logo} alt="logo" className='h-10 w-10 mr-4' />
-            <span className="text-xl tracking-tight text-nowrap">CSL Freight</span>
+            <span className="text-xl tracking-tight text-nowrap">CLIXMART</span>
           </Link>
             <NavLink to={"/dashboard"} className='pl-1 py-2 flex items-center flex-shrink-0 mb-4 text-muted-foreground'>
                 <LayoutDashboard className='h-6 w-6 mr-6' />
@@ -21,15 +21,31 @@ const SideNav = ({isToggled}:SideNavProps) => {
             </NavLink>
             <NavLink to={"/packages"} className='pl-1 py-2 flex items-center flex-shrink-0 mb-4 text-muted-foreground'>
                 <Package className='h-6 w-6 mr-6' />
-                <span className=''>Packages</span>
+                <span className=''>Categories</span>
+            </NavLink>
+            <NavLink to={"/packages"} className='pl-1 py-2 flex items-center flex-shrink-0 mb-4 text-muted-foreground'>
+                <Package className='h-6 w-6 mr-6' />
+                <span className=''>Brands</span>
             </NavLink>
             <NavLink to={"/loadings"} className='pl-1 py-2 flex items-center flex-shrink-0 mb-4 text-muted-foreground'>
                 <Ship className='h-6 w-6 mr-6' />
-                <span className=''>Loadings</span>
+                <span className=''>Vendors</span>
+            </NavLink>
+            <NavLink to={"/users"} className='pl-1 py-2 flex items-center flex-shrink-0 mb-4 text-muted-foreground'>
+                <Users className='h-6 w-6 mr-6' />
+                <span className=''>Products</span>
+            </NavLink>
+            <NavLink to={"/users"} className='pl-1 py-2 flex items-center flex-shrink-0 mb-4 text-muted-foreground'>
+                <Users className='h-6 w-6 mr-6' />
+                <span className=''>Orders</span>
             </NavLink>
             <NavLink to={"/users"} className='pl-1 py-2 flex items-center flex-shrink-0 mb-4 text-muted-foreground'>
                 <Users className='h-6 w-6 mr-6' />
                 <span className=''>Users</span>
+            </NavLink>
+            <NavLink to={"/users"} className='pl-1 py-2 flex items-center flex-shrink-0 mb-4 text-muted-foreground'>
+                <Users className='h-6 w-6 mr-6' />
+                <span className=''>Settings</span>
             </NavLink>
             
           

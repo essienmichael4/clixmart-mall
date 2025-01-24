@@ -14,7 +14,7 @@ function App() {
     <>
       <Routes>
         <Route path='/' element={<Home />} />
-        <Route element={<RequireAuth />}>
+        <Route element={<RequireAuth allowedRoles={["ADMIN", "SUPERADMIN"]} />}>
           <Route element={<Layout />}>
             <Route path='/dashboard' element={<Dashboard />} />
             <Route path='/users' element={<Users />} />

@@ -1,4 +1,4 @@
-import logo from '@/assets/logo.webp'
+import logo from '@/assets/logo.jpeg'
 import useAuth from "@/hooks/useAuth"
 import { Link } from "react-router-dom"
 
@@ -13,11 +13,11 @@ const NotFound = () => {
             <div className="flex flex-col items-center">
                 <div className='flex items-center gap-4'>
                     <img src={logo} alt="logo" className='w-24 mb-4 '/>
-                    <h2 className='text-3xl'>CSL Freight Forwarding</h2>
+                    <h2 className='text-3xl'>MALLz</h2>
                 </div>
                 <h3 className="font-bold text-7xl">404</h3>
                 <p className="font-semibold text-2xl">Sorry, we couldn't find the page you were looking for.</p>
-                { !auth?.user ?  
+                { !auth?.id ?  
                     <Link to={"../"} className="bg-black/90 hover:bg-black py-2 px-4 rounded text-white mt-4">Back to Home Page</Link>
                     : <Link to={"../dashboard"} className="bg-black/90 hover:bg-black py-2 px-4 rounded text-white mt-4">Go to dashboard</Link>
                 }

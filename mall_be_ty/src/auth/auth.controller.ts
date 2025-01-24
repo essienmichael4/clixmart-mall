@@ -2,7 +2,7 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, UsePipes, Validation
 import { AuthService } from './auth.service';
 import { ForgottenPasswordDto, UserSignUpDto } from './dto/register.dto';
 import { ApiConsumes, ApiCreatedResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
-import { ForgottenPasswordResponse, LoginReponse, RefreshTokenDto, UserAuthReponse } from './dto/response.dto';
+import { ForgottenPasswordResponse, LoginReponse, RefreshTokenDto, ResetPasswordResponse, UserAuthReponse } from './dto/response.dto';
 import { UserSignInDto } from './dto/signin.dto';
 import { User, UserInfo } from 'src/decorators/user.decorator';
 import { RefreshJwtGuard } from 'src/guards/refresh.guard';
@@ -57,6 +57,19 @@ export class AuthController {
   @ApiConsumes("application/json")
   @Get("forgot-password")
   async forgottenPassword(@Body() body:ForgottenPasswordDto){
+    try{
+      return this.authService.forgotPassword(body)
+    }catch(err){
+      throw err
+    }
+  }
+
+  @HttpCode(HttpStatus.OK)
+  @ApiOkResponse({type: ResetPasswordResponse, description: ""})
+  @ApiOperation({description: "Forgot password api"})
+  @ApiConsumes("application/json")
+  @Get("forgot-password")
+  async resetPassword(@Body() body:ForgottenPasswordDto){
     try{
       return this.authService.forgotPassword(body)
     }catch(err){

@@ -53,3 +53,25 @@ export class ForgottenPasswordDto {
     @IsEmail()
     email:string
 }
+
+export class ResetPasswordDto {
+    @ApiProperty({
+        description: "Password",
+        example: "xxxxxxxxxxx",
+        required: true
+    })
+    @IsDefined()
+    @IsString()
+    @MinLength(8)
+    password:string
+
+    @ApiProperty({
+        description: "Password",
+        example: "xxxxxxxxxxx",
+        required: true
+    })
+    @IsDefined()
+    @IsString()
+    @MinLength(8)
+    confirmPassword?:string
+}

@@ -1,6 +1,18 @@
 import { ApiResponseProperty } from "@nestjs/swagger"
 import { Exclude } from "class-transformer"
 
+class BackendTokens{
+    @ApiResponseProperty({
+        example: "wertyuioihgfdrtgui876543edfghuuytfcg-frtyuijbvcdertyuiokjhgfdfghjiuytfvbj-bvcdsertyuiokjnbcdfghjkjdfghb"
+    })
+    accessToken:string
+
+    @ApiResponseProperty({
+        example: "wertyuioihgfdrtgui876543edfghuuytfcg-frtyuijbvcdertyuiokjhgfdfghjiuytfvbj-bvcdsertyuiokjnbcdfghjkjdfghb"
+    })
+    refreshToken:string
+}
+
 export class UserAuthReponse{
     @ApiResponseProperty({
         example: 1
@@ -66,6 +78,9 @@ export class LoginReponse{
     })
     public role:string 
 
+    @ApiResponseProperty({
+        type: BackendTokens
+    })
     backendTokens:BackendTokens
 
     @Exclude()
@@ -85,18 +100,6 @@ export class LoginReponse{
     }
 }
 
-class BackendTokens{
-    @ApiResponseProperty({
-        example: "wertyuioihgfdrtgui876543edfghuuytfcg-frtyuijbvcdertyuiokjhgfdfghjiuytfvbj-bvcdsertyuiokjnbcdfghjkjdfghb"
-    })
-    accessToken:string
-
-    @ApiResponseProperty({
-        example: "wertyuioihgfdrtgui876543edfghuuytfcg-frtyuijbvcdertyuiokjhgfdfghjiuytfvbj-bvcdsertyuiokjnbcdfghjkjdfghb"
-    })
-    refreshToken:string
-}
-
 export class RefreshTokenDto{
     @ApiResponseProperty({
         example: "wertyuioihgfdrtgui876543edfghuuytfcg-frtyuijbvcdertyuiokjhgfdfghjiuytfvbj-bvcdsertyuiokjnbcdfghjkjdfghb"
@@ -107,6 +110,13 @@ export class RefreshTokenDto{
 export class ForgottenPasswordResponse{
     @ApiResponseProperty({
         example: "A reset link has been sent to your email."
+    })
+    message:string
+}
+
+export class ResetPasswordResponse{
+    @ApiResponseProperty({
+        example: "Password has been reset successfully. Please login into your account."
     })
     message:string
 }

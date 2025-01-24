@@ -16,7 +16,7 @@ export class ProductImage {
     @UpdateDateColumn({ type: 'timestamp' })
     updatedAt: Date;
 
-    @ManyToOne(() => Product, (product) => product.productImage)
+    @ManyToOne(() => Product, (product) => product.productImages)
     @JoinColumn({ name: 'productImg' })
     product: Product;
 }

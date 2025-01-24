@@ -1,12 +1,11 @@
 import { Dispatch, SetStateAction } from "react"
 
 export type AuthType = {
-    user:{
-        name: string,
-        email: string,
-        role?: string,
-        id: number | undefined
-    },
+    
+    name: string,
+    email: string,
+    role?: string,
+    id: number | undefined,
     backendTokens: {
         accessToken: string,
         refreshToken: string

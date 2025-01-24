@@ -98,7 +98,7 @@ export class UserService {
   }
 
   async hashPassword(password:string){
-    const hashedPassword = await hash(process.env.ADMIN_PASSWORD, 10)
+    const hashedPassword = await hash(password, 10)
     return hashedPassword
   }
 }

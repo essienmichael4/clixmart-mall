@@ -36,6 +36,8 @@ const Login = () => {
                 email: data.email,
                 password: data.password
             })
+            console.log(response.data);
+            
             
             setAuth(response.data)
             form.reset()
@@ -101,8 +103,6 @@ const Login = () => {
                     </button>
                     <div className='flex gap-2 mb-3 mt-2'>
                         <p className='text-gray-400 text-xs 2xl:text-sm'>Don't have an account? <span className='text-xs 2xl:text-sm text-blue-700'>See your administrator</span></p>
-                        
-                        {/* <Link to={"../register"} className='text-xs 2xl:text-sm text-blue-300'>Register</Link> */}
                     </div>
                 </form>
             </Form>

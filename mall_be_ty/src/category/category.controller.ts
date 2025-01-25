@@ -6,7 +6,7 @@ import { ApiConsumes, ApiCreatedResponse, ApiOkResponse, ApiOperation, ApiTags }
 import { CategoryResponseDto, SubCategoryResponseDto } from './dto/categoryResponse.dto';
 import { CreateSubCategoryDto } from './dto/create-sub-category.dto';
 
-@Controller('category')
+@Controller('categories')
 @UsePipes(new ValidationPipe({
   whitelist: true,
   transform: true
@@ -30,9 +30,9 @@ export class CategoryController {
   @ApiOkResponse({type: SubCategoryResponseDto, description: "Sub Category created successfully"})
   @ApiOperation({description: "Create Sub Category api"})
   @ApiConsumes("application/json")
-  @Post(":id/sub-categories")
-  createSubCategory(@Param('id', ParseIntPipe) id: number, @Body() createSubCategoryDto: CreateSubCategoryDto) {
-    return this.categoryService.createSubCategory(id, createSubCategoryDto);
+  @Post("sub-categories")
+  async createSubCategory(@Body() createSubCategoryDto: CreateSubCategoryDto) {
+    return  await this.categoryService.createSubCategory(createSubCategoryDto);
   }
 
   @HttpCode(HttpStatus.OK)

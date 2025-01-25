@@ -5,5 +5,5 @@ export const axios_instance : AxiosInstance = axios.create({
 });
 
 export const axios_instance_token : AxiosInstance = axios.create({
-    baseURL: "http://localhost:3000api/v1"
+    baseURL: "http://localhost:3000/api/v1/"
 });

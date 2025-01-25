@@ -2,7 +2,7 @@ import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, Pri
 import { Category } from "./category.entity";
 import { Product } from "src/product/entities/product.entity";
 
-enum Deleted {
+export enum Deleted {
     TRUE = 'TRUE',
     FALSE = 'FALSE',
 }
@@ -26,7 +26,7 @@ export class SubCategory {
     @Column({ default: Deleted.FALSE })
     isDeleted: Deleted;
 
-    @ManyToOne(() => Category, (category) => category.subCategory)
+    @ManyToOne(() => Category, (category) => category.subCategories)
     @JoinColumn({ name: 'categorySub' })
     category: Category;
 

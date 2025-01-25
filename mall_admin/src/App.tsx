@@ -7,6 +7,7 @@ import RequireAuth from './components/RequireAuth'
 import Users from './pages/User/Users'
 import UserProfile from './pages/User/User'
 import NotFound from './pages/NotFound/NotFound'
+import Categories from './pages/Category/Categories'
 
 function App() {
 
@@ -17,6 +18,7 @@ function App() {
         <Route element={<RequireAuth allowedRoles={["ADMIN", "SUPERADMIN"]} />}>
           <Route element={<Layout />}>
             <Route path='/dashboard' element={<Dashboard />} />
+            <Route path='/categories' element={<Categories />} />
             <Route path='/users' element={<Users />} />
             <Route path='/users/:id' element={<UserProfile />} />
           </Route>

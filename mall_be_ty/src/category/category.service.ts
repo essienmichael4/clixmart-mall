@@ -1,11 +1,11 @@
 import { HttpException, Injectable } from '@nestjs/common';
-import { CreateCategoryDto } from './dto/create-category.dto';
+import { CreateCategoryDto, EditCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Category } from './entities/category.entity';
 import { Repository } from 'typeorm';
 import { SubCategory } from './entities/subcategory.entity';
-import { CreateSubCategoryDto } from './dto/create-sub-category.dto';
+import { CreateSubCategoryDto, EditSubCategoryDto } from './dto/create-sub-category.dto';
 
 @Injectable()
 export class CategoryService {
@@ -64,11 +64,23 @@ export class CategoryService {
     return this.categoryRepo.findOneBy({id});
   }
 
-  update(id: number, updateCategoryDto: UpdateCategoryDto) {
-    return `This action updates a #${id} category`;
+  updateCategory(id: number, editCategoryDto: EditCategoryDto) {
+    return this.categoryRepo.update(id, {
+      name: editCategoryDto.name
+    })
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} category`;
+  updateSubCategory(id: number, editSubCategoryDto: EditSubCategoryDto) {
+    return this.subCategoryRepo.update(id,{
+      name: editSubCategoryDto.name
+    })
+  }
+
+  removeCategory(id: number) {
+    return this.categoryRepo.delete(id)
+  }
+
+  removeSubCategory(id: number) {
+    return this.subCategoryRepo.delete(id);
   }
 }

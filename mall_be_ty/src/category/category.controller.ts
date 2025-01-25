@@ -1,10 +1,10 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, UsePipes, ValidationPipe, HttpCode, HttpStatus, ParseIntPipe } from '@nestjs/common';
 import { CategoryService } from './category.service';
-import { CreateCategoryDto } from './dto/create-category.dto';
+import { CreateCategoryDto, EditCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
 import { ApiConsumes, ApiCreatedResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { CategoryResponseDto, SubCategoryResponseDto } from './dto/categoryResponse.dto';
-import { CreateSubCategoryDto } from './dto/create-sub-category.dto';
+import { CreateSubCategoryDto, EditSubCategoryDto } from './dto/create-sub-category.dto';
 
 @Controller('categories')
 @UsePipes(new ValidationPipe({
@@ -62,13 +62,43 @@ export class CategoryController {
     return this.categoryService.findOne(+id);
   }
 
+  @HttpCode(HttpStatus.OK)
+  @ApiCreatedResponse({type: SubCategoryResponseDto, description: "Sub Category created successfully"})
+  @ApiOkResponse({type: SubCategoryResponseDto, description: "Sub Category created successfully"})
+  @ApiOperation({description: "Update Category api"})
+  @ApiConsumes("application/json")
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateCategoryDto: UpdateCategoryDto) {
-    return this.categoryService.update(+id, updateCategoryDto);
+  updateCategory(@Param('id', ParseIntPipe) id: number, @Body() editCategoryDto: EditCategoryDto) {
+    return this.categoryService.updateCategory(id, editCategoryDto);
   }
 
+  @HttpCode(HttpStatus.OK)
+  @ApiCreatedResponse({type: SubCategoryResponseDto, description: "Sub Category created successfully"})
+  @ApiOkResponse({type: SubCategoryResponseDto, description: "Sub Category created successfully"})
+  @ApiOperation({description: "Update Sub Category api"})
+  @ApiConsumes("application/json")
+  @Patch('sub-categories/:id')
+  updateSubCategory(@Param('id', ParseIntPipe) id: number, @Body() editSubCategoryDto: EditSubCategoryDto) {
+    return this.categoryService.updateSubCategory(id, editSubCategoryDto);
+  }
+
+  @HttpCode(HttpStatus.OK)
+  @ApiCreatedResponse({type: SubCategoryResponseDto, description: "Sub Category created successfully"})
+  @ApiOkResponse({type: SubCategoryResponseDto, description: "Sub Category created successfully"})
+  @ApiOperation({description: "Delete Category api"})
+  @ApiConsumes("application/json")
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.categoryService.remove(+id);
+  removeCategory(@Param('id', ParseIntPipe) id: number) {
+    return this.categoryService.removeCategory(id);
+  }
+
+  @HttpCode(HttpStatus.OK)
+  @ApiCreatedResponse({type: SubCategoryResponseDto, description: "Sub Category created successfully"})
+  @ApiOkResponse({type: SubCategoryResponseDto, description: "Sub Category created successfully"})
+  @ApiOperation({description: "Delete Sub Category api"})
+  @ApiConsumes("application/json")
+  @Delete('sub-categories/:id')
+  removeSubCategory(@Param('id', ParseIntPipe) id: number) {
+    return this.categoryService.removeSubCategory(id);
   }
 }

@@ -12,3 +12,15 @@ export class CreateCategoryDto {
     @IsNotEmpty()
     name:string 
 }
+
+export class EditCategoryDto {
+    @ApiProperty({
+        description: "Category name",
+        example: "Electronics",
+        required: true
+    })
+    @IsDefined()
+    @IsString()
+    @IsNotEmpty()
+    name:string 
+}

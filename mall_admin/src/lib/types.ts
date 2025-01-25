@@ -17,6 +17,21 @@ export type AuthContextType = {
     setAuth: Dispatch<SetStateAction<AuthType | undefined>>;
 }
 
+export type Category = {
+    id:number,
+    name:string,
+    createdAt:string,
+    updatedAt:string,
+    subCategories?: Category[]
+}
+
+export type SubCategory = {
+    id:number,
+    name:string,
+    createdAt:string,
+    updatedAt:string,
+}
+
 export type Package = {
     id:number,
     trackingNumber:string,

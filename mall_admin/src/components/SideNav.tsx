@@ -19,7 +19,7 @@ const SideNav = ({isToggled}:SideNavProps) => {
                 <LayoutDashboard className='h-6 w-6 mr-6' />
                 <span className=''>Dashboard {isToggled}</span>
             </NavLink>
-            <NavLink to={"/packages"} className='pl-1 py-2 flex items-center flex-shrink-0 mb-4 text-muted-foreground'>
+            <NavLink to={"/categories"} className='pl-1 py-2 flex items-center flex-shrink-0 mb-4 text-muted-foreground'>
                 <Package className='h-6 w-6 mr-6' />
                 <span className=''>Categories</span>
             </NavLink>

@@ -35,7 +35,7 @@ const CreateSubCategory
     }, [form])
 
     const createSubCategory = async (data:SubCategorySchemaType)=>{
-        const response = await axios_instance_token.post(`/categories/subccategories`, {
+        const response = await axios_instance_token.post(`/categories/sub-categories`, {
             ...data
         },)
 

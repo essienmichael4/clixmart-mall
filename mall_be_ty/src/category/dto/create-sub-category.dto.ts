@@ -3,12 +3,22 @@ import { IsDefined, IsNotEmpty, IsString } from "class-validator";
 
 export class CreateSubCategoryDto {
     @ApiProperty({
-        description: "Category name",
+        description: "Sub-Category name",
         example: "Electronics",
         required: true
     })
     @IsDefined()
     @IsString()
     @IsNotEmpty()
-    name:string 
+    name:string
+ 
+    @ApiProperty({
+        description: "Category name",
+        example: "Phone Accesories",
+        required: true
+    })
+    @IsDefined()
+    @IsString()
+    @IsNotEmpty()
+    category:string 
 }

@@ -1,15 +1,15 @@
 import { Link } from 'react-router-dom'
-import { useQuery } from '@tanstack/react-query'
 import { Category } from '@/lib/types'
 import { ColumnDef, getCoreRowModel, flexRender, useReactTable, getPaginationRowModel, getFilteredRowModel, getExpandedRowModel, ExpandedState } from '@tanstack/react-table'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
-import useAxiosToken from '@/hooks/useAxiosToken'
 import { Edit, Trash2 } from 'lucide-react'
-import EditPackage from '@/pages/Category/EditPackage'
 import { Button } from '@/components/ui/button'
-import DeletePackage from '@/pages/Category/DeletePackage'
 import { DataTableColumnHeader } from '@/components/DataTable/ColumnHeader'
 import React from 'react'
+import EditCategory from '@/pages/Category/EditCategory'
+import EditSubCategory from '@/pages/Category/EditSubCategory'
+import DeleteCategory from '@/pages/Category/DeleteCategory'
+import DeleteSubCategory from '@/pages/Category/DeleteSubCategory'
 
 interface FilterProps{
     filtering:string
@@ -30,7 +30,13 @@ const CategoriesTable = ({categories, filtering}:FilterProps) => {
     const columns:ColumnDef<Category>[] =[{
         accessorKey: "id",
         header:({column})=>(<DataTableColumnHeader column={column} title='No.' />),
-        cell:({row}) => <div>
+        cell:({row}) => <div style={{
+            // Since rows are flattened by default,
+            // we can use the row.depth property
+            // and paddingLeft to visually indicate the depth
+            // of the row
+            paddingLeft: `${row.depth * 2}rem`,
+          }}>
             {row.getCanExpand() ? (
                 <button
                   {...{
@@ -50,7 +56,7 @@ const CategoriesTable = ({categories, filtering}:FilterProps) => {
     },{
         accessorKey: "name",
         header:({column})=>(<DataTableColumnHeader column={column} title='Name' />),
-        cell:({row}) => <div>
+        cell:({row}) => <div className='capitalize'>
             {row.original.name}
         </div>
     },{
@@ -73,10 +79,17 @@ const CategoriesTable = ({categories, filtering}:FilterProps) => {
         accessorKey: "ids",
         header:({column})=>(<DataTableColumnHeader column={column} title='Actions' />),
         cell:({row}) => <div>
-            <span className="flex gap-2 items-center"  >
-                {/* <EditPackage item={row.original} trigger={<button><Edit className="w-4 h-4 text-emerald-400"/></button>} /> */}
-                {/* <DeletePackage trackingNumber={row.original.trackingNumber} id={Number(row.original.id)} trigger={<button><Trash2 className="w-4 h-4 text-rose-400" /></button>} />  */}
-            </span> 
+            {row.depth === 1 ? 
+                <span className="flex gap-2 items-center"  >
+                    <EditSubCategory id={row.original.id} name={row.original.name} trigger={<button><Edit className="w-4 h-4 text-emerald-400"/></button>} />
+                    <DeleteSubCategory name={row.original.name} id={Number(row.original.id)} trigger={<button><Trash2 className="w-4 h-4 text-rose-400" /></button>} /> 
+                </span> 
+                : 
+                <span className="flex gap-2 items-center"  >
+                    <EditCategory id={row.original.id} name={row.original.name} trigger={<button><Edit className="w-4 h-4 text-emerald-400"/></button>} />
+                    <DeleteCategory name={row.original.name} id={Number(row.original.id)} trigger={<button><Trash2 className="w-4 h-4 text-rose-400" /></button>} /> 
+                </span>
+            }
         </div>
     }]
 

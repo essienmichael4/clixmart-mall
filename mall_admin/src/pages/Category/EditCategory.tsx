@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
-import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '../../components/ui/dialog'
+import { Dialog, DialogClose, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '../../components/ui/dialog'
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel } from '../../components/ui/form'
-import { Input } from '../../components/ui/input'
 import { Button } from '../../components/ui/button'
 import useAxiosToken from '@/hooks/useAxiosToken'
 import { toast } from 'sonner'
@@ -10,28 +9,29 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import axios from 'axios'
 import { Loader2 } from 'lucide-react'
-import { CategorySchema, CategorySchemaType } from '@/schema/category'
-import { Category } from '@/lib/types'
+import { EditCategorySchema, EditCategorySchemaType } from '@/schema/category'
+import { Input } from '@/components/ui/input'
 
 interface Props{
     trigger?: React.ReactNode,
-    successCallback?: (category:Category)=>void
+    id:number,
+    name:string
 }
 
-const CreateCategory = ({trigger, successCallback}:Props) => {
+const EditCategory = ({id, name, trigger}:Props) => {
     const [open, setOpen] = useState(false)
     const axios_instance_token = useAxiosToken()
     const queryClient = useQueryClient()
 
-    const form = useForm<CategorySchemaType>({
-        resolver:zodResolver(CategorySchema),
+    const form = useForm<EditCategorySchemaType>({
+        resolver:zodResolver(EditCategorySchema),
         defaultValues:{
-            name: "",
+            name: name
         }
     })
 
-    const addCategory = async (data:CategorySchemaType)=>{
-        const response = await axios_instance_token.post(`/categories`, {
+    const addCategory = async (data:EditCategorySchemaType)=>{
+        const response = await axios_instance_token.patch(`/categories/${id}`, {
             ...data
         },)
 
@@ -40,34 +40,33 @@ const CreateCategory = ({trigger, successCallback}:Props) => {
 
     const {mutate, isPending} = useMutation({
         mutationFn: addCategory,
-        onSuccess: (data:Category)=>{
-            toast.success(`Category ${data.name} created successfully`, {
-                id: "add-category"
+        onSuccess: ()=>{
+            toast.success("Category updated successfully", {
+                id: "edit-Category"
             })
 
-            form.reset({
-                name: ""
-            })
-            successCallback && successCallback(data)
             queryClient.invalidateQueries({queryKey: ["categories"]})
+            form.reset({
+                name: name
+            })
 
             setOpen(prev => !prev)
         },onError: (err:any) => {
             if (axios.isAxiosError(err)){
                 toast.error(err?.response?.data?.message, {
-                    id: "add-category"
+                    id: "edit-category"
                 })
             }else{
                 toast.error(`Something went wrong`, {
-                    id: "add-category"
+                    id: "edit-category"
                 })
             }
         }
     })
 
-    const onSubmit = (data:CategorySchemaType)=>{
-        toast.loading("Creating category...", {
-            id: "add-category"
+    const onSubmit = (data:EditCategorySchemaType)=>{
+        toast.loading("Editing Category...", {
+            id: "edit-category"
         })
         mutate(data)
     }
@@ -77,15 +76,12 @@ const CreateCategory = ({trigger, successCallback}:Props) => {
             <DialogTrigger asChild>{trigger}</DialogTrigger>
             <DialogContent className='w-[90%] mx-auto rounded-2xl'>
                 <DialogHeader className='items-start'>
-                    <DialogTitle>
-                        Create Category
+                    <DialogTitle className='capitalize'>
+                        Edit Category
                     </DialogTitle>
-                    <DialogDescription>
-                        Category is used to group products
-                    </DialogDescription>
                 </DialogHeader>
                 <Form {...form}>
-                    <form className='space-y-2'>
+                    <form className='space-y-2 w-full'>
                         <FormField
                             control={form.control}
                             name="name"
@@ -93,7 +89,7 @@ const CreateCategory = ({trigger, successCallback}:Props) => {
                                 <FormItem className='flex-1 px-2 space-y-2'>
                                     <FormLabel className='text-xs'>Category name</FormLabel>
                                     <FormControl>
-                                        <Input {...field} />
+                                        <Input className='capitalize' {...field} />
                                     </FormControl>
                                     <FormDescription>Category name for product groupings.</FormDescription>
                                 </FormItem>
@@ -114,7 +110,7 @@ const CreateCategory = ({trigger, successCallback}:Props) => {
                     </DialogClose>
                     <Button onClick={form.handleSubmit(onSubmit)} disabled={isPending} className='bg-gradient-to-r from-blue-500 to-blue-800 text-white'
                     >
-                        {!isPending && "Create Category"}
+                        {!isPending && "Update category"}
                         {isPending && <Loader2 className='animate-spin' /> }
                     </Button>
                 </DialogFooter>
@@ -123,4 +119,4 @@ const CreateCategory = ({trigger, successCallback}:Props) => {
     )
 }
 
-export default CreateCategory
+export default EditCategory

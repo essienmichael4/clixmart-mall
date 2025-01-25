@@ -28,7 +28,7 @@ export class Category {
     isDeleted: Deleted;
 
     @OneToMany(() => SubCategory, (subCategory) => subCategory.category)
-    subCategory: SubCategory[];
+    subCategories: SubCategory[];
 
     @OneToMany(() => Product, (Product) => Product.category)
     products: Product[];

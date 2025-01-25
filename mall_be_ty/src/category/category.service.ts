@@ -27,26 +27,33 @@ export class CategoryService {
     }
   }
 
-  createSubCategory(id:number, createSubCategoryDto: CreateSubCategoryDto) {
-    try{
-      const category = this.categoryRepo.findOneBy({id})
+  async createSubCategory(createSubCategoryDto: CreateSubCategoryDto) {
+    try{      
+      const category = await this.categoryRepo.findOneBy({name: createSubCategoryDto.category.toLowerCase()})
+      
       if(!category) throw new HttpException("Category does not exist", 400)
 
-      const subCategoryEntity =  this.categoryRepo.create()
+      const subCategoryEntity =  this.subCategoryRepo.create()
       const saveEntity = {
         ...subCategoryEntity,
         name: createSubCategoryDto.name.toLowerCase(),
         category
       }
 
-      return this.categoryRepo.save(saveEntity)
+      return this.subCategoryRepo.save(saveEntity)
     }catch(err){
       throw err
     }
   }
 
-  findAllCategories() {
-    return this.categoryRepo.find();
+  async findAllCategories() {
+    const categories = await this.categoryRepo.find({
+      relations:["subCategories"]
+    });
+
+    console.log(categories);
+    return categories
+    
   }
 
   findAllSubCategories() {

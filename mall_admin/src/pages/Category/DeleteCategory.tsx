@@ -10,48 +10,48 @@ import { Loader2 } from 'lucide-react'
 interface Props{
     trigger?: React.ReactNode,
     id:number,
-    trackingNumber:string
+    name:string
 }
 
-const DeletePackage = ({id, trackingNumber, trigger}:Props) => {
+const DeleteCategory = ({id, name, trigger}:Props) => {
     const [open, setOpen] = useState(false)
     const axios_instance_token = useAxiosToken()
     const queryClient = useQueryClient()
 
     
 
-    const addPackage = async ()=>{
-        const response = await axios_instance_token.delete(`/packages/${id}`)
+    const addCategory = async ()=>{
+        const response = await axios_instance_token.delete(`/categories/${id}`)
 
         return response.data
     }
 
     const {mutate, isPending} = useMutation({
-        mutationFn: addPackage,
+        mutationFn: addCategory,
         onSuccess: ()=>{
-            toast.success("Package deleted successfully", {
-                id: "edit-package"
+            toast.success("Category deleted successfully", {
+                id: "edit-category"
             })
 
-            queryClient.invalidateQueries({queryKey: ["packages"]})
+            queryClient.invalidateQueries({queryKey: ["categories"]})
 
             setOpen(prev => !prev)
         },onError: (err:any) => {
             if (axios.isAxiosError(err)){
                 toast.error(err?.response?.data?.message, {
-                    id: "edit-package"
+                    id: "edit-category"
                 })
             }else{
                 toast.error(`Something went wrong`, {
-                    id: "edit-package"
+                    id: "edit-category"
                 })
             }
         }
     })
 
     const onSubmit = ()=>{
-        toast.loading("Deleting package...", {
-            id: "edit-package"
+        toast.loading("Deleting Category...", {
+            id: "edit-category"
         })
         mutate()
     }
@@ -61,12 +61,12 @@ const DeletePackage = ({id, trackingNumber, trigger}:Props) => {
             <DialogTrigger asChild>{trigger}</DialogTrigger>
             <DialogContent className='w-[90%] mx-auto rounded-2xl'>
                 <DialogHeader className='items-start'>
-                    <DialogTitle>
-                        Delete Package: {trackingNumber}
+                    <DialogTitle className='capitalize'>
+                        Delete Category: {name}
                     </DialogTitle>
                 </DialogHeader>
                 <div>
-                    Are you sure you want to delete this package?
+                    Are you sure you want to delete this category? Note that this action cannot be reversed.
                 </div>
                 <DialogFooter >
                     <DialogClose asChild>
@@ -79,7 +79,7 @@ const DeletePackage = ({id, trackingNumber, trigger}:Props) => {
                     </DialogClose>
                     <Button onClick={onSubmit} disabled={isPending} className='bg-gradient-to-r from-rose-500 to-rose-800 text-white'
                     >
-                        {!isPending && "Delete Package"}
+                        {!isPending && "Delete Category"}
                         {isPending && <Loader2 className='animate-spin' /> }
                     </Button>
                 </DialogFooter>
@@ -88,4 +88,4 @@ const DeletePackage = ({id, trackingNumber, trigger}:Props) => {
     )
 }
 
-export default DeletePackage
+export default DeleteCategory

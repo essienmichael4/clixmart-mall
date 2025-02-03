@@ -53,7 +53,7 @@ export class User {
     @JoinColumn()
     profileImage: ProfileImage
 
-    @OneToMany(() => Store, (storeEntity) => storeEntity.user)
+    @OneToMany(() => Store, (storeEntity) => storeEntity.user, {cascade: true})
     stores: Store[];
 
     @OneToMany(() => Product, (productEntity) => productEntity.user)

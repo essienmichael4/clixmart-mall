@@ -4,6 +4,10 @@ import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, One
 import { StoreReview } from "./storeReview.entity";
 import { StoreImage } from "./storeImage.entity";
 import { Follow } from "./follow.entity";
+import { StoreAddress } from "./storeAddress.entity";
+import { StoreDetail } from "./storeDetails.entity";
+import { PaymentDetail } from "./paymentDetails.entity";
+import { NextOfKin } from "./nextOfKin.entity";
 
 export enum Deleted {
     TRUE = 'TRUE',
@@ -18,6 +22,9 @@ export class Store {
     @Column({ unique: true })
     name:string
 
+    @Column({ nullable: true })
+    unspacedName:string
+
     @Column({ unique: true })
     url:string
 
@@ -29,7 +36,6 @@ export class Store {
 
     @Column({ default: Deleted.FALSE })
     isDeleted: Deleted;
-
     
     @ManyToOne(() => User, (user) => user.stores)
     @JoinColumn({ name: 'addedBy' })
@@ -48,4 +54,20 @@ export class Store {
     @OneToOne(() => StoreImage, (storeImage) => storeImage.store, {cascade: true})
     @JoinColumn()
     storeImage: StoreImage;
+
+    @OneToOne(() => StoreAddress, (storeAddress) => storeAddress.store, {cascade: true})
+    @JoinColumn()
+    storeAddress: StoreAddress;
+
+    @OneToOne(() => StoreDetail, (storeDetail) => storeDetail.store, {cascade: true})
+    @JoinColumn()
+    storeDetail: StoreDetail;
+
+    @OneToMany(() => PaymentDetail, (paymentDetail) => paymentDetail.store, {cascade: true})
+    @JoinColumn()
+    paymentDetails: PaymentDetail;
+
+    @OneToMany(() => NextOfKin, (nextOfKin) => nextOfKin.store, {cascade: true})
+    @JoinColumn()
+    nextOfKin: NextOfKin;
 }

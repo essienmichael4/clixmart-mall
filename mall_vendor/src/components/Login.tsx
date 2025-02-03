@@ -44,7 +44,7 @@ const Login = () => {
                 id: "login"
             })            
             
-            navigate("/dashboard", {replace:true})
+            navigate("/wizard", {replace:true})
             
         }catch(err:any){
             setIsPending(false)

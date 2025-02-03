@@ -3,12 +3,10 @@ import { useState, createContext } from "react";
 
 export const AuthContext = createContext<AuthContextType>({
     auth: {
-        user:{
-            id: undefined,
-            name:"",
-            email: "",
-            role: ""
-        },
+        id: undefined,
+        name:"",
+        email: "",
+        role: "",
         backendTokens: {
             accessToken: "",
             refreshToken: ""

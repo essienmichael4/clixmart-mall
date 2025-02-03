@@ -1,4 +1,4 @@
-import logo from '../assets/logo.webp'
+import logo from '../assets/logo.png'
 import { LayoutDashboard, Package, Ship, Users } from 'lucide-react'
 import { Link, NavLink } from 'react-router-dom'
 

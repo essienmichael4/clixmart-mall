@@ -63,9 +63,9 @@ export class Store {
     @JoinColumn()
     storeDetail: StoreDetail;
 
-    @OneToMany(() => PaymentDetail, (paymentDetail) => paymentDetail.store, {cascade: true})
+    @OneToOne(() => PaymentDetail, (paymentDetail) => paymentDetail.store, {cascade: true})
     @JoinColumn()
-    paymentDetails: PaymentDetail;
+    paymentDetail: PaymentDetail;
 
     @OneToMany(() => NextOfKin, (nextOfKin) => nextOfKin.store, {cascade: true})
     @JoinColumn()

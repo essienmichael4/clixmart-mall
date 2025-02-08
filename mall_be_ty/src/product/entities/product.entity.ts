@@ -6,6 +6,7 @@ import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, One
 import { ProductReview } from "./review.entity";
 import { ProductImage } from "./productImage.entity";
 import { Tag } from "./tag.entity";
+import { Brand } from "src/brand/entities/brand.entity";
 
 export enum Discounted {
     TRUE = 'TRUE',
@@ -71,7 +72,7 @@ export class Product {
     @JoinColumn({ name: 'subCategory' })
     subCategory: SubCategory;
 
-    @OneToOne(()=> ProductReview, (productReview)=> productReview.product, {cascade: true})
+    @OneToOne(()=> ProductReview, (productReview) => productReview.product, {cascade: true})
     @JoinColumn()
     productReview: ProductReview
 
@@ -80,4 +81,9 @@ export class Product {
 
     @OneToMany(() => Tag, (tag) => tag.products)
     tags: Tag[];
+
+    
+    @ManyToOne(() => Brand, (brand) => brand.products)
+    @JoinColumn()
+    brand: Brand;
 }

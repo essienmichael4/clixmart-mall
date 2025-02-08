@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { CreateStoreDto, NextOfKinDto, StoreAddressDto, StoreDetailsDto, StorePaymentDetailsDto } from './dto/create-store.dto';
-import { UpdateStoreDto } from './dto/update-store.dto';
+import { UpdateStoreDto, UpdateStoreReviewDto } from './dto/update-store.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Store } from './entities/store.entity';
 import { Repository } from 'typeorm';
@@ -10,12 +10,14 @@ import { PaymentDetail } from './entities/paymentDetails.entity';
 import { UserService } from 'src/user/user.service';
 import { User } from 'src/user/entities/user.entity';
 import { NextOfKin } from './entities/nextOfKin.entity';
+import { Status, StoreReview } from './entities/storeReview.entity';
 
 @Injectable()
 export class StoreService {
   constructor(
     @InjectRepository(Store) private readonly storeRepo:Repository<Store>,
     @InjectRepository(StoreDetail) private readonly storeDetailRepo:Repository<StoreDetail>,
+    @InjectRepository(StoreReview) private readonly storeReviewRepo:Repository<StoreReview>,
     @InjectRepository(StoreAddress) private readonly storeAddressRepo:Repository<StoreAddress>,
     @InjectRepository(PaymentDetail) private readonly paymentDetailRepo:Repository<PaymentDetail>,
     @InjectRepository(NextOfKin) private readonly nextOfKinRepo:Repository<NextOfKin>,
@@ -31,15 +33,19 @@ export class StoreService {
     
     const unspaced = this.generateUspacedName(createStoreDto.name.toLowerCase())
     
-    const storeEntity =  this.storeRepo.create()
-    const saveEntity = {
-      ...storeEntity,
-      name: createStoreDto.name.toLowerCase(),
-      url: this.generateStoreUrl(unspaced),
-      unspacedName: unspaced
-    }
-    
     try{
+      const storeReview = await this.storeReviewRepo.save({
+        status: Status.PENDING
+      })
+      const storeEntity =  this.storeRepo.create()
+      const saveEntity = {
+        ...storeEntity,
+        name: createStoreDto.name.toLowerCase(),
+        url: this.generateStoreUrl(unspaced),
+        unspacedName: unspaced,
+        storeReview: storeReview
+      }
+    
       const store = await this.storeRepo.save(saveEntity)
       user.stores = [...user.stores, store]
       await this.userRepo.save(user)
@@ -79,7 +85,7 @@ export class StoreService {
 
       const nextOfKin = await this.nextOfKinRepo.save(saveEntity) 
       store.nextOfKin = nextOfKin
-      return this.storeRepo.save(store)
+      return await this.storeRepo.save(store)
     }catch(err){
       throw err
     }
@@ -88,8 +94,6 @@ export class StoreService {
   async addStoreAddress(id:number, storeAddressDto:StoreAddressDto){
     try{
       const store = await this.storeRepo.findOneBy({id})
-      console.log(storeAddressDto);
-      
       const storeAddressEntity = this.storeAddressRepo.create()
 
       const saveEntity = {
@@ -106,7 +110,7 @@ export class StoreService {
 
       const storeAdress = await this.storeAddressRepo.save(saveEntity) 
       store.storeAddress = storeAdress
-      return this.storeRepo.save(store)
+      return await this.storeRepo.save(store)
     }catch(err){
       throw err
     }
@@ -120,14 +124,14 @@ export class StoreService {
       const saveEntity = {
         ...paymentDetailEntity,
         paymentMode: storePaymentDetailsDto.paymentMode,
-        accoutName: storePaymentDetailsDto.accountName,
+        accountName: storePaymentDetailsDto.accountName,
         accountNumber: storePaymentDetailsDto.accountNumber,
         provider: storePaymentDetailsDto.provider
       }
 
       const paymentDetail = await this.paymentDetailRepo.save(saveEntity) 
-      store.paymentDetails = paymentDetail
-      return this.storeRepo.save(store)
+      store.paymentDetail = paymentDetail
+      return await this.storeRepo.save(store)
     }catch(err){
       throw err
     }
@@ -138,7 +142,13 @@ export class StoreService {
   }
 
   findAll() {
-    return this.storeRepo.find();
+    return this.storeRepo.find({
+      relations: {
+        user: true,
+        storeDetail: true,
+        storeReview: true
+      }
+    })
   }
 
   async findAllUserStores(userId:number){
@@ -152,12 +162,23 @@ export class StoreService {
           id: userId
         }
       }
-    });
+    })
   }
 
   findOne(id: number) {
     try{
-      return this.storeRepo.findOneBy({id});
+      return this.storeRepo.findOne({
+        where: {id},
+        relations: {
+          storeReview: {
+            user: true
+          },
+          user: true,
+          storeDetail: true,
+          storeAddress: true,
+          paymentDetail: true
+        }
+      })
     }catch(err){
       throw err
     }
@@ -175,6 +196,36 @@ export class StoreService {
       })
 
       return store
+    }catch(err){
+      throw err
+    };
+  }
+
+  async updateStoreReview(id:number, updateStoreReviewDto: UpdateStoreReviewDto, userId:number) {
+    const user = await this.userRepo.findOne({
+      where: {id:userId},
+      relations: {
+        storeReviews: true
+      }
+    })
+    try{
+      const store = await this.storeRepo.findOne({
+        where: {id},
+        relations: {storeReview:true}
+      })
+
+      await this.storeReviewRepo.update(store.storeReview.id, {
+        ...(updateStoreReviewDto.status && { status:updateStoreReviewDto.status }),
+        ...(updateStoreReviewDto.description && { description:updateStoreReviewDto.description }),
+      })
+
+      const storeReview = await this.storeReviewRepo.findOneBy({id:store.storeReview.id})
+
+      const reviews = user.storeReviews.filter(review => review.id !== store.storeReview.id)
+      user.storeReviews = [ ...reviews, storeReview ]
+      await this.userRepo.save(user)
+      
+      return storeReview
     }catch(err){
       throw err
     };

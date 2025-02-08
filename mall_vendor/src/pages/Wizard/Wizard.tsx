@@ -14,8 +14,6 @@ const Wizard = () => {
     const stores = useQuery<Store[]>({
         queryKey: ["stores"],
         queryFn: async() => await axios_instance_token.get(`/stores/all`).then(res => {
-            console.log(res.data);
-            
             return res.data
         })
     })
@@ -47,7 +45,7 @@ const Wizard = () => {
                                     <p>{store.name}</p>
 
                                     <div className='flex gap-2'>
-                                        <Link to={`/stores/${store.name}`} className='text-xs text-blue-700'>Manage</Link>
+                                        <Link to={`/dashboard/${store.unspacedName}`} className='text-xs text-blue-700'>Manage</Link>
                                         <button className='text-xs text-emerald-700'>Edit</button>
                                     </div>
                                 </div>

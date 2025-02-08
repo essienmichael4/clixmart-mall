@@ -23,6 +23,6 @@ export class PaymentDetail {
     @Column()
     provider:string
 
-    @ManyToOne(()=> Store, (store)=> store.paymentDetails)
+    @OneToOne(()=> Store, (store)=> store.paymentDetail)
     store: Store
 }

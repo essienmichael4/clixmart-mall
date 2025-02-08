@@ -4,6 +4,7 @@ import { Store } from "src/store/entities/store.entity";
 import { Product } from "src/product/entities/product.entity";
 import { ProductReview } from "src/product/entities/review.entity";
 import { Follow } from "src/store/entities/follow.entity";
+import { StoreReview } from "src/store/entities/storeReview.entity";
 
 export enum Deleted {
     TRUE = 'TRUE',
@@ -61,6 +62,9 @@ export class User {
 
     @OneToMany(() => ProductReview, (productReviewEntity) => productReviewEntity.user)
     productReviews: ProductReview[];
+
+    @OneToMany(() => StoreReview, (storeReviewEntity) => storeReviewEntity.user)
+    storeReviews: StoreReview[];
 
     @OneToMany(() => Follow, (follow) => follow.user)
     following: Follow[];

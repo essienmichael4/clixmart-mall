@@ -38,7 +38,7 @@ export class CategoryController {
   @HttpCode(HttpStatus.OK)
   @ApiOkResponse({type: [CategoryResponseDto], description: ""})
   @ApiOperation({description: "Get all categories"})
-  @ApiConsumes("application/json")
+  // @ApiConsumes("application/json")
   @Get()
   findAllCategories() {
     return this.categoryService.findAllCategories();

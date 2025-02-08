@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UsePipes, ValidationPipe, HttpCode, HttpStatus, ParseIntPipe, UnauthorizedException } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UsePipes, ValidationPipe, HttpCode, HttpStatus, ParseIntPipe, UnauthorizedException, UseGuards } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto, FindUsersDto } from './dto/create-user.dto';
 import { UpdateUserDto, UpdateUserPasswordRequest, UpdateUserRequest } from './dto/update-user.dto';
@@ -6,6 +6,7 @@ import { ApiConsumes, ApiCreatedResponse, ApiOkResponse, ApiOperation, ApiTags }
 import { UserResponseDto } from './dto/userResponse.dto';
 // import { User } from './entities/user.entity';
 import { User, UserInfo } from 'src/decorators/user.decorator';
+import { JwtGuard } from 'src/guards/jwt.guard';
 
 @Controller('users')
 @UsePipes(new ValidationPipe({
@@ -55,9 +56,9 @@ export class UserController {
     return this.userService.update(+id, updateUserDto);
   }
 
+  @UseGuards(JwtGuard)
   @Patch('password/:id')
   async updatePassword(@Param('id', ParseIntPipe) id: number, @Body() updateUserPasswordRequest: UpdateUserPasswordRequest, @User() user:UserInfo) {
-    // return this.userService.update(+id, updateUserDto);
     try{
       if(id !== user.sub.id) throw new UnauthorizedException()
     

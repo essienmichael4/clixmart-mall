@@ -8,6 +8,7 @@ import UserProfile from './pages/User/User'
 import NotFound from './pages/NotFound/NotFound'
 import Wizard from './pages/Wizard/Wizard'
 import CreateStore from './pages/Create/CreateStore'
+import Store from './pages/Settings/Store'
 
 function App() {
 
@@ -17,10 +18,11 @@ function App() {
         <Route path='/' element={<Login />} />
         <Route element={<RequireAuth />}>
           <Route path='wizard' element={<Wizard />} />
-        <Route path='create' element={<CreateStore />} />
+          <Route path='create' element={<CreateStore />} />
           <Route element={<Layout />}>
-            <Route path='/dashboard' element={<Dashboard />} />
+            <Route path='/dashboard/:store' element={<Dashboard />} />
             <Route path='/profile/:id' element={<UserProfile />} />
+            <Route path='/settings/:store' element={<Store />} />
           </Route>
         </Route>
         <Route path='*' element={<NotFound />} />

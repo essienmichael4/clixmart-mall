@@ -1,7 +1,8 @@
 // import { Deleted } from "src/user/entities/user.entity";
-import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, ManyToMany, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { SubCategory } from "./subcategory.entity";
 import { Product } from "src/product/entities/product.entity";
+import { Brand } from "src/brand/entities/brand.entity";
 
 export enum Deleted {
     TRUE = 'TRUE',
@@ -30,6 +31,9 @@ export class Category {
     @OneToMany(() => SubCategory, (subCategory) => subCategory.category)
     subCategories: SubCategory[];
 
-    @OneToMany(() => Product, (Product) => Product.category)
+    @OneToMany(() => Product, (product) => product.category)
     products: Product[];
+
+    @ManyToMany(() => Brand, (brand) => brand.categories)
+    brands: Brand[];
 }

@@ -1,5 +1,5 @@
 import logo from '../assets/logo.jpeg'
-import { LayoutDashboard, Package, Ship, Users } from 'lucide-react'
+import { LayoutDashboard, Package, Settings, Ship, Users } from 'lucide-react'
 import { Link, NavLink } from 'react-router-dom'
 
 interface SideNavProps{
@@ -23,11 +23,11 @@ const SideNav = ({isToggled}:SideNavProps) => {
                 <Package className='h-6 w-6 mr-6' />
                 <span className=''>Categories</span>
             </NavLink>
-            <NavLink to={"/packages"} className='pl-1 py-2 flex items-center flex-shrink-0 mb-4 text-muted-foreground'>
+            <NavLink to={"/brands"} className='pl-1 py-2 flex items-center flex-shrink-0 mb-4 text-muted-foreground'>
                 <Package className='h-6 w-6 mr-6' />
                 <span className=''>Brands</span>
             </NavLink>
-            <NavLink to={"/loadings"} className='pl-1 py-2 flex items-center flex-shrink-0 mb-4 text-muted-foreground'>
+            <NavLink to={"/vendors"} className='pl-1 py-2 flex items-center flex-shrink-0 mb-4 text-muted-foreground'>
                 <Ship className='h-6 w-6 mr-6' />
                 <span className=''>Vendors</span>
             </NavLink>
@@ -43,8 +43,8 @@ const SideNav = ({isToggled}:SideNavProps) => {
                 <Users className='h-6 w-6 mr-6' />
                 <span className=''>Users</span>
             </NavLink>
-            <NavLink to={"/users"} className='pl-1 py-2 flex items-center flex-shrink-0 mb-4 text-muted-foreground'>
-                <Users className='h-6 w-6 mr-6' />
+            <NavLink to={"/settings"} className='pl-1 py-2 flex items-center flex-shrink-0 mb-4 text-muted-foreground'>
+                <Settings className='h-6 w-6 mr-6' />
                 <span className=''>Settings</span>
             </NavLink>
             

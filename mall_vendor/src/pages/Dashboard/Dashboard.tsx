@@ -34,7 +34,7 @@ const Dashboard = () => {
                                 <Truck className="w-10 h-10 text-orange-500" />
                             </div>
                             <div>
-                                <h3 className="text-sm font-bold text-muted-foreground">On Hold</h3>
+                                <h3 className="text-sm font-bold text-muted-foreground">Total Revenue</h3>
                                 <p className="text-3xl">{loadedQuery.data?.count}</p>
                             </div>
                         </div>
@@ -45,7 +45,7 @@ const Dashboard = () => {
                                 <PackageOpen className="w-10 h-10 text-blue-700" />
                             </div>
                             <div>
-                                <h3 className="text-sm font-bold text-muted-foreground">Shipped</h3>
+                                <h3 className="text-sm font-bold text-muted-foreground">Total Produts</h3>
                                 <p className="text-3xl">{enrouteQuery.data?.count}</p>
                             </div>
                         </div>
@@ -56,7 +56,7 @@ const Dashboard = () => {
                                 <PackageCheck className="w-10 h-10 text-emerald-700" />
                             </div>
                             <div>
-                                <h3 className="text-sm font-bold text-muted-foreground">Arrived</h3>
+                                <h3 className="text-sm font-bold text-muted-foreground">Total Orders</h3>
                                 <p className="text-3xl">{arrivedQuery.data?.count}</p>
                             </div>
                         </div>

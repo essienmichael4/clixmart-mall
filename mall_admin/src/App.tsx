@@ -8,6 +8,10 @@ import Users from './pages/User/Users'
 import UserProfile from './pages/User/User'
 import NotFound from './pages/NotFound/NotFound'
 import Categories from './pages/Category/Categories'
+import Vendors from './pages/Vendor/Vendors'
+import Vendor from './pages/Vendor/Vendor'
+import Brands from './pages/Brand/Brands'
+import Brand from './pages/Brand/Brand'
 
 function App() {
 
@@ -19,6 +23,10 @@ function App() {
           <Route element={<Layout />}>
             <Route path='/dashboard' element={<Dashboard />} />
             <Route path='/categories' element={<Categories />} />
+            <Route path='/brands' element={<Brands />} />
+            <Route path='/brand/:id' element={<Brand />} />
+            <Route path='/vendors' element={<Vendors />} />
+            <Route path='/vendors/:id' element={<Vendor />} />
             <Route path='/users' element={<Users />} />
             <Route path='/users/:id' element={<UserProfile />} />
           </Route>

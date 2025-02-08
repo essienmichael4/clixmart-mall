@@ -1,5 +1,5 @@
 import shopping from "../../assets/shopping.jpg"
-import logo from "../../assets/logo.jpeg"
+import logo from "../../assets/logo.png"
 import Login from "@/components/Login"
 
 const Home = () => {

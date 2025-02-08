@@ -1,4 +1,4 @@
-import logo from '@/assets/logo.jpeg'
+import logo from '@/assets/logo.png'
 import useAuth from "@/hooks/useAuth"
 import { Link } from "react-router-dom"
 

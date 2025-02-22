@@ -14,6 +14,8 @@ const Wizard = () => {
     const stores = useQuery<Store[]>({
         queryKey: ["stores"],
         queryFn: async() => await axios_instance_token.get(`/stores/all`).then(res => {
+            console.log(res.data);
+            
             return res.data
         })
     })
@@ -33,19 +35,19 @@ const Wizard = () => {
                 <div className='w-full'>
                     <h3 className='text-center mb-4 text-lg'>Your Stores</h3>
                     <div className='w-full flex flex-wrap justify-center'>
-                        <Link to="/create" className='w-full sm:w-1/2 lg:w-1/3 py-4 lg:p-4'>
+                        <Link to="/create" className='w-full sm:w-1/2 lg:w-1/3 p-4'>
                             <div className='border h-full p-4 rounded-md flex items-center justify-center gap-4 hover:bg-gray-100'>
                                 <Plus className='w-5 h-5'/> Add New Store
                             </div>
                         </Link>
                         {stores.data?.map(store => (
                             <div key={store.id} className='w-full sm:w-1/2 lg:w-1/3 p-4'>
-                                <div className='border p-4 rounded-md hover:bg-gray-100'>
+                                <div className={`${store.storeReview?.status === "APPROVED" && 'border-emerald-500'} ${store.storeReview?.status === "REJECTED" && 'border-rose-500'} border p-4 rounded-md hover:bg-gray-100`}>
                                     <h4 className='text-xs font-semibold'>Store name</h4>
-                                    <p>{store.name}</p>
+                                    <p className='capitalize'>{store.name}</p>
 
                                     <div className='flex gap-2'>
-                                        <Link to={`/dashboard/${store.unspacedName}`} className='text-xs text-blue-700'>Manage</Link>
+                                        {store.storeReview?.status === "APPROVED" && <Link to={`/dashboard/${store.slug}`} className='text-xs text-blue-700'>Manage</Link>}
                                         <button className='text-xs text-emerald-700'>Edit</button>
                                     </div>
                                 </div>

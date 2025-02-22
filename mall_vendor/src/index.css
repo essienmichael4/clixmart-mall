@@ -110,3 +110,24 @@
     @apply text-blue-700
   }
 }
+
+/* @layer utilities{
+  .masonry {
+    column-gap: 1.5rem;
+    columns: 2;
+  }
+
+  .masonry-sm{
+    column-gap: 1.5rem;
+    columns: 3;
+  }
+
+  .masonry-md{
+    column-gap: 1.5rem;
+    columns: 4;
+  }
+
+  .break-inside {
+    break-inside: avoid;
+  }
+} */

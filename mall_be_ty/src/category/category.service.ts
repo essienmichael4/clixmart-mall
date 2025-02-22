@@ -50,14 +50,27 @@ export class CategoryService {
     const categories = await this.categoryRepo.find({
       relations:["subCategories"]
     });
-
-    console.log(categories);
-    return categories
     
+    return categories    
   }
 
   findAllSubCategories() {
-    return this.categoryRepo.find();
+    return this.subCategoryRepo.find();
+  }
+
+  async findCategorySubCategories(category:string) {
+    const subCategories = await this.subCategoryRepo.find({
+      relations: {
+        category: true
+      },
+      where: {
+        category: {
+          name: category
+        }
+      }
+    });
+
+    return subCategories
   }
 
   findOne(id: number) {

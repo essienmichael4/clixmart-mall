@@ -5,12 +5,11 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Brand } from './entities/brand.entity';
 import { Category } from 'src/category/entities/category.entity';
 import { JwtService } from '@nestjs/jwt';
-import { UploadService } from './upload.service';
-import { FileService } from './file.service';
+import { UploadModule } from 'src/upload/upload.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Brand, Category])],
+  imports: [TypeOrmModule.forFeature([Brand, Category]), UploadModule],
   controllers: [BrandController],
-  providers: [BrandService, UploadService, JwtService, FileService],
+  providers: [BrandService, JwtService],
 })
 export class BrandModule {}

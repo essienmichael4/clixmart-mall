@@ -16,7 +16,7 @@ import { NextOfKin } from './entities/nextOfKin.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Store, Follow, StoreImage, StoreReview, PaymentDetail, StoreDetail, StoreAddress, NextOfKin,User]),
+    TypeOrmModule.forFeature([Store, Follow, StoreImage, StoreReview, PaymentDetail, StoreDetail, StoreAddress, NextOfKin, User]),
     UserModule
   ],
   controllers: [StoreController],

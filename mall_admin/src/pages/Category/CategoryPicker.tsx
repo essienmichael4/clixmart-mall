@@ -52,7 +52,7 @@ const CategoryPicker = ({ onChange }:Props) => {
                 <CreateCategory trigger={
                     <Button variant={"ghost"} className='flex items-center justify-start border-separate rounded-none p-3 border-b text-muted-foreground' >
                         <PlusSquare className='mr-2 h-4 w-4' />
-                        Create new
+                        Create new category
                     </Button>
                 } successCallback={successCallback} />
                 <CommandEmpty>

@@ -1,3 +1,4 @@
+import useAuth from '@/hooks/useAuth'
 import logo from '../assets/logo.png'
 import { LayoutDashboard, Package, Settings, Ship, Users } from 'lucide-react'
 import { Link, NavLink, useParams } from 'react-router-dom'
@@ -7,6 +8,7 @@ interface SideNavProps{
 }
 
 const SideNav = ({isToggled}:SideNavProps) => {
+  const {auth} = useAuth()
   const {store} = useParams()
   return (
     <nav className={`fixed ${isToggled === true ? 'lg:w-[4rem] md:w-[220px] ' : 'lg:w-[220px]'} w-[4rem] top-0 bottom-0 z-50 py-3 backdrop-blur-lg border-r border-neutral-100/80 overflow-hidden transition-all ease-in-out duration-500`}>
@@ -20,21 +22,21 @@ const SideNav = ({isToggled}:SideNavProps) => {
                 <LayoutDashboard className='h-6 w-6 mr-6' />
                 <span className=''>Dashboard {isToggled}</span>
             </NavLink>
-            <NavLink to={"/packages"} className='pl-1 py-2 flex items-center flex-shrink-0 mb-4 text-muted-foreground'>
+            <NavLink to={`/products/${store}`} className='pl-1 py-2 flex items-center flex-shrink-0 mb-4 text-muted-foreground'>
                 <Package className='h-6 w-6 mr-6' />
-                <span className=''>Packages</span>
+                <span className=''>Products</span>
             </NavLink>
-            <NavLink to={"/loadings"} className='pl-1 py-2 flex items-center flex-shrink-0 mb-4 text-muted-foreground'>
+            <NavLink to={`/orders/${store}`} className='pl-1 py-2 flex items-center flex-shrink-0 mb-4 text-muted-foreground'>
                 <Ship className='h-6 w-6 mr-6' />
-                <span className=''>Loadings</span>
-            </NavLink>
-            <NavLink to={"/users"} className='pl-1 py-2 flex items-center flex-shrink-0 mb-4 text-muted-foreground'>
-                <Users className='h-6 w-6 mr-6' />
-                <span className=''>Users</span>
+                <span className=''>Orders</span>
             </NavLink>
             <NavLink to={`/settings/${store}`} className='pl-1 py-2 flex items-center flex-shrink-0 mb-4 text-muted-foreground'>
                 <Settings className='h-6 w-6 mr-6' />
                 <span className=''>Settings</span>
+            </NavLink>
+            <NavLink to={`/profile/${auth?.id}`} className='pl-1 py-2 flex items-center flex-shrink-0 mb-4 text-muted-foreground'>
+                <Users className='h-6 w-6 mr-6' />
+                <span className='text-nowrap'>User Profile</span>
             </NavLink>
             
           

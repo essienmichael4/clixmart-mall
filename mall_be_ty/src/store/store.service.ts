@@ -42,7 +42,7 @@ export class StoreService {
         ...storeEntity,
         name: createStoreDto.name.toLowerCase(),
         url: this.generateStoreUrl(unspaced),
-        unspacedName: unspaced,
+        slug: unspaced,
         storeReview: storeReview
       }
     
@@ -155,7 +155,8 @@ export class StoreService {
     const user = await this.userService.findUserById(userId)
     return await this.storeRepo.find({
       relations: {
-        user: true
+        user: true,
+        storeReview: true
       },
       where:{
         user: {

@@ -9,8 +9,8 @@ import { useNavigate, useParams } from "react-router-dom"
 import { toast } from "sonner"
 import EditPackage from "./EditPackage"
 import EditLoaded from "./EditLoaded"
-import EditReceived from "./EditReceived"
-import EditEta from "./EditEta"
+// import EditReceived from "./EditReceived"
+// import EditEta from "./PrimaryImage"
 
 const PackageDetails = () => {
     const {id} = useParams()
@@ -84,8 +84,8 @@ const PackageDetails = () => {
                 <div className="flex flex-col flex-wrap justify-self-end gap-2">
                     <div className="flex flex-wrap gap-2">
                         <EditLoaded trackingNumber={packageDetail.data?.trackingNumber as string} date={packageDetail.data?.loaded as string} id={Number(id)} trigger={<Button variant={"outline"}><Edit className="w-4 h-4"/>Loaded</Button>} />
-                        <EditReceived trackingNumber={packageDetail.data?.trackingNumber as string} date={packageDetail.data?.received as string} id={Number(id)} trigger={<Button variant={"outline"}><Edit className="w-4 h-4"/>Received</Button>} />
-                        <EditEta trackingNumber={packageDetail.data?.trackingNumber as string} date={packageDetail.data?.eta as string} id={Number(id)} trigger={<Button variant={"outline"}><Edit className="w-4 h-4"/>ETA</Button>} />
+                        {/* <EditReceived trackingNumber={packageDetail.data?.trackingNumber as string} date={packageDetail.data?.received as string} id={Number(id)} trigger={<Button variant={"outline"}><Edit className="w-4 h-4"/>Received</Button>} /> */}
+                        {/* <EditEta trackingNumber={packageDetail.data?.trackingNumber as string} date={packageDetail.data?.eta as string} id={Number(id)} trigger={<Button variant={"outline"}><Edit className="w-4 h-4"/>ETA</Button>} /> */}
                         {packageDetail.data && <EditPackage item={packageDetail.data}  trigger={<Button variant={"outline"}><Edit className="w-4 h-4"/>Package</Button>} /> }
                     </div>
                     <div className="flex flex-wrap gap-2">

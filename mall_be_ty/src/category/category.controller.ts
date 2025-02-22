@@ -55,6 +55,15 @@ export class CategoryController {
 
   @HttpCode(HttpStatus.OK)
   @ApiOkResponse({type: [CategoryResponseDto], description: ""})
+  @ApiOperation({description: "Get all categories"})
+  @ApiConsumes("application/json")
+  @Get(":category/sub-categories")
+  findCategorySubcategories(@Param('category') category: string) {
+    return this.categoryService.findCategorySubCategories(category);
+  }
+
+  @HttpCode(HttpStatus.OK)
+  @ApiOkResponse({type: [CategoryResponseDto], description: ""})
   @ApiOperation({description: "Get single categories"})
   @ApiConsumes("application/json")
   @Get(':id')

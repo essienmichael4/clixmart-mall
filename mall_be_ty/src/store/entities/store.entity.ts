@@ -22,8 +22,8 @@ export class Store {
     @Column({ unique: true })
     name:string
 
-    @Column({ nullable: true })
-    unspacedName:string
+    @Column({ unique: true })
+    slug:string
 
     @Column({ unique: true })
     url:string

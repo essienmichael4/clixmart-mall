@@ -2,7 +2,7 @@ import { Category } from "src/category/entities/category.entity";
 import { SubCategory } from "src/category/entities/subcategory.entity";
 import { Store } from "src/store/entities/store.entity";
 import { User } from "src/user/entities/user.entity";
-import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { ProductReview } from "./review.entity";
 import { ProductImage } from "./productImage.entity";
 import { Tag } from "./tag.entity";
@@ -32,14 +32,26 @@ export class Product {
     @Column()
     name:string
 
-    @Column('float')
+    @Column({type: 'float', default: 0.00})
     price: number;
+
+    @Column({nullable: true})
+    quantity: number;
+
+    @Column({nullable: true})
+    imageName: string;
 
     @Column({nullable: true, type: "text"})
     description: string;
 
     @Column({nullable: true, default: 0})
     discount: number;
+
+    @Column({nullable: true})
+    model: string;
+
+    @Column({nullable: true})
+    slug: string;
 
     @Column({ default: Discounted.FALSE })
     isDiscounted: Discounted;
@@ -79,9 +91,9 @@ export class Product {
     @OneToMany(() => ProductImage, (productImage) => productImage.product)
     productImages: ProductImage[];
 
-    @OneToMany(() => Tag, (tag) => tag.products)
+    @ManyToMany(() => Tag, (tag) => tag.products)
+    @JoinTable()
     tags: Tag[];
-
     
     @ManyToOne(() => Brand, (brand) => brand.products)
     @JoinColumn()

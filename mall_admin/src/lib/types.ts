@@ -17,6 +17,14 @@ export type AuthContextType = {
     setAuth: Dispatch<SetStateAction<AuthType | undefined>>;
 }
 
+export type Brand = {
+    id: number,
+    name: string,
+    url: string,
+    imageUrl?:string,
+    categories?: Category[]
+} 
+
 export type Category = {
     id:number,
     name:string,
@@ -138,5 +146,43 @@ export type PaymentDetail = {
     provider: string
 } 
 
+
+export type Product = {
+    id?: number,
+    name: string,
+    price: number,
+    quantity?: number,
+    status: "DRAFT" | "PUBLISH" | "ARCHIVE",
+    inventory: "INSTOCK" | "OUTSTOCK",
+    discription: string,
+    discount: number,
+    isDiscounted: "TRUE" | "FALSE"
+    createdAt: string,
+    updatedAt: string,
+    category: Category,
+    subCategory: SubCategory,
+    user?: User
+    store?: Store,
+    brand?: Brand,
+    tags: Tag[],
+    productImages: ProductImage[]
+}
+
+export type ProductImage = {
+    id: number,
+    url: string
+}
+
+export type ProductReview = {
+    id: number,
+    status: "" | "" | "",
+    description: string,
+    user: User
+}
+
+export type Tag = {
+    id: number,
+    name: string
+}
 
 // export type Status 

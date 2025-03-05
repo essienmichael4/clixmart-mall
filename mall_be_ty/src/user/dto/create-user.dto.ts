@@ -36,10 +36,11 @@ export class CreateUserDto {
     @ApiProperty({
         description: "Role",
         example: "USER",
-        required: true
+        required: false
     })
     @IsEnum(Role)
-    role:Role
+    @IsOptional()
+    role?:Role
 }
 
 export class FindUsersDto {

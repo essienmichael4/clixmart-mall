@@ -1,5 +1,5 @@
 // import { Deleted } from "src/user/entities/user.entity";
-import { Column, CreateDateColumn, Entity, ManyToMany, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, JoinTable, ManyToMany, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { SubCategory } from "./subcategory.entity";
 import { Product } from "src/product/entities/product.entity";
 import { Brand } from "src/brand/entities/brand.entity";
@@ -19,6 +19,11 @@ export class Category {
     })
     name:string
 
+    @Column({
+        unique: true
+    })
+    slug:string
+
     @CreateDateColumn({ type: 'timestamp' })
     createdAt: Date;
 
@@ -35,5 +40,6 @@ export class Category {
     products: Product[];
 
     @ManyToMany(() => Brand, (brand) => brand.categories)
+    @JoinTable()
     brands: Brand[];
 }

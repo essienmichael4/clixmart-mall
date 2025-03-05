@@ -31,7 +31,7 @@ const SideNav = ({isToggled}:SideNavProps) => {
                 <Ship className='h-6 w-6 mr-6' />
                 <span className=''>Vendors</span>
             </NavLink>
-            <NavLink to={"/users"} className='pl-1 py-2 flex items-center flex-shrink-0 mb-4 text-muted-foreground'>
+            <NavLink to={"/products"} className='pl-1 py-2 flex items-center flex-shrink-0 mb-4 text-muted-foreground'>
                 <Users className='h-6 w-6 mr-6' />
                 <span className=''>Products</span>
             </NavLink>

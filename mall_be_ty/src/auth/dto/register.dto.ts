@@ -1,5 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger"
-import { IsDefined, IsEmail, IsEnum, IsNotEmpty, IsString, MinLength } from "class-validator"
+import { IsDefined, IsEmail, IsEnum, IsNotEmpty, IsOptional, IsString, MinLength } from "class-validator"
 import { Role } from "src/user/entities/user.entity"
 
 export class UserSignUpDto{
@@ -24,7 +24,7 @@ export class UserSignUpDto{
     email:string
 
     @ApiProperty({
-        description: "Password",
+        description: "password",
         example: "xxxxxxxxxxx",
         required: true
     })
@@ -34,12 +34,23 @@ export class UserSignUpDto{
     password?:string
 
     @ApiProperty({
-        description: "Role",
-        example: "USER",
+        description: "confirmPassword",
+        example: "xxxxxxxxxxx",
         required: true
     })
+    @IsDefined()
+    @IsString()
+    @MinLength(8)
+    confirmPassword?:string
+
+    @ApiProperty({
+        description: "Role",
+        example: "USER",
+        required: false
+    })
     @IsEnum(Role)
-    role:Role
+    @IsOptional()
+    role?:Role
 }
 
 export class ForgottenPasswordDto {

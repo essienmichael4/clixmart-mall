@@ -20,6 +20,8 @@ export class BrandService {
         ...brandEntity,
         name: createBrandDto.name.toLowerCase(),
       }
+      console.log(createBrandDto);
+      
 
       const brand = await this.brandRepo.save(saveEntity)
       if(createBrandDto.category){
@@ -39,7 +41,11 @@ export class BrandService {
   }
 
   findAll() {
-    return this.brandRepo.find()
+    return this.brandRepo.find({
+      relations: {
+        categories: true
+      }
+    })
   }
 
   findOne(id: number) {
@@ -74,6 +80,18 @@ export class BrandService {
     });
   }
 
+  findByCategory(category: string) {
+    return this.brandRepo.find({
+      relations: {
+        categories: true,
+        products: true
+      },
+      where: {categories: {
+        name: category.toLowerCase()
+      }},
+    });
+  }
+
   findOneByNameAndCategory(name: string, category: string) {
     return this.brandRepo.findOne({
       relations: {
@@ -96,6 +114,12 @@ export class BrandService {
       },
       where: {categories: In([...category])},
     });
+  }
+
+  updateBrandImage(id:number, filename:string){
+    return this.brandRepo.update(id, {
+      url: filename
+    })
   }
 
   update(id: number, updateBrandDto: UpdateBrandDto) {

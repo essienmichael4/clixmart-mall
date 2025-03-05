@@ -1,8 +1,8 @@
-import shipping from "../../assets/shipping.jpg"
-import logo from "../../assets/logo.webp"
-import Login from "@/components/Login"
+// import shipping from "../../assets/shipping.jpg"
+import LoginForm from "@/components/LoginForm"
+import logo from "../../assets/logo.png"
 
-const Home = () => {
+const Login = () => {
   return (
     <>
         <div className="h-screen flex flex-col md:flex-row w-full max-h-[800px] items-center md:justify-between">
@@ -13,7 +13,7 @@ const Home = () => {
                     </div>
                     <div className="md:hidden">
                         <h2 className="text-4xl mb-2">Sign in</h2>
-                        <p className="text-white/70 text-xs">Welcome to CSL Freight Admin Panel - Let's help you sign in</p>
+                        <p className="text-white/70 text-xs">Welcome to CSL Freight Admin Panel - Let's help you sign in...</p>
                     </div>
                 </div>
             </div>
@@ -24,20 +24,20 @@ const Home = () => {
                     </div>
                     <div className="hidden md:block">
                         <h2 className="font-bold text-4xl mb-2">Sign in</h2>
-                        <p className="text-neutral-500 text-xs lg:text-sm">Welcome to CSL Freight Admin Panel - Let's help you sign in</p>
+                        <p className="text-neutral-500 text-xs lg:text-sm">Welcome to CLIXMART MALL - Let's help you sign in</p>
                     </div>
 
-                    <Login />
+                    <LoginForm />
                 </div>
             </div>
             <div className="w-full hidden md:block lg:w-[50%] h-full p-4 rounded-lg overflow-hidden">
-                <div className={`w-full h-full bg-slate-500 flex bg-cover rounded-lg bg-center`} style={{backgroundImage:`url(${shipping})`}}>
+                {/* <div className={`w-full h-full bg-slate-500 flex bg-cover rounded-lg bg-center`} style={{backgroundImage:`url(${shipping})`}}>
                     <div className="overlay w-full h-full bg-black opacity-40 sm:hidden"></div>
-                </div>
+                </div> */}
             </div>
         </div>
     </>
   )
 }
 
-export default Home
+export default Login

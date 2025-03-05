@@ -9,6 +9,8 @@ import NotFound from './pages/NotFound/NotFound'
 import Wizard from './pages/Wizard/Wizard'
 import CreateStore from './pages/Create/CreateStore'
 import Store from './pages/Settings/Store'
+import Products from './pages/Products/Products'
+import CreateProduct from './pages/Products/CreateProduct'
 
 function App() {
 
@@ -23,6 +25,9 @@ function App() {
             <Route path='/dashboard/:store' element={<Dashboard />} />
             <Route path='/profile/:id' element={<UserProfile />} />
             <Route path='/settings/:store' element={<Store />} />
+            <Route path='/products/:store' element={<Products />} />
+            <Route path='/products/:store/:id' element={<Products />} />
+            <Route path='/products/:store/:id/product-info' element={<CreateProduct />} />
           </Route>
         </Route>
         <Route path='*' element={<NotFound />} />

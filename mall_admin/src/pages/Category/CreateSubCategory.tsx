@@ -17,8 +17,7 @@ interface Props{
     trigger?: React.ReactNode,
 }
 
-const CreateSubCategory 
-= ({trigger}:Props) => {
+const CreateSubCategory = ({trigger}:Props) => {
     const [open, setOpen] = useState(false)
     const axios_instance_token = useAxiosToken()
     const queryClient = useQueryClient()

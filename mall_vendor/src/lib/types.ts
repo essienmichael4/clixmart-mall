@@ -16,6 +16,44 @@ export type AuthContextType = {
     setAuth: Dispatch<SetStateAction<AuthType | undefined>>;
 }
 
+export type AnnouncementType = {
+    title?:string,
+    body:string,
+    show: string
+}
+
+export type AddressType = {
+    id: number,
+    name:string,
+    contact:string,
+    mobile: string,
+    address: string
+}
+
+export type Brand = {
+    id: number,
+    name: string,
+    url: string,
+    categories?: Category[]
+} 
+
+export type Category = {
+    id:number,
+    name:string,
+    createdAt:string,
+    updatedAt:string,
+    subCategories?: Category[]
+}
+
+export type LoadingType = {
+    id: number,
+    vessel?:string,
+    loaded?:string,
+    eta?: string,
+    status: "IN_TRANSIT" | "ARRIVED" | "DELIVERED"
+}
+
+
 export type Package = {
     id:number,
     trackingNumber:string,
@@ -34,42 +72,51 @@ export type Package = {
     description?:string
 }
 
-export type User = {
-    id: number | null,
+export type PaymentDetail = {
+    accountName: string,
+    accountNumber: string,
+    paymentMode: string,
+    provider: string
+} 
+
+export type Product = {
+    id?: number,
     name: string,
-    email: string,
-    role?: string,
-    createdAt?: string,
-    updatedAt?:string,
+    price: number,
+    quantity?: number,
+    status: "DRAFT" | "PUBLISH" | "ARCHIVE",
+    inventory: "INSTOCK" | "OUTSTOCK",
+    discription: string,
+    discount: number,
+    isDiscounted: "TRUE" | "FALSE"
+    createdAt: string,
+    updatedAt: string,
+    category: Category,
+    subCategory: SubCategory,
+    user?: User
+    store?: Store,
+    brand?: Brand,
+    tags: Tag[],
+    productImages: ProductImage[]
 }
 
-export type AnnouncementType = {
-    title?:string,
-    body:string,
-    show: string
-}
-
-export type AddressType = {
+export type ProductImage = {
     id: number,
-    name:string,
-    contact:string,
-    mobile: string,
-    address: string
+    url: string
 }
 
-export type LoadingType = {
+export type ProductReview = {
     id: number,
-    vessel?:string,
-    loaded?:string,
-    eta?: string,
-    status: "IN_TRANSIT" | "ARRIVED" | "DELIVERED"
+    status: "" | "" | "",
+    description: string,
+    user: User
 }
 
 export type Store = {
     id: number,
     name: string,
     url: string,
-    unspacedName:string,
+    slug:string,
     createdAt: string,
     updatedAt: string,
     user?: User,
@@ -103,9 +150,23 @@ export type StoreAddress = {
     zip?: string,
 } 
 
-export type PaymentDetail = {
-    accountName: string,
-    accountNumber: string,
-    paymentMode: string,
-    provider: string
-} 
+export type SubCategory = {
+    id:number,
+    name:string,
+    createdAt:string,
+    updatedAt:string,
+}
+
+export type Tag = {
+    id: number,
+    name: string
+}
+
+export type User = {
+    id: number | null,
+    name: string,
+    email: string,
+    role?: string,
+    createdAt?: string,
+    updatedAt?:string,
+}

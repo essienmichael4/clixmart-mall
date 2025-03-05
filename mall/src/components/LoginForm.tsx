@@ -6,16 +6,18 @@ import { axios_instance } from '@/api/axios'
 import { LoginSchemaType, LoginSchema } from '@/schema/login'
 import useAuth from '@/hooks/useAuth'
 import { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { toast } from 'sonner'
 import axios from 'axios'
 import { Input } from './ui/input'
 import { PasswordInput } from './ui/password-input'
 
-const Login = () => {
-    const {setAuth} = useAuth()
+const LoginForm = () => {
+    const {dispatch} = useAuth()
     const [isPending, setIsPending] = useState(false)
     const navigate = useNavigate()
+    const location = useLocation()
+    const from = location.state?.from?.pathname || '/'
     
     const form = useForm<LoginSchemaType>({
         resolver: zodResolver(LoginSchema),
@@ -35,16 +37,16 @@ const Login = () => {
             const response = await axios_instance.post("/auth/signin", {
                 email: data.email,
                 password: data.password
-            })
+            })            
             
-            setAuth(response.data)
+            dispatch({type: "ADD_AUTH", payload: response.data})
             form.reset()
             setIsPending(false)
             toast.success("Login successful", {
                 id: "login"
             })            
             
-            navigate("/dashboard", {replace:true})
+            navigate(from, {replace:true})
             
         }catch(err:any){
             setIsPending(false)
@@ -100,9 +102,9 @@ const Login = () => {
                         {isPending && <Loader2 className='animate-spin' /> }
                     </button>
                     <div className='flex gap-2 mb-3 mt-2'>
-                        <p className='text-gray-400 text-xs 2xl:text-sm'>Don't have an account? <span className='text-xs 2xl:text-sm text-blue-700'>See your administrator</span></p>
+                        <p className='text-gray-400 text-xs 2xl:text-sm'>Don't have an account?</p>
                         
-                        {/* <Link to={"../register"} className='text-xs 2xl:text-sm text-blue-300'>Register</Link> */}
+                        <Link to={"../register"} className='text-xs 2xl:text-sm text-blue-700'>Register</Link>
                     </div>
                 </form>
             </Form>
@@ -110,4 +112,4 @@ const Login = () => {
     )
 }
 
-export default Login
+export default LoginForm

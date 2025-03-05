@@ -12,6 +12,7 @@ import Vendors from './pages/Vendor/Vendors'
 import Vendor from './pages/Vendor/Vendor'
 import Brands from './pages/Brand/Brands'
 import Brand from './pages/Brand/Brand'
+import Products from './pages/Package/Products'
 
 function App() {
 
@@ -24,7 +25,9 @@ function App() {
             <Route path='/dashboard' element={<Dashboard />} />
             <Route path='/categories' element={<Categories />} />
             <Route path='/brands' element={<Brands />} />
-            <Route path='/brand/:id' element={<Brand />} />
+            <Route path='/brands/:id' element={<Brand />} />
+            <Route path='/products' element={<Products />} />
+            <Route path='/products/:id' element={<Brand />} />
             <Route path='/vendors' element={<Vendors />} />
             <Route path='/vendors/:id' element={<Vendor />} />
             <Route path='/users' element={<Users />} />

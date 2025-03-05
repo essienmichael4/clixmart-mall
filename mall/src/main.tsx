@@ -6,6 +6,7 @@ import { BrowserRouter } from 'react-router-dom'
 import AuthProvider from './context/authContext.tsx'
 import { Toaster } from "@/components/ui/sonner";
 import ReactQueryProvider from '@/components/ReactQueryProvider.tsx'
+import ShoppingCartProvider from './context/cartContext.tsx'
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
@@ -13,7 +14,9 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
     <BrowserRouter>
       <ReactQueryProvider>
         <AuthProvider>
-          <App />
+          <ShoppingCartProvider>
+            <App />
+          </ShoppingCartProvider>
         </AuthProvider>
       </ReactQueryProvider>
     </BrowserRouter>

@@ -11,10 +11,11 @@ import { CategoryModule } from './category/category.module';
 import { StoreModule } from './store/store.module';
 import { OrderModule } from './order/order.module';
 import { BrandModule } from './brand/brand.module';
+import { UploadModule } from './upload/upload.module';
 
 @Module({
   imports: [
-    ConfigModule.forRoot(),
+    ConfigModule.forRoot({isGlobal: true}),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
@@ -36,7 +37,8 @@ import { BrandModule } from './brand/brand.module';
     CategoryModule,
     StoreModule,
     OrderModule,
-    BrandModule],
+    BrandModule,
+    UploadModule],
   controllers: [AppController],
   providers: [AppService],
 })

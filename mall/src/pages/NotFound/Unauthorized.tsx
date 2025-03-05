@@ -1,6 +1,6 @@
 import useAuth from "@/hooks/useAuth"
 import { Link } from "react-router-dom"
-import logo from '@/assets/logo.jpg'
+import logo from '@/assets/logo.png'
 
 const Unauthorized = () => {
     const {auth} = useAuth()
@@ -19,9 +19,9 @@ const Unauthorized = () => {
                     <h2 className="text-7xl lg:text-[12rem] tracking-wider font-bold text-center">401</h2>
                     <p className="font-semibold text-2xl text-center">You are not authorized to view this page</p>
                     <p className="text-center">To view this page, reach out to the administrators of RMB Deals to assist you acquire the right authorization. Thank you.</p>
-                    { !auth?.user ?  
+                    { !auth?.id ?  
                         <Link to={"../"} className="bg-black/90 hover:bg-black py-2 px-4 rounded text-white mt-4">Back to Home Page</Link>
-                        : auth.user ?
+                        : auth.id ?
                             <Link to={"../dashboard"} className="bg-black/90 hover:bg-black py-2 px-4 rounded text-white mt-4">Go to dashboard</Link>
                             :
                             <Link to={"../co/administrator/dashboard"} className="bg-black/90 hover:bg-black py-2 px-4 rounded text-white mt-4">Go to dashboard</Link>

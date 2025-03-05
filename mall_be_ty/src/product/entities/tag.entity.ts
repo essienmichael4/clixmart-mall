@@ -16,6 +16,5 @@ export class Tag {
     updatedAt: Date;
 
     @ManyToMany(() => Product, (product) => product.tags)
-    @JoinColumn()
     products: Product[];
 }

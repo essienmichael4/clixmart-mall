@@ -1,74 +1,75 @@
 import { Link } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
-import { Package } from '@/lib/types'
+import { Product } from '@/lib/types'
 import { DataTableColumnHeader } from './DataTable/ColumnHeader'
 import { ColumnDef, getCoreRowModel, flexRender, useReactTable, getPaginationRowModel, getFilteredRowModel } from '@tanstack/react-table'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from './ui/table'
 import useAxiosToken from '@/hooks/useAxiosToken'
 import { Edit, Trash2 } from 'lucide-react'
-import EditPackage from '@/pages/Package/EditPackage'
+import EditPackage from '@/pages/Products/EditPackage'
 import { Button } from './ui/button'
-import DeletePackage from '@/pages/Package/DeletePackage'
+import DeletePackage from '@/pages/Products/DeletePackage'
+import { DotsVerticalIcon } from '@radix-ui/react-icons'
 
 interface FilterProps{
     filtering:string,
-    status:string
+    status:string,
+    store: string
 }
 
 const emptyData: any[]= []
 
-const AllPackages = ({status, filtering}:FilterProps) => {
+const AllProducts = ({store, status, filtering}:FilterProps) => {
     const axios_instance_token = useAxiosToken()
 
-    const orders = useQuery<Package[]>({
-        queryKey: ["packages", status],
-        queryFn: async() => await axios_instance_token.get(`/packages?status=${status}`).then(res => res.data)
+    const orders = useQuery<Product[]>({
+        queryKey: ["products", status],
+        queryFn: async() => await axios_instance_token.get(`/products/${store}?status=${status}`).then(res => {
+            console.log(res.data);
+            
+            return res.data
+        })
     })
 
-    const columns:ColumnDef<Package>[] =[{
+    const columns:ColumnDef<Product>[] =[{
         accessorKey: "id",
-        header:({column})=>(<DataTableColumnHeader column={column} title='No.' />),
+        header:({column})=>(<DataTableColumnHeader column={column} title='ID.' />),
         cell:({row}) => <div>
-            <Link to={`./${row.original.id}`}>
+            <Link to={`./${row.original.id}/product-info`}>
+            {/* <Link to={`./${row.original.id}`}> */}
                 <span className='text-gray-400'>#</span>{row.original.id}
             </Link>
         </div>
     },{
-        accessorKey: "trackingNumber",
-        header:({column})=>(<DataTableColumnHeader column={column} title='Tracking ID' />),
+        accessorKey: "name",
+        header:({column})=>(<DataTableColumnHeader column={column} title='Product Name' />),
         cell:({row}) => <div>
             {/* <Link to={`./${row.original.trackingNumber}`}> */}
-                {row.original.trackingNumber}
+                {row.original.name}
             {/* </Link> */}
         </div>
     },{
-        accessorKey: "customer",
-        header:({column})=>(<DataTableColumnHeader column={column} title='Customer' />),
+        accessorKey: "category.name",
+        header:({column})=>(<DataTableColumnHeader column={column} title='Category' />),
         cell:({row}) => <div>
-            {row.original.customer}
+            {row.original?.category?.name}
         </div>
     },{
-        accessorKey: "received",
-        header:({column})=>(<DataTableColumnHeader column={column} title='Received' />),
+        accessorKey: "subCategory.name",
+        header:({column})=>(<DataTableColumnHeader column={column} title='Subcategory' />),
         cell:({row}) => {
             return <div className='text-muted-foreground text-nowrap'>
-                {new Date(row.original.received as string).toDateString()}
+                {row.original?.subCategory?.name}
             </div>
         }
     },{
-        accessorKey: "loaded",
-        header:({column})=>(<DataTableColumnHeader column={column} title='Loaded' />),
+        accessorKey: "inventory",
+        header:({column})=>(<DataTableColumnHeader column={column} title='Inventory' />),
         cell:({row}) => {
             return <div className='text-muted-foreground text-nowrap'>
-                {new Date(row.original.loaded as string).toDateString()}
+                {row.original.inventory  === "INSTOCK" ? "In-Stock" : "Out-Of-Stock"}
             </div>
         }
-    },{
-        accessorKey: "package",
-        header:({column})=>(<DataTableColumnHeader column={column} title='Package' />),
-        cell:({row}) => <div>
-            {row.original.package}
-        </div>
     },{
         accessorKey: "quantity",
         header:({column})=>(<DataTableColumnHeader column={column} title='Quantity' />),
@@ -78,32 +79,25 @@ const AllPackages = ({status, filtering}:FilterProps) => {
             </div>
         }
     },{
-        accessorKey: "vessel",
-        header:({column})=>(<DataTableColumnHeader column={column} title='Vessel' />),
-        cell:({row}) => {
-            return <div>
-                {row.original.vessel}
-            </div>
-        }
+        accessorKey: "price",
+        header:({column})=>(<DataTableColumnHeader column={column} title='Price' />),
+        cell:({row}) => <div>
+            {row.original.price}
+        </div>
     },{
         accessorKey: "status",
         header:({column})=>(<DataTableColumnHeader column={column} title='Status' />),
         cell:({row}) => <div>
-            <span className={`${row.original.status === "ON_HOLD" && 'bg-gray-300'} ${row.original.status === "ARRIVED" && 'bg-emerald-300 text-emerald-700'} ${row.original.status === "EN_ROUTE" && 'bg-yellow-300 text-yellow-700'} ${row.original.status === "DELIVERED" && 'bg-blue-300 text-blue-700'} py-2 px-4 rounded-full text-xs`}>{row.original.status}</span>
-        </div>
-    },{
-        accessorKey: "cbm",
-        header:({column})=>(<DataTableColumnHeader column={column} title='CBM' />),
-        cell:({row}) => <div>
-            {row.original.cbm}
+            <span className={`${row.original.status === "DRAFT" && 'bg-gray-300'} ${row.original.status === "PUBLISH" && 'bg-emerald-300 text-emerald-700'} ${row.original.status === "ARCHIVE" && 'bg-yellow-300 text-yellow-700'}  py-2 px-4 rounded-full text-xs`}>{row.original.status}</span>
         </div>
     },{
         accessorKey: "ids",
         header:({column})=>(<DataTableColumnHeader column={column} title='Actions' />),
         cell:({row}) => <div>
             <span className="flex gap-2 items-center"  >
-                <EditPackage item={row.original} trigger={<button><Edit className="w-4 h-4 text-emerald-400"/></button>} />
-                <DeletePackage trackingNumber={row.original.trackingNumber} id={Number(row.original.id)} trigger={<button><Trash2 className="w-4 h-4 text-rose-400" /></button>} /> 
+                <DotsVerticalIcon />
+                {/* <EditPackage item={row.original} trigger={<button><Edit className="w-4 h-4 text-emerald-400"/></button>} />
+                <DeletePackage trackingNumber={row.original.trackingNumber} id={Number(row.original.id)} trigger={<button><Trash2 className="w-4 h-4 text-rose-400" /></button>} />  */}
             </span> 
         </div>
     }]
@@ -193,4 +187,4 @@ const AllPackages = ({status, filtering}:FilterProps) => {
     )
 }
 
-export default AllPackages
+export default AllProducts

@@ -109,4 +109,8 @@
   a.active{
     @apply text-blue-700
   }
+
+  .scrollbar-none::-webkit-scrollbar{
+    display: none;
+  }
 }

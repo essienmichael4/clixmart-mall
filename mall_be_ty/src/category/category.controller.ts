@@ -38,7 +38,6 @@ export class CategoryController {
   @HttpCode(HttpStatus.OK)
   @ApiOkResponse({type: [CategoryResponseDto], description: ""})
   @ApiOperation({description: "Get all categories"})
-  // @ApiConsumes("application/json")
   @Get()
   findAllCategories() {
     return this.categoryService.findAllCategories();
@@ -46,7 +45,7 @@ export class CategoryController {
 
   @HttpCode(HttpStatus.OK)
   @ApiOkResponse({type: [CategoryResponseDto], description: ""})
-  @ApiOperation({description: "Get all categories"})
+  @ApiOperation({description: "Get all sub categories"})
   @ApiConsumes("application/json")
   @Get("sub-categories")
   findAllSubcategories() {

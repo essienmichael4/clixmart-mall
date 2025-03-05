@@ -2,16 +2,19 @@ import { Injectable } from '@nestjs/common';
 import { CreateProductDto, ProductDetailsDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { In, Like, Repository } from 'typeorm';
 import { Store } from 'src/store/entities/store.entity';
-import { Product } from './entities/product.entity';
-import { ProductReview, Status } from './entities/review.entity';
+import { Inventory, Product, Status } from './entities/product.entity';
+import { ProductReview, ReviewStatus } from './entities/review.entity';
 import { User } from 'src/user/entities/user.entity';
 import { Category } from 'src/category/entities/category.entity';
 import { SubCategory } from 'src/category/entities/subcategory.entity';
 import { Brand } from 'src/brand/entities/brand.entity';
 import { ProductImage } from './entities/productImage.entity';
 import { Tag } from './entities/tag.entity';
+import { PageOptionsDto } from 'src/common/dto/pageOptions.dto';
+import { PageMetaDto } from 'src/common/dto/pageMeta.dto';
+import { PageDto } from 'src/common/dto/page.dto';
 
 @Injectable()
 export class ProductService {
@@ -39,7 +42,7 @@ export class ProductService {
         where :{slug: storeName}
       })
       const productReview = await this.productReviewRepo.save({
-        status: Status.PENDING
+        status: ReviewStatus.PENDING
       })
 
       const productEntity = this.productRepo.create()
@@ -121,6 +124,68 @@ export class ProductService {
     return this.productImageRepo.insert(productImagesEntities)
   }
 
+  async findProducts(pageOptionsDto:PageOptionsDto, q?: string, category?: string, subCategory?: string){
+    const products = await this.productRepo.find({
+      relations:{
+        productReview: true,
+        category: true,
+        subCategory: true,
+        brand:true
+      },
+      where: {
+        ...(q && { name: Like(`%${q.toLowerCase()}%`) }),
+        inventory: Inventory.INSTOCK,
+        status: Status.PUBLISH,
+        productReview: {
+          status: ReviewStatus.APPROVED
+        },
+        category: {
+          ...(category && { name: category.toLowerCase() }),
+        },
+        subCategory: {
+          ...(subCategory && { name: subCategory.toLowerCase() }),
+        }
+      },
+      skip: pageOptionsDto.skip,
+      take: pageOptionsDto.take
+    })
+
+    const productsCount = await this.productRepo.count()
+    const pageMetaDto = new PageMetaDto({itemCount: productsCount, pageOptionsDto})
+    return new PageDto(products, pageMetaDto)
+  }
+
+  async findProductsByCategory(pageOptionsDto:PageOptionsDto, q?: string, category?: string, subCategory?: string){
+    const products = await this.productRepo.find({
+      relations:{
+        productReview: true,
+        category: true,
+        subCategory: true,
+        brand:true
+      },
+      where: {
+        ...(q && { name: Like(`%${q.toLowerCase()}%`) }),
+        inventory: Inventory.INSTOCK,
+        status: Status.PUBLISH,
+        productReview: {
+          status: ReviewStatus.APPROVED
+        },
+        // category: {
+        //   ...(category && { name: category.toLowerCase() }),
+        // },
+        // subCategory: {
+        //   ...(subCategory && { name: subCategory.toLowerCase() }),
+        // }
+      },
+      skip: pageOptionsDto.skip,
+      take: pageOptionsDto.take
+    })
+
+    const productsCount = await this.productRepo.count()
+    const pageMetaDto = new PageMetaDto({itemCount: productsCount, pageOptionsDto})
+    return new PageDto(products, pageMetaDto)
+  }
+
   findAll() {
     return this.productRepo.find({
       relations: {
@@ -150,6 +215,14 @@ export class ProductService {
         user: true
       },
     });
+  }
+
+  async findCartProducts(products:number[]){
+    return await this.productRepo.find({
+      where: {
+        id: In(products)
+      }
+    })
   }
 
   async findStoreProduct(store: string, productId: number){

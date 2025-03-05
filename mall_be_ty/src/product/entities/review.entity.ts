@@ -2,7 +2,7 @@ import { User } from "src/user/entities/user.entity";
 import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { Product } from "./product.entity";
 
-export enum Status {
+export enum ReviewStatus {
     PENDING = 'PENDING',
     APPROVED = 'APPROVED',
     REJECTED = 'REJECTED'
@@ -13,8 +13,8 @@ export class ProductReview {
     @PrimaryGeneratedColumn()
     id: number
 
-    @Column({ default: Status.PENDING })
-    status: Status;
+    @Column({ default: ReviewStatus.PENDING })
+    status: ReviewStatus;
 
     @Column({nullable: true, type: "text"})
     description: string;

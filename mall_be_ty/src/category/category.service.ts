@@ -18,7 +18,8 @@ export class CategoryService {
     const categoryEntity =  this.categoryRepo.create()
     const saveEntity = {
       ...categoryEntity,
-      name: createCategoryDto.name.toLowerCase()
+      name: createCategoryDto.name.toLowerCase(),
+      slug: this.generateSlug(createCategoryDto.name.toLowerCase())
     }
     try{
       return this.categoryRepo.save(saveEntity)
@@ -37,6 +38,7 @@ export class CategoryService {
       const saveEntity = {
         ...subCategoryEntity,
         name: createSubCategoryDto.name.toLowerCase(),
+        slug: this.generateSlug(createSubCategoryDto.name.toLowerCase()),
         category
       }
 
@@ -95,5 +97,17 @@ export class CategoryService {
 
   removeSubCategory(id: number) {
     return this.subCategoryRepo.delete(id);
+  }
+
+  
+  generateSlug(name:string): string {
+    const spilt = name.split(" ").join("-") 
+    const removeOpenParenthesis = spilt.replaceAll("(", "")
+    const removecloseParenthesis = removeOpenParenthesis.replaceAll(")", "")
+    const removeOpenBrackets = removecloseParenthesis.replaceAll("[", "")
+    const removecloseBrackets = removeOpenBrackets.replaceAll("]", "")
+    const removecommas = removeOpenBrackets.replaceAll(",", "")
+
+    return removecloseBrackets
   }
 }

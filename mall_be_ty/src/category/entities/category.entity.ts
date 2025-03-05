@@ -19,6 +19,11 @@ export class Category {
     })
     name:string
 
+    @Column({
+        unique: true
+    })
+    slug:string
+
     @CreateDateColumn({ type: 'timestamp' })
     createdAt: Date;
 

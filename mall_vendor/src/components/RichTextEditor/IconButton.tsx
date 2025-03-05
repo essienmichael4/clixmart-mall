@@ -10,7 +10,7 @@ interface Props {
 const IconButton = ({children, active, onClick}: Props) => {
   return (
     <Toggle
-    pressed= {active}
+      pressed= {active}
       onClick={onClick}>
         {active}
         {children}

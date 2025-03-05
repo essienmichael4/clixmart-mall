@@ -17,6 +17,11 @@ export class SubCategory {
     })
     name:string
 
+    @Column({
+        unique: true
+    })
+    slug:string
+
     @CreateDateColumn({ type: 'timestamp' })
     createdAt: Date;
 

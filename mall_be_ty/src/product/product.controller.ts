@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, ValidationPipe, UsePipes, UseGuards, HttpCode, HttpStatus, ParseIntPipe, UseInterceptors, UploadedFile, ParseFilePipe, Req, MaxFileSizeValidator, FileTypeValidator, BadRequestException, UploadedFiles, ParseFilePipeBuilder, NotFoundException } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, ValidationPipe, UsePipes, UseGuards, HttpCode, HttpStatus, ParseIntPipe, UseInterceptors, UploadedFile, Req, BadRequestException, UploadedFiles, ParseFilePipeBuilder, NotFoundException, Query } from '@nestjs/common';
 import { ProductService } from './product.service';
 import { CreateProductDto, ProductDetailsDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
@@ -10,6 +10,9 @@ import { ImageFileFilter } from 'src/helpers/file-helper';
 import { UploadFile, UploadFiles } from 'src/decorators/file.decorator';
 import { UploadService } from 'src/upload/upload.service';
 import { uuid } from 'uuidv4';
+import { PageOptionsDto } from 'src/common/dto/pageOptions.dto';
+import { ApiPaginatedResponse } from 'src/decorators/pagination.decorator';
+import { ProductReponseDto } from './dto/response.dto';
 
 const MAX_IMAGE_SIZE_IN_BYTE = 2 * 1024 * 1024
 
@@ -108,20 +111,32 @@ export class ProductController {
   @ApiOperation({description: "Create Product api"})
   @ApiConsumes("application/json")
   async addProductDetails(@Param('store') store: string, @Param('id', ParseIntPipe) id: number, @Body() productDetails: ProductDetailsDto, @User() user:UserInfo) {
-    console.log(productDetails);
-    
     const product = await this.productService.productDetails(store, id, productDetails);
-    console.log(product);
     return product
-    
-  }
-
-  @Get()
-  findAll() {
-    return this.productService.findAll();
   }
   
-  @Get(':store')
+  @Get()
+  @HttpCode(HttpStatus.OK)
+  @ApiPaginatedResponse(ProductReponseDto)
+  @ApiConsumes("application/json")
+  findProducts(@Query() pageOptionsDto:PageOptionsDto, @Query("q") q?:string, @Query("category") category?:string, @Query("subCategory") subCategory?:string) {
+    return this.productService.findProducts(pageOptionsDto, q, category, subCategory);
+  }
+  
+  @Get()
+  @HttpCode(HttpStatus.OK)
+  @ApiPaginatedResponse(ProductReponseDto)
+  @ApiConsumes("application/json")
+  findProductsByCategory(@Query() pageOptionsDto:PageOptionsDto, @Query("category") category?:string, @Query("subCategory") subCategory?:string) {
+    return this.productService.findProducts(pageOptionsDto,  category, subCategory);
+  }
+
+  // @Get()
+  // findAll() {
+  //   return this.productService.findAll();
+  // }
+  
+  @Get('store/:store')
   findAllStoreProducts(@Param('store') store: string) {
     return this.productService.findStoreProducts(store);
   }
@@ -131,8 +146,14 @@ export class ProductController {
     return this.productService.findOne(id);
   }
 
+  @Get('cart/items')
+  findCartItems(@Query("filter") filter:string) {
+    const search = filter.split(',')
+    return this.productService.findCartProducts(search.map(val => Number(val)))
+  }
+
   @UseGuards(JwtGuard)
-  @Get(':store/:id')
+  @Get('/store/:store/:id')
   findStoreProduct(@Param('store') store: string, @Param('id', ParseIntPipe) id: number) {
     console.log({store, id});
     

@@ -7,6 +7,7 @@ import { ProductReview } from "./review.entity";
 import { ProductImage } from "./productImage.entity";
 import { Tag } from "./tag.entity";
 import { Brand } from "src/brand/entities/brand.entity";
+import { OrderItem } from "src/order/entities/orderItem.entity";
 
 export enum Discounted {
     TRUE = 'TRUE',
@@ -29,6 +30,9 @@ export class Product {
     @PrimaryGeneratedColumn()
     id: number
 
+    @Column({type: "uuid", unique:true})
+    productId: string
+
     @Column()
     name:string
 
@@ -37,6 +41,9 @@ export class Product {
 
     @Column({nullable: true})
     quantity: number;
+
+    @Column({nullable: true})
+    sku: string;
 
     @Column({nullable: true})
     imageName: string;
@@ -98,4 +105,7 @@ export class Product {
     @ManyToOne(() => Brand, (brand) => brand.products)
     @JoinColumn()
     brand: Brand;
+    
+    @OneToMany(() => OrderItem, (orderItem) => orderItem.product)
+    orderItems: OrderItem[];
 }

@@ -1,15 +1,29 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, HttpCode, HttpStatus, UsePipes, ValidationPipe } from '@nestjs/common';
 import { OrderService } from './order.service';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
+import { JwtGuard } from 'src/guards/jwt.guard';
+import { ApiConsumes, ApiCreatedResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { User, UserInfo } from 'src/decorators/user.decorator';
 
-@Controller('order')
+@Controller('orders')
+@UsePipes(new ValidationPipe({
+  whitelist: true,
+  transform: true
+}))
+@ApiTags("orders")
 export class OrderController {
   constructor(private readonly orderService: OrderService) {}
 
+  @UseGuards(JwtGuard)
   @Post()
-  create(@Body() createOrderDto: CreateOrderDto) {
-    return this.orderService.create(createOrderDto);
+  @HttpCode(HttpStatus.CREATED)
+  @ApiCreatedResponse({type: "", description: "Order created successfully"})
+  @ApiOkResponse({type: "", description: "Order created successfully"})
+  @ApiOperation({description: "Create Order api"})
+  @ApiConsumes("application/json")
+  create(@Body() createOrderDto: CreateOrderDto, @User() user:UserInfo) {
+    return this.orderService.create(createOrderDto, user.sub.id);
   }
 
   @Get()

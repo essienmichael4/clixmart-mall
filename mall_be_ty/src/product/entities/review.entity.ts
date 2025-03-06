@@ -13,6 +13,9 @@ export class ProductReview {
     @PrimaryGeneratedColumn()
     id: number
 
+    @Column({type: "uuid", unique:true})
+    reviewId: string
+
     @Column({ default: ReviewStatus.PENDING })
     status: ReviewStatus;
 

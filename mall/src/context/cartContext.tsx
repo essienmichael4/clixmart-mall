@@ -1,5 +1,4 @@
 import { axios_instance } from "@/api/axios";
-import useAxiosToken from "@/hooks/useAxiosToken";
 import { useLocalStorage } from "@/hooks/useLocalStorage";
 import { Product } from "@/lib/types";
 import { useQuery } from "@tanstack/react-query";

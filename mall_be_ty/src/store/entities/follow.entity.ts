@@ -7,6 +7,9 @@ export class Follow {
     @PrimaryGeneratedColumn()
     id: number
 
+    @Column({type: "uuid", unique:true})
+    followId: string
+
     @CreateDateColumn({ type: 'timestamp' })
     createdAt: Date;
 

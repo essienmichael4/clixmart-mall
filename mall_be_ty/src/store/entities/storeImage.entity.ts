@@ -7,6 +7,9 @@ export class StoreImage {
     @PrimaryGeneratedColumn()
     id: number
 
+    @Column({type: "uuid", unique:true})
+    storeImageId: string
+
     @Column()
     url:string
 

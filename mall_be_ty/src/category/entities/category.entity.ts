@@ -14,6 +14,9 @@ export class Category {
     @PrimaryGeneratedColumn()
     id: number
 
+    // @Column({type: "uuid", unique:true})
+    // categoryId: string
+
     @Column({
         unique: true
     })

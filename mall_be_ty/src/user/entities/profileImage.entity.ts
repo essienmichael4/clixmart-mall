@@ -6,6 +6,9 @@ export class ProfileImage {
     @PrimaryGeneratedColumn()
     id: number
 
+    // @Column({type: "uuid", unique:true})
+    // profileImageId: string
+
     @Column()
     url:string
 

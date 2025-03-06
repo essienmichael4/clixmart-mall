@@ -6,6 +6,9 @@ export class Tag {
     @PrimaryGeneratedColumn()
     id: number
 
+    @Column({type: "uuid", unique:true})
+    tagId: string
+
     @Column({unique:true})
     name:string
 

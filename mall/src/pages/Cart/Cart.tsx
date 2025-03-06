@@ -6,6 +6,7 @@ import useCart from "@/hooks/useCart"
 import { FormatCurrency } from "@/lib/helper"
 import { Product } from "@/lib/types"
 import { useState } from "react"
+import { toast } from "sonner"
 
 const Cart = () => {
     const {cartItems, getTotalCost} = useCart()
@@ -17,6 +18,21 @@ const Cart = () => {
     //     // console.log(product.id);
     //     setProducts([...products, product])
     // })    
+
+    const handleCreateOrder = async ( )=>{
+        toast.loading("Ordering...", {
+            id: "login"
+        })
+        const response = await axios_instance_token.post("/orders", {
+            items: cartItems
+        })
+
+        console.log(response.data);
+        toast.loading("Done...", {
+            id: "login"
+        })
+        
+    }
     
 
     return (
@@ -80,7 +96,7 @@ const Cart = () => {
                             )}
                             </p>
                         </div>
-                        <button className="w-full text-xs py-2 bg-blue-700 text-white rounded-full">Checkout</button>
+                        <button onClick={handleCreateOrder} className="w-full text-xs py-2 bg-blue-700 text-white rounded-full">Checkout</button>
                     </div>
                 </div>
             </div>

@@ -11,6 +11,7 @@ import Register from './pages/Register/Register'
 import Search from './pages/Search/Search'
 import CategoryProducts from './pages/CateogryProducts/CategoryProducts'
 import Cart from './pages/Cart/Cart'
+import Product from './pages/Product/Product'
 
 function App() {
 
@@ -20,8 +21,9 @@ function App() {
         <Route path='/' element={<Home />} />
         <Route path='/login' element={<Login />} />
         <Route path='/register' element={<Register />} />
-        <Route path='/search' element={<Search />} />
+        <Route path='/products' element={<Search />} />
         <Route path='/categories/:category' element={<CategoryProducts />} />
+        <Route path='/products/:id' element={<Product />} />
         <Route element={<RequireAuth />}>
           <Route element={<Layout />}>
             <Route path='/dashboard' element={<Dashboard />} />

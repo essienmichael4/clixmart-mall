@@ -11,9 +11,9 @@ type CartItem = {
 }
 
 type ShoppingCartContextType = {
-    getItemQuantity: (id:number) => void
-    increaseCartQuanity: (id:number) => void
-    decreaseCartQuantity: (id:number) => void
+    getItemQuantity: (id:number) => number,
+    increaseCartQuanity: (id:number) => void,
+    decreaseCartQuantity: (id:number) => void,
     removeFromCart: (id:number) => void,
     getTotalCost: ()=> number,
     cartQuantity: number,

@@ -6,9 +6,7 @@ import { ColumnDef, getCoreRowModel, flexRender, useReactTable, getPaginationRow
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from './ui/table'
 import useAxiosToken from '@/hooks/useAxiosToken'
 import { Edit, Trash2 } from 'lucide-react'
-import EditPackage from '@/pages/Package/EditPackage'
 import { Button } from './ui/button'
-import DeletePackage from '@/pages/Package/DeletePackage'
 
 interface FilterProps{
     filtering:string,
@@ -101,10 +99,10 @@ const AllPackages = ({status, filtering}:FilterProps) => {
         accessorKey: "ids",
         header:({column})=>(<DataTableColumnHeader column={column} title='Actions' />),
         cell:({row}) => <div>
-            <span className="flex gap-2 items-center"  >
+            {/* <span className="flex gap-2 items-center"  >
                 <EditPackage item={row.original} trigger={<button><Edit className="w-4 h-4 text-emerald-400"/></button>} />
                 <DeletePackage trackingNumber={row.original.trackingNumber} id={Number(row.original.id)} trigger={<button><Trash2 className="w-4 h-4 text-rose-400" /></button>} /> 
-            </span> 
+            </span>  */}
         </div>
     }]
 

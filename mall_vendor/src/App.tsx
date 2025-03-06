@@ -11,6 +11,7 @@ import CreateStore from './pages/Create/CreateStore'
 import Store from './pages/Settings/Store'
 import Products from './pages/Products/Products'
 import CreateProduct from './pages/Products/CreateProduct'
+import Product from './pages/Products/Product'
 
 function App() {
 
@@ -26,7 +27,7 @@ function App() {
             <Route path='/profile/:id' element={<UserProfile />} />
             <Route path='/settings/:store' element={<Store />} />
             <Route path='/products/:store' element={<Products />} />
-            <Route path='/products/:store/:id' element={<Products />} />
+            <Route path='/products/:store/:id' element={<Product />} />
             <Route path='/products/:store/:id/product-info' element={<CreateProduct />} />
           </Route>
         </Route>

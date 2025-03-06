@@ -36,9 +36,9 @@ const Header = () => {
 
     const handleSearch = ()=>{
         if(search) {
-            navigate(`/search?q=${search}`)
+            navigate(`/products?q=${search}`)
         }else{
-            navigate(`/search`)
+            navigate(`/products`)
         }
       }
 

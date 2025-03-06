@@ -1,6 +1,5 @@
 import AllPackages from "@/components/AllPackages"
 import { Plus, Search } from "lucide-react"
-import CreatePackage from "./CreatePackage"
 import { useState } from "react"
 
 const Packages = () => {
@@ -12,13 +11,7 @@ const Packages = () => {
       <div className="container px-4 mx-auto">
         <div className="mt-6 flex items-center justify-between">
           <h3 className="font-bold">Packages</h3>
-          <div>
-            <CreatePackage trigger={
-              <button className="py-2 px-2 md:px-4 flex items-center rounded-md bg-gradient-to-r from-blue-500 to-blue-800 text-white">
-                <Plus className="w-4 h-4 mr-2 text-white"/> <span className="text-xs md:text-sm">Add Package</span>
-              </button>}
-            />
-          </div>
+          
         </div>
         <div className="w-full flex flex-wrap items-center justify-between mt-4 gap-2">
           <div className="flex gap-2 flex-wrap">

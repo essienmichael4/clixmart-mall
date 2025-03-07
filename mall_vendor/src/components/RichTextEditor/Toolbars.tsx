@@ -1,10 +1,13 @@
-import { TaskType, tools } from "@/constants"
+import { TaskType, tools, HeadingType, headingOptions } from "@/constants"
 import { ChainedCommands, Editor } from "@tiptap/react"
 import IconButton from "./IconButton"
+import { ChangeEventHandler } from "react"
 
 interface Props {
     editor: Editor | null
 }
+
+
 
 const chainMethods = (editor:Editor | null, command: (chain:ChainedCommands)=>ChainedCommands) => {
     if(!editor) return
@@ -34,13 +37,39 @@ const Toolbars = ({editor}:Props) => {
                 return chainMethods(editor, chain => chain.setTextAlign("center"))
             case "right":
                 return chainMethods(editor, chain => chain.setTextAlign("right"))
-            case "heading":
-                return chainMethods(editor, chain => chain.toggleHeading({level: 2}))
         }
     }
 
+    const handleHeadingSelectionChange: ChangeEventHandler<HTMLSelectElement> = ({target})=>{
+        const {value} = target as {value: HeadingType}
+        switch(value){
+            case "p":
+                return chainMethods(editor, chain => chain.setParagraph())
+            case "h1":
+                return chainMethods(editor, chain => chain.toggleHeading({level: 1}))
+            case "h2":
+                return chainMethods(editor, chain => chain.toggleHeading({level: 2}))
+            case "h3":
+                return chainMethods(editor, chain => chain.toggleHeading({level: 3}))
+        }
+    }
+
+    const getSelectedHeading =():HeadingType=>{
+        let result: HeadingType = "p"
+
+        if(editor.isActive("headind", {level: 1})) result = "h1"
+        if(editor.isActive("headind", {level: 2})) result = "h2"
+        if(editor.isActive("headind", {level: 3})) result = "h3"
+
+        return result
+    }
     return (
         <div className="border border-input bg-transparent rounded-md space-x-1 p-1">
+            <select value={getSelectedHeading()} className="p-2" onChange={handleHeadingSelectionChange}>
+                {headingOptions.map(item=>{
+                    return <option key={item.task} value={item.task}>{item.value}</option>
+                })}
+            </select>
             {tools.map(({icon, task})=>{                
                 return <IconButton key={task}
                   active={editor.isActive(task) || editor.isActive({textAlign: task})}

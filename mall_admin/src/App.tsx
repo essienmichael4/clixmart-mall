@@ -12,7 +12,8 @@ import Vendors from './pages/Vendor/Vendors'
 import Vendor from './pages/Vendor/Vendor'
 import Brands from './pages/Brand/Brands'
 import Brand from './pages/Brand/Brand'
-import Products from './pages/Package/Products'
+import Products from './pages/Product/Products'
+import ProductDetails from './pages/Product/Product'
 
 function App() {
 
@@ -27,7 +28,7 @@ function App() {
             <Route path='/brands' element={<Brands />} />
             <Route path='/brands/:id' element={<Brand />} />
             <Route path='/products' element={<Products />} />
-            <Route path='/products/:id' element={<Brand />} />
+            <Route path='/products/:id' element={<ProductDetails />} />
             <Route path='/vendors' element={<Vendors />} />
             <Route path='/vendors/:id' element={<Vendor />} />
             <Route path='/users' element={<Users />} />

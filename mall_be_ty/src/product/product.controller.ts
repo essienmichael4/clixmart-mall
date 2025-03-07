@@ -1,7 +1,7 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, ValidationPipe, UsePipes, UseGuards, HttpCode, HttpStatus, ParseIntPipe, UseInterceptors, UploadedFile, Req, BadRequestException, UploadedFiles, ParseFilePipeBuilder, NotFoundException, Query } from '@nestjs/common';
 import { ProductService } from './product.service';
 import { CreateProductDto, ProductDetailsDto } from './dto/create-product.dto';
-import { UpdateProductDto } from './dto/update-product.dto';
+import { UpdateProductDto, UpdateProductReviewStatusDto, UpdateProductStatusDto } from './dto/update-product.dto';
 import { ApiConsumes, ApiCreatedResponse, ApiForbiddenResponse, ApiInternalServerErrorResponse, ApiOkResponse, ApiOperation, ApiTags, ApiUnprocessableEntityResponse } from '@nestjs/swagger';
 import { JwtGuard } from 'src/guards/jwt.guard';
 import { User, UserInfo } from 'src/decorators/user.decorator';
@@ -24,7 +24,6 @@ const MAX_IMAGE_SIZE_IN_BYTE = 2 * 1024 * 1024
 @ApiTags("products")
 export class ProductController {
   constructor(private readonly productService: ProductService, private readonly uploadService:UploadService) {}
-
   
   @Post(':id/upload')
   @UploadFile('file')
@@ -131,10 +130,10 @@ export class ProductController {
     return this.productService.findProducts(pageOptionsDto,  category, subCategory);
   }
 
-  // @Get()
-  // findAll() {
-  //   return this.productService.findAll();
-  // }
+  @Get("admin/all")
+  findAll() {
+    return this.productService.findAll();
+  }
   
   @Get('store/:store')
   findAllStoreProducts(@Param('store') store: string) {
@@ -163,6 +162,16 @@ export class ProductController {
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateProductDto: UpdateProductDto) {
     return this.productService.update(+id, updateProductDto);
+  }
+
+  @Patch(':id/status')
+  updateStatus(@Param('id') id: string, @Body() updateProductStatusDto: UpdateProductStatusDto) {
+    return this.productService.updateStatus(+id, updateProductStatusDto);
+  }
+
+  @Patch(':id/approval')
+  updateReviewStatus(@Param('id') id: string, @Body() updateProductReviewStatusDto: UpdateProductReviewStatusDto) {
+    return this.productService.updateReviewStatus(+id, updateProductReviewStatusDto);
   }
 
   @Delete(':id')

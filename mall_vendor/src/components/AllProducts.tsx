@@ -5,11 +5,8 @@ import { DataTableColumnHeader } from './DataTable/ColumnHeader'
 import { ColumnDef, getCoreRowModel, flexRender, useReactTable, getPaginationRowModel, getFilteredRowModel } from '@tanstack/react-table'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from './ui/table'
 import useAxiosToken from '@/hooks/useAxiosToken'
-import { Edit, Trash2 } from 'lucide-react'
-import EditPackage from '@/pages/Products/EditPackage'
 import { Button } from './ui/button'
-import DeletePackage from '@/pages/Products/DeletePackage'
-import { DotsVerticalIcon } from '@radix-ui/react-icons'
+// import { DotsVerticalIcon } from '@radix-ui/react-icons'
 
 interface FilterProps{
     filtering:string,
@@ -24,7 +21,7 @@ const AllProducts = ({store, status, filtering}:FilterProps) => {
 
     const orders = useQuery<Product[]>({
         queryKey: ["products", status],
-        queryFn: async() => await axios_instance_token.get(`/products/${store}?status=${status}`).then(res => {
+        queryFn: async() => await axios_instance_token.get(`/products/store/${store}?status=${status}`).then(res => {
             console.log(res.data);
             
             return res.data
@@ -35,8 +32,7 @@ const AllProducts = ({store, status, filtering}:FilterProps) => {
         accessorKey: "id",
         header:({column})=>(<DataTableColumnHeader column={column} title='ID.' />),
         cell:({row}) => <div>
-            <Link to={`./${row.original.id}/product-info`}>
-            {/* <Link to={`./${row.original.id}`}> */}
+            <Link to={`./${row.original.id}`}>
                 <span className='text-gray-400'>#</span>{row.original.id}
             </Link>
         </div>
@@ -44,9 +40,9 @@ const AllProducts = ({store, status, filtering}:FilterProps) => {
         accessorKey: "name",
         header:({column})=>(<DataTableColumnHeader column={column} title='Product Name' />),
         cell:({row}) => <div>
-            {/* <Link to={`./${row.original.trackingNumber}`}> */}
+            <Link to={`./${row.original.id}`}>
                 {row.original.name}
-            {/* </Link> */}
+            </Link>
         </div>
     },{
         accessorKey: "category.name",
@@ -90,17 +86,18 @@ const AllProducts = ({store, status, filtering}:FilterProps) => {
         cell:({row}) => <div>
             <span className={`${row.original.status === "DRAFT" && 'bg-gray-300'} ${row.original.status === "PUBLISH" && 'bg-emerald-300 text-emerald-700'} ${row.original.status === "ARCHIVE" && 'bg-yellow-300 text-yellow-700'}  py-2 px-4 rounded-full text-xs`}>{row.original.status}</span>
         </div>
-    },{
-        accessorKey: "ids",
-        header:({column})=>(<DataTableColumnHeader column={column} title='Actions' />),
-        cell:({row}) => <div>
-            <span className="flex gap-2 items-center"  >
-                <DotsVerticalIcon />
-                {/* <EditPackage item={row.original} trigger={<button><Edit className="w-4 h-4 text-emerald-400"/></button>} />
-                <DeletePackage trackingNumber={row.original.trackingNumber} id={Number(row.original.id)} trigger={<button><Trash2 className="w-4 h-4 text-rose-400" /></button>} />  */}
-            </span> 
-        </div>
-    }]
+    },
+    // {
+    //     accessorKey: "ids",
+    //     header:({column})=>(<DataTableColumnHeader column={column} title='Actions' />),
+    //     cell:({row}) => <div>
+    //         <span className="flex gap-2 items-center"  >
+    //             <DotsVerticalIcon />
+                
+    //         </span> 
+    //     </div>
+    // }
+    ]
 
     const table = useReactTable({
         data: orders.data || emptyData,

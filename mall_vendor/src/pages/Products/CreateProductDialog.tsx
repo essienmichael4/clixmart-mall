@@ -11,7 +11,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import axios from 'axios'
 import { Loader2 } from 'lucide-react'
 import { ProductSchema, ProductSchemaType } from '@/schema/product'
-import { Store } from '@/lib/types'
+// import { Store } from '@/lib/types'
 import { useNavigate } from 'react-router-dom'
 
 interface Props{

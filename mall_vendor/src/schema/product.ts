@@ -27,23 +27,8 @@ export const ProductDetailsSchema = z.object({
     }).optional().or(z.literal('')),
     quantity: z.coerce.number().positive().min(0).optional(),
     price: z.coerce.number().positive().min(0).optional(),
-    discount: z.coerce.number().positive().min(0.00).optional(),
+    discount: z.coerce.number().positive().min(0).optional(),
 })
-
-// export const EditPackageLoadedSchema = z.object({
-//     loaded: z.coerce.date().optional(),
-// })
-
-// export const EditPackageReceivedSchema = z.object({
-//     received: z.coerce.date().optional(),
-// })
-
-// export const EditPackageEtaSchema = z.object({
-//     eta: z.coerce.date().optional(),
-// })
 
 export type ProductSchemaType = z.infer<typeof ProductSchema>
 export type ProductDetailsSchemaType = z.infer<typeof ProductDetailsSchema>
-// export type EditLoadedSchemaType = z.infer<typeof EditPackageLoadedSchema>
-// export type EditReceivedSchemaType = z.infer<typeof EditPackageReceivedSchema>
-// export type EditEtaSchemaType = z.infer<typeof EditPackageEtaSchema>

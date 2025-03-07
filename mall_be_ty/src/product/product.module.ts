@@ -13,10 +13,14 @@ import { SubCategory } from 'src/category/entities/subcategory.entity';
 import { Brand } from 'src/brand/entities/brand.entity';
 import { UploadModule } from 'src/upload/upload.module';
 import { Tag } from './entities/tag.entity';
+import { MonthHistory } from './entities/MonthHistory.entity';
+import { UserMonthHistory } from './entities/UserMonthHistory.entity';
+import { YearHistory } from './entities/YearHistory.entity';
+import { UserYearHistory } from './entities/UserYearHistory.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Product, ProductImage, ProductReview, Store, User, Category, SubCategory, Brand, Tag]),
+    TypeOrmModule.forFeature([Product, ProductImage, ProductReview, Store, User, Category, SubCategory, Brand, Tag, MonthHistory, UserMonthHistory, YearHistory, UserYearHistory]),
     UploadModule
   ],
   controllers: [ProductController],

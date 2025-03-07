@@ -28,4 +28,7 @@ export class Brand {
 
     @ManyToMany(() => Category, (category) => category.brands)
     categories: Category[];
+
+    @ManyToMany(() => SubCategory, (subCategory) => subCategory.brands)
+    subCategories: SubCategory[];
 }

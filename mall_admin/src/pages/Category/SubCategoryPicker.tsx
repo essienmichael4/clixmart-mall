@@ -10,7 +10,6 @@ import { cn } from '@/lib/utils'
 import { Category } from '@/lib/types'
 
 interface Props {
-    // type:TransactionType,
     onChange: (value: string)=>void
 }
 
@@ -24,8 +23,8 @@ const SubCategoryPicker = ({ onChange }:Props) => {
     }, [onChange, value])
 
     const categoriesQuery =  useQuery<Category[]>({
-            queryKey: ["categories"],
-            queryFn: async() => await axios_instance_token.get("/categories").then(res => res.data)
+            queryKey: ["subCategories"],
+            queryFn: async() => await axios_instance_token.get("/categories/sub-categories").then(res => res.data)
         })
 
     const selectedCategory = categoriesQuery.data?.find((category:Category)=> category.name === value)

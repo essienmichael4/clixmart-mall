@@ -1,5 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsDefined, IsNotEmpty, IsString } from "class-validator";
+import { IsArray, IsDefined, IsNotEmpty, IsOptional, IsString } from "class-validator";
 
 export class CreateBrandDto {
     @ApiProperty({
@@ -12,14 +12,20 @@ export class CreateBrandDto {
     @IsNotEmpty()
     name:string 
 
+    @ApiProperty({
+        description: "Category name",
+        example: "Phone Accesories",
+        required: true
+    })
+    @IsArray()
+    category:string[]
      
     @ApiProperty({
         description: "Category name",
         example: "Phone Accesories",
         required: true
     })
-    @IsDefined()
-    @IsString()
-    @IsNotEmpty()
-    category:string 
+    @IsArray()
+    @IsOptional()
+    subCategory:string[] 
 }

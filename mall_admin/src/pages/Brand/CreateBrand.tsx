@@ -12,7 +12,9 @@ import axios from 'axios'
 import { Loader2 } from 'lucide-react'
 import { CategorySchema, CategorySchemaType } from '@/schema/category'
 import { Category } from '@/lib/types'
-import CategoryPicker from '../Category/CategoryPicker'
+import SubCategoriesPicker from '../Category/SubCategoriesPicker'
+import CategoriesPicker from '../Category/CategoriesPicker'
+import { ScrollArea } from '@/components/ui/scroll-area'
 
 interface Props{
     trigger?: React.ReactNode,
@@ -21,7 +23,8 @@ interface Props{
 
 const CreateBrand = ({trigger, successCallback}:Props) => {
     const [open, setOpen] = useState(false)
-    const [category, setCategory] = useState("")
+    const [category, setCategory] = useState<string[]>([])
+    const [subCategory, setSubCategory] = useState<string[]>([])
     const axios_instance_token = useAxiosToken()
     const queryClient = useQueryClient()
 
@@ -35,15 +38,35 @@ const CreateBrand = ({trigger, successCallback}:Props) => {
     const addCategory = async (data:CategorySchemaType)=>{
         const response = await axios_instance_token.post(`/brands`, {
             ...data,
-            category
+            category: category,
+            subCategory: subCategory
         },)
 
         return response.data
     }
 
     const handleCategoryChange = useCallback((value:string)=>{
-        setCategory(value)
+        if(category.includes(value)) return
+        setCategory(prev=> [...prev,value])
     }, [form])
+
+    const handleSubCategoryChange = useCallback((value:string)=>{
+        if(subCategory.includes(value)) return
+        setSubCategory(prev=> [...prev,value])
+        
+    }, [form])
+
+    const removeCategoriesTag = (index:number) =>{
+        setCategory(prevTags => {
+          return prevTags.filter((_, i)=> i != index)
+        })
+    }
+
+    const removeSubCategoriesTag = (index:number) =>{
+        setSubCategory(prevTags => {
+          return prevTags.filter((_, i)=> i != index)
+        })
+    }
 
     const {mutate, isPending} = useMutation({
         mutationFn: addCategory,
@@ -55,6 +78,8 @@ const CreateBrand = ({trigger, successCallback}:Props) => {
             form.reset({
                 name: ""
             })
+            setCategory([])
+            setSubCategory([])
             successCallback && successCallback(data)
 
             queryClient.invalidateQueries({queryKey: ["brands"]})
@@ -86,40 +111,54 @@ const CreateBrand = ({trigger, successCallback}:Props) => {
             <DialogContent className='w-[90%] mx-auto rounded-2xl'>
                 <DialogHeader className='items-start'>
                     <DialogTitle>
-                        Create Category
+                        Create Brand
                     </DialogTitle>
                     <DialogDescription>
-                        Category is used to group products
+                        Brand is used to group products
                     </DialogDescription>
                 </DialogHeader>
-                <Form {...form}>
-                    <form className='space-y-2'>
-                        <FormField
-                            control={form.control}
-                            name="name"
-                            render={({field}) =>(
-                                <FormItem className='flex-1 px-2'>
-                                    <FormLabel className='text-xs'>Brand name</FormLabel>
-                                    <FormControl>
-                                        <Input {...field} />
-                                    </FormControl>
-                                </FormItem>
-                            )} 
-                        />
-                        <FormField 
-                            name="category"
-                            render={({}) =>(
-                                <FormItem className='flex flex-col px-2'>
-                                    <FormLabel className='text-xs'>Category</FormLabel>
-                                    <FormControl>
-                                        <CategoryPicker onChange={handleCategoryChange}/>
-                                    </FormControl>
-                                    <FormDescription>Select a category</FormDescription>
-                                </FormItem>
-                            )}
-                        />
-                    </form>
-                </Form>
+                <ScrollArea className='h-56'>
+                    <Form {...form}>
+                        <form className='space-y-2'>
+                            <FormField
+                                control={form.control}
+                                name="name"
+                                render={({field}) =>(
+                                    <FormItem className='flex-1 px-3'>
+                                        <FormLabel className='text-xs'>Brand name</FormLabel>
+                                        <FormControl className='px-1'>
+                                            <Input {...field} />
+                                        </FormControl>
+                                    </FormItem>
+                                )} 
+                            />
+                            <FormField 
+                                name="category"
+                                render={({}) =>(
+                                    <FormItem className='flex flex-col px-2'>
+                                        <FormLabel className='text-xs'>Category</FormLabel>
+                                        <FormControl>
+                                            <CategoriesPicker removeTag={removeCategoriesTag} tags={category} onChange={handleCategoryChange}/>
+                                        </FormControl>
+                                        <FormDescription>Select category/(ies)</FormDescription>
+                                    </FormItem>
+                                )}
+                            />
+                            <FormField 
+                                name="subCategory"
+                                render={({}) =>(
+                                    <FormItem className='flex flex-col px-2'>
+                                        <FormLabel className='text-xs'>Sub Category</FormLabel>
+                                        <FormControl>
+                                            <SubCategoriesPicker removeTag={removeSubCategoriesTag} tags={subCategory} onChange={handleSubCategoryChange}/>
+                                        </FormControl>
+                                        <FormDescription>Select sub category/(ies)</FormDescription>
+                                    </FormItem>
+                                )}
+                            />
+                        </form>
+                    </Form>
+                </ScrollArea>
                 <DialogFooter >
                     <DialogClose asChild>
                         <Button 
@@ -127,6 +166,8 @@ const CreateBrand = ({trigger, successCallback}:Props) => {
                             variant={"secondary"}
                             onClick={()=>{
                                 form.reset()
+                                setCategory([])
+                                setSubCategory([])
                             }} >
                                 Cancel
                         </Button>

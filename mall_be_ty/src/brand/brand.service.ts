@@ -5,6 +5,8 @@ import { Brand } from './entities/brand.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { In, Repository } from 'typeorm';
 import { Category } from 'src/category/entities/category.entity';
+import { GenerateSlug } from 'src/helpers/common';
+import { SubCategory } from 'src/category/entities/subcategory.entity';
 
 @Injectable()
 export class BrandService {
@@ -19,21 +21,33 @@ export class BrandService {
       const saveEntity = {
         ...brandEntity,
         name: createBrandDto.name.toLowerCase(),
-      }
-      console.log(createBrandDto);
-      
+        categories: createBrandDto.category.map(category => {
+          const cat = new Category()
+          cat.name = category.toLowerCase()
+          cat.slug = GenerateSlug(category.toLowerCase())
+          return cat
+        }),
+        subCategories: createBrandDto.subCategory.map(subCategory => {
+          const sub = new SubCategory()
+          sub.name = subCategory.toLowerCase()
+          sub.slug = GenerateSlug(subCategory.toLowerCase())
 
-      const brand = await this.brandRepo.save(saveEntity)
-      if(createBrandDto.category){
-        const category = await this.categoryRepo.findOne({
-          where: {
-            name: createBrandDto.category.toLowerCase()
-          }, relations: {brands: true}
+          return sub
         })
-
-        category.brands = [...category.brands, brand]
-        await this.categoryRepo.save(category)
       }
+      const brand = await this.brandRepo.save(saveEntity)
+      // if(createBrandDto.category){
+      //   const categories = await this.categoryRepo.find({
+      //     where: {
+      //       name: In(createBrandDto.category)
+      //     }, relations: {brands: true}
+      //   })
+
+      //   let categiesEntities = [...categories.map(category=> category.brands), brand]
+      //   await this.categoryRepo.save(category)
+      // }
+      console.log(brand);
+      
       return brand
     }catch(err){
       throw err

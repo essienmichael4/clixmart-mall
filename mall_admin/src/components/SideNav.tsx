@@ -1,5 +1,5 @@
 import logo from '../assets/logo.jpeg'
-import { LayoutDashboard, Package, Settings, Ship, Users } from 'lucide-react'
+import { BaggageClaim, GripVertical, LayoutDashboard, Package, PackageSearch, Settings, Ship, ShoppingBag, Store, Users } from 'lucide-react'
 import { Link, NavLink } from 'react-router-dom'
 
 interface SideNavProps{
@@ -20,23 +20,23 @@ const SideNav = ({isToggled}:SideNavProps) => {
                 <span className=''>Dashboard {isToggled}</span>
             </NavLink>
             <NavLink to={"/categories"} className='pl-1 py-2 flex items-center flex-shrink-0 mb-4 text-muted-foreground'>
-                <Package className='h-6 w-6 mr-6' />
+                <GripVertical className='h-6 w-6 mr-6' />
                 <span className=''>Categories</span>
             </NavLink>
             <NavLink to={"/brands"} className='pl-1 py-2 flex items-center flex-shrink-0 mb-4 text-muted-foreground'>
-                <Package className='h-6 w-6 mr-6' />
+                <BaggageClaim className='h-6 w-6 mr-6' />
                 <span className=''>Brands</span>
             </NavLink>
             <NavLink to={"/vendors"} className='pl-1 py-2 flex items-center flex-shrink-0 mb-4 text-muted-foreground'>
-                <Ship className='h-6 w-6 mr-6' />
+                <Store className='h-6 w-6 mr-6' />
                 <span className=''>Vendors</span>
             </NavLink>
             <NavLink to={"/products"} className='pl-1 py-2 flex items-center flex-shrink-0 mb-4 text-muted-foreground'>
-                <Users className='h-6 w-6 mr-6' />
+                <PackageSearch className='h-6 w-6 mr-6' />
                 <span className=''>Products</span>
             </NavLink>
             <NavLink to={"/users"} className='pl-1 py-2 flex items-center flex-shrink-0 mb-4 text-muted-foreground'>
-                <Users className='h-6 w-6 mr-6' />
+                <ShoppingBag className='h-6 w-6 mr-6' />
                 <span className=''>Orders</span>
             </NavLink>
             <NavLink to={"/users"} className='pl-1 py-2 flex items-center flex-shrink-0 mb-4 text-muted-foreground'>

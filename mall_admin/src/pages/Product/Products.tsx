@@ -1,4 +1,4 @@
-import { Plus, Search } from "lucide-react"
+import { Search } from "lucide-react"
 import { useState } from "react"
 import { useParams } from "react-router-dom"
 import AllProducts from "@/components/AllProducts"

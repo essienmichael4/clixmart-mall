@@ -149,6 +149,7 @@ export type PaymentDetail = {
 
 export type Product = {
     id?: number,
+    productId?: string,
     name: string,
     price: number,
     quantity?: number,
@@ -165,7 +166,8 @@ export type Product = {
     store?: Store,
     brand?: Brand,
     tags: Tag[],
-    productImages: ProductImage[]
+    productImages: ProductImage[],
+    productReview?: ProductReview
 }
 
 export type ProductImage = {
@@ -175,7 +177,7 @@ export type ProductImage = {
 
 export type ProductReview = {
     id: number,
-    status: "" | "" | "",
+    status: "PENDING" | "APPROVED" | "REJECTED",
     description: string,
     user: User
 }

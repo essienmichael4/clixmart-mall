@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { CreateProductDto, ProductDetailsDto } from './dto/create-product.dto';
-import { UpdateProductDto } from './dto/update-product.dto';
+import { UpdateProductDto, UpdateProductReviewStatusDto, UpdateProductStatusDto } from './dto/update-product.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { In, Like, Repository } from 'typeorm';
 import { Store } from 'src/store/entities/store.entity';
@@ -15,6 +15,7 @@ import { Tag } from './entities/tag.entity';
 import { PageOptionsDto } from 'src/common/dto/pageOptions.dto';
 import { PageMetaDto } from 'src/common/dto/pageMeta.dto';
 import { PageDto } from 'src/common/dto/page.dto';
+import { v4 } from 'uuid';
 
 @Injectable()
 export class ProductService {
@@ -51,6 +52,7 @@ export class ProductService {
         name: createProductDto.name.toLowerCase(),
         slug: this.generateSlug(createProductDto.name.toLowerCase()),
         productReview: productReview,
+        productId: v4(),
         store
       }
 
@@ -81,13 +83,11 @@ export class ProductService {
       const brand = await this.brandRepo.findOneBy({name: productDetails.brand.toLowerCase()})
       const tags = await this.tagRepo.upsert(productDetails.tags.map(tag=>{
         return {
-          name: tag
+          name: tag,
+          tagId: v4()
         }
       }), ["name"])
-      console.log(tags);
-      console.log(productDetails.description);
-      
-      
+
       product.category = category
       product.subCategory = subCategory
       product.brand = brand
@@ -272,6 +272,23 @@ export class ProductService {
 
   update(id: number, updateProductDto: UpdateProductDto) {
     return `This action updates a #${id} product`;
+  }
+
+  updateStatus(id: number, updateProductStatusDto: UpdateProductStatusDto) {
+    return this.productRepo.update(id, {
+      status: updateProductStatusDto.status
+    })
+  }
+
+  async updateReviewStatus(id: number, updateProductReviewStatusDto: UpdateProductReviewStatusDto) {
+    const product = await this.productRepo.findOne({
+      where: {id},
+      relations: {
+        productReview: true
+      }
+    })
+    product.productReview.status = updateProductReviewStatusDto.status
+    await this.productRepo.save(product)
   }
 
   updateProductImage(id: number, filename:string) {

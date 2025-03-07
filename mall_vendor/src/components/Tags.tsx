@@ -1,8 +1,3 @@
-import { Search } from "lucide-react"
-import { useNavigate } from "react-router-dom"
-
-const TAGLENGTH = 10
-
 interface ITagsProps{
     tag:string,
     tags:string[],
@@ -12,17 +7,6 @@ interface ITagsProps{
 }
 
 const Tags = ({handleChange, tag, tags, handleKeyDown, removeTag} :ITagsProps) => {
-  const navigate = useNavigate()
-
-  const handleSearch = ()=>{
-    if(tag && tags.length < TAGLENGTH){
-      tags.push(tag.trim())
-    }
-
-    if(tags.length === 0) return
-
-    navigate("/search", {state:tags})
-  }
 
   return (
     <div className="w-full  flex flex-col px-1 gap-1 mt-16 rounded-lg">

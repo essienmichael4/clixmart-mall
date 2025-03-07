@@ -1,4 +1,5 @@
 import { axios_instance } from "@/api/axios"
+import DescriptionParser from "@/components/DescriptionParser"
 import Header from "@/components/Header"
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator,} from "@/components/ui/breadcrumb"
 import useCart from "@/hooks/useCart"
@@ -100,7 +101,7 @@ const ProductDetails = () => {
                         </div>
                         <div>
                             <p className="text-xs font-semibold text-muted-foreground mb-1">Description</p>
-
+                            <DescriptionParser description={product.data?.discription as string} />
                         </div>
                     </div>
                 </div>

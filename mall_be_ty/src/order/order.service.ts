@@ -65,7 +65,6 @@ export class OrderService {
       }
 
       const order = await this.orderRepo.save(saveEntity)
-      console.log(order);
       
       return order
     }catch(err){
@@ -74,11 +73,32 @@ export class OrderService {
   }
 
   findAll() {
-    return `This action returns all order`;
+    return this.orderRepo.find({
+      relations: {
+          orderItems: true
+      }
+    })
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} order`;
+  findOne(id: string) {
+    return this.orderRepo.findOne({
+      where: {
+        orderId: id
+      },
+      relations:{
+        orderItems: {
+          product: {
+            store: {
+              user: true,
+              storeAddress: true,
+              storeDetail: true,
+              paymentDetail: true
+            }
+          }
+        },
+        user: true
+      }
+    });
   }
 
   update(id: number, updateOrderDto: UpdateOrderDto) {

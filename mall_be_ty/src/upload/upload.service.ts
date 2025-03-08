@@ -11,7 +11,7 @@ export class UploadService {
   }
 
   async getPresignedUrl(filename:string){
-    return await this.fileService.getPresignedUrl(filename)
+    return await this.fileService.getSignedUrlCloudfront(filename)
   }
 
   async addBrandImage(imageBuffer: Buffer, filename:string){

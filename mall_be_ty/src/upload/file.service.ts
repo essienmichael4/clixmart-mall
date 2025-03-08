@@ -1,7 +1,8 @@
 import { DeleteObjectCommand, PutObjectCommand, S3Client, GetObjectCommand } from '@aws-sdk/client-s3';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
+import { getSignedUrl } from '@aws-sdk/cloudfront-signer'
+// import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 
 @Injectable()
 export class FileService {
@@ -15,14 +16,23 @@ export class FileService {
 
     constructor(private readonly configService: ConfigService){}
     
-    async getPresignedUrl(filename:string){
-        const getObjectParams = {
-            Bucket: this.configService.getOrThrow('BUCKET_NAME'),
-            Key: filename
-        }
-        const command = new GetObjectCommand(getObjectParams)
-        const url = await getSignedUrl(this.s3Client, command, {expiresIn: 3600})
-        return url
+    // async getPresignedUrl(filename:string){
+    //     const getObjectParams = {
+    //         Bucket: this.configService.getOrThrow('BUCKET_NAME'),
+    //         Key: filename
+    //     }
+    //     const command = new GetObjectCommand(getObjectParams)
+    //     const url = await getSignedUrl(this.s3Client, command, {expiresIn: 3600})
+    //     return url
+    // }
+    async getSignedUrlCloudfront(filename:string){
+        const date = new Date(Date.now() + 1000 * 60 * 60 * 24)
+        return await getSignedUrl({
+            url: "https://dh0ursehl95lm.cloudfront.net/"+filename,
+            dateLessThan: String(date),
+            privateKey: this.configService.getOrThrow('CLOUDFRONT_PRIVATE_KEY'),
+            keyPairId: this.configService.getOrThrow('CLOUDFRONT_KEY_PAIR_ID'),
+        })
     }
 
     async uploadProfile(imageBuffer: Buffer, filename:string){

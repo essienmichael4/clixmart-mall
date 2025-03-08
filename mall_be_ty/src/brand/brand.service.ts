@@ -7,12 +7,14 @@ import { In, Repository } from 'typeorm';
 import { Category } from 'src/category/entities/category.entity';
 import { GenerateSlug } from 'src/helpers/common';
 import { SubCategory } from 'src/category/entities/subcategory.entity';
+import { UploadService } from 'src/upload/upload.service';
 
 @Injectable()
 export class BrandService {
   constructor(
     @InjectRepository(Brand) private readonly brandRepo:Repository<Brand>,
     @InjectRepository(Category) private readonly categoryRepo:Repository<Category>,
+    private readonly uploadService: UploadService
   ){}
 
   async create(createBrandDto: CreateBrandDto) {
@@ -36,17 +38,6 @@ export class BrandService {
         })
       }
       const brand = await this.brandRepo.save(saveEntity)
-      // if(createBrandDto.category){
-      //   const categories = await this.categoryRepo.find({
-      //     where: {
-      //       name: In(createBrandDto.category)
-      //     }, relations: {brands: true}
-      //   })
-
-      //   let categiesEntities = [...categories.map(category=> category.brands), brand]
-      //   await this.categoryRepo.save(category)
-      // }
-      console.log(brand);
       
       return brand
     }catch(err){

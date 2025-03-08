@@ -84,7 +84,8 @@ const ProductDetails = () => {
                         
                         <div>
                             <p className="text-xs font-semibold text-muted-foreground mb-1">Description</p>
-                            <DescriptionParser description={product.data?.discription as string} />
+                            {/* {product.data?.description} */}
+                            <DescriptionParser description={product.data?.description as string} />
                         </div>
                     </div>
                 </div>

@@ -7,10 +7,11 @@ import { Category } from 'src/category/entities/category.entity';
 import { JwtService } from '@nestjs/jwt';
 import { UploadModule } from 'src/upload/upload.module';
 import { SubCategory } from 'src/category/entities/subcategory.entity';
+import { UploadService } from 'src/upload/upload.service';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Brand, Category, SubCategory]), UploadModule],
   controllers: [BrandController],
-  providers: [BrandService, JwtService],
+  providers: [BrandService, JwtService, UploadService],
 })
 export class BrandModule {}

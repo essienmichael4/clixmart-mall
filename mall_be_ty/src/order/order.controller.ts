@@ -26,14 +26,16 @@ export class OrderController {
     return this.orderService.create(createOrderDto, user.sub.id);
   }
 
+  @UseGuards(JwtGuard)
   @Get()
   findAll() {
     return this.orderService.findAll();
   }
 
+  @UseGuards(JwtGuard)
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.orderService.findOne(+id);
+    return this.orderService.findOne(id);
   }
 
   @Patch(':id')

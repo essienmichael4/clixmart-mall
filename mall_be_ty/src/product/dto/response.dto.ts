@@ -20,6 +20,28 @@ class ProductReviewResponseDto {
     public status:string 
 }
 
+class ProductImageResponseDto {
+    @ApiResponseProperty({
+        example: 1
+    })
+    id:number 
+
+    @ApiResponseProperty({
+        example: "00000-00000-00000-00000-00000"
+    })
+    public productImageId?:string
+    
+    @ApiResponseProperty({
+        example: "something.png"
+    })
+    public url:string 
+    
+    @ApiResponseProperty({
+        example: "something.png"
+    })
+    public imageUlr?:string 
+}
+
 export class ProductReponseDto{
     @ApiResponseProperty({
         example: 1
@@ -113,6 +135,11 @@ export class ProductReponseDto{
         type: ProductReviewResponseDto
     })
     review: ProductReviewResponseDto
+
+    @ApiResponseProperty({
+        type: [ProductImageResponseDto]
+    })
+    productImages?: ProductImageResponseDto[]
 
     constructor(partial:Partial<ProductReponseDto>){
         Object.assign(this, partial)

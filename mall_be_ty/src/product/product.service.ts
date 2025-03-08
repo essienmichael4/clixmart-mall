@@ -16,6 +16,9 @@ import { PageOptionsDto } from 'src/common/dto/pageOptions.dto';
 import { PageMetaDto } from 'src/common/dto/pageMeta.dto';
 import { PageDto } from 'src/common/dto/page.dto';
 import { v4 } from 'uuid';
+import { ProductReponseDto } from './dto/response.dto';
+import { FileService } from 'src/upload/file.service';
+import { UploadService } from 'src/upload/upload.service';
 
 @Injectable()
 export class ProductService {
@@ -29,6 +32,7 @@ export class ProductService {
     @InjectRepository(Category) private readonly categoryRepo:Repository<Category>,
     @InjectRepository(SubCategory) private readonly subCategoryRepo:Repository<SubCategory>,
     @InjectRepository(Brand) private readonly brandRepo:Repository<Brand>,
+    private readonly uploadService: UploadService
   ){}
 
   async create(storeName: string, userId: number, createProductDto: CreateProductDto) {
@@ -81,12 +85,15 @@ export class ProductService {
       const category = await this.categoryRepo.findOneBy({name: productDetails.category.toLowerCase()})
       const subCategory = await this.subCategoryRepo.findOneBy({name: productDetails.subCategory.toLowerCase()})
       const brand = await this.brandRepo.findOneBy({name: productDetails.brand.toLowerCase()})
-      const tags = await this.tagRepo.upsert(productDetails.tags.map(tag=>{
-        return {
-          name: tag,
-          tagId: v4()
+      const tags = productDetails.tags.map(tag=>{
+        const tagEntity = this.tagRepo.create()
+        const saveEntity = {
+          ...tagEntity,
+          name: tag.toLowerCase(),
+          tagId: v4(),
         }
-      }), ["name"])
+        return saveEntity
+      })
 
       product.category = category
       product.subCategory = subCategory
@@ -96,7 +103,7 @@ export class ProductService {
       product.price = productDetails.price
       product.quantity = productDetails.quantity
       product.discount = productDetails.discount || 0
-      // product.tags = tags
+      product.tags = tags
 
       return await this.productRepo.save(product)
     }catch(err){
@@ -130,6 +137,49 @@ export class ProductService {
         productReview: true,
         category: true,
         subCategory: true,
+        brand:true,
+        productImages:true
+      },
+      where: {
+        ...(q && { name: Like(`%${q.toLowerCase()}%`) }),
+        inventory: Inventory.INSTOCK,
+        status: Status.PUBLISH,
+        productReview: {
+          status: ReviewStatus.APPROVED
+        },
+        category: {
+          ...(category && { name: category.toLowerCase() }),
+        },
+        subCategory: {
+          ...(subCategory && { name: subCategory.toLowerCase() }),
+        }
+      },
+      skip: pageOptionsDto.skip,
+      take: pageOptionsDto.take
+    })
+
+    const productsResponse = products.map(product=> new ProductReponseDto(product))
+
+    productsResponse.map(async (product) => {
+      product.imageUrl = await this.uploadService.getPresignedUrl(`products/${product.imageName}`)
+
+      product.productImages.map(async (image) => {
+        image.imageUlr = await this.uploadService.getPresignedUrl(`products/${image.url}`)
+        return image
+      })
+    })
+
+    const productsCount = await this.productRepo.count()
+    const pageMetaDto = new PageMetaDto({itemCount: productsCount, pageOptionsDto})
+    return new PageDto(productsResponse, pageMetaDto)
+  }
+
+  async findProductsByCategory(pageOptionsDto:PageOptionsDto, q?: string, category?: string, subCategory?: string){
+    const products = await this.productRepo.find({
+      relations:{
+        productReview: true,
+        category: true,
+        subCategory: true,
         brand:true
       },
       where: {
@@ -150,35 +200,15 @@ export class ProductService {
       take: pageOptionsDto.take
     })
 
-    const productsCount = await this.productRepo.count()
-    const pageMetaDto = new PageMetaDto({itemCount: productsCount, pageOptionsDto})
-    return new PageDto(products, pageMetaDto)
-  }
+    const productsResponse = products.map(product=> new ProductReponseDto(product))
 
-  async findProductsByCategory(pageOptionsDto:PageOptionsDto, q?: string, category?: string, subCategory?: string){
-    const products = await this.productRepo.find({
-      relations:{
-        productReview: true,
-        category: true,
-        subCategory: true,
-        brand:true
-      },
-      where: {
-        ...(q && { name: Like(`%${q.toLowerCase()}%`) }),
-        inventory: Inventory.INSTOCK,
-        status: Status.PUBLISH,
-        productReview: {
-          status: ReviewStatus.APPROVED
-        },
-        // category: {
-        //   ...(category && { name: category.toLowerCase() }),
-        // },
-        // subCategory: {
-        //   ...(subCategory && { name: subCategory.toLowerCase() }),
-        // }
-      },
-      skip: pageOptionsDto.skip,
-      take: pageOptionsDto.take
+    productsResponse.map(async (product) => {
+      product.imageUrl = await this.uploadService.getPresignedUrl(`products/${product.imageName}`)
+
+      product.productImages.map(async (image) => {
+        image.imageUlr = await this.uploadService.getPresignedUrl(`products/${image.url}`)
+        return image
+      })
     })
 
     const productsCount = await this.productRepo.count()
@@ -186,8 +216,8 @@ export class ProductService {
     return new PageDto(products, pageMetaDto)
   }
 
-  findAll() {
-    return this.productRepo.find({
+  async findAll() {
+    const products = await this.productRepo.find({
       relations: {
         store: true,
         productImages: true,
@@ -199,10 +229,23 @@ export class ProductService {
         user: true
       },
     });
+
+    const productsResponse = products.map(product=> new ProductReponseDto(product))
+
+    productsResponse.map(async (product) => {
+      product.imageUrl = await this.uploadService.getPresignedUrl(`products/${product.imageName}`)
+
+      product.productImages.map(async (image) => {
+        image.imageUlr = await this.uploadService.getPresignedUrl(`products/${image.url}`)
+        return image
+      })
+    })
+
+    return productsResponse
   }
 
-  findOne(id: number) {
-    return this.productRepo.findOne({
+  async findOne(id: number) {
+    const product = await this.productRepo.findOne({
       where: {id},
       relations: {
         store: true,
@@ -215,14 +258,38 @@ export class ProductService {
         user: true
       },
     });
+
+    const productResponse = new ProductReponseDto(product)
+
+    productResponse.imageUrl = await this.uploadService.getPresignedUrl(`products/${product.imageName}`)
+
+    productResponse.productImages.map(async (image) => {
+      image.imageUlr = await this.uploadService.getPresignedUrl(`products/${image.url}`)
+      return image
+    })
+
+    return productResponse
   }
 
   async findCartProducts(products:number[]){
-    return await this.productRepo.find({
+    const cartProducts = await this.productRepo.find({
       where: {
         id: In(products)
       }
     })
+
+    const productsResponse = cartProducts.map(product=> new ProductReponseDto(product))
+
+    productsResponse.map(async (product) => {
+      product.imageUrl = await this.uploadService.getPresignedUrl(`products/${product.imageName}`)
+
+      product.productImages.map(async (image) => {
+        image.imageUlr = await this.uploadService.getPresignedUrl(`products/${image.url}`)
+        return image
+      })
+    })
+
+    return productsResponse
   }
 
   async findStoreProduct(store: string, productId: number){
@@ -245,11 +312,20 @@ export class ProductService {
       }
     })
     
-    return product
+    const productResponse = new ProductReponseDto(product)
+
+    productResponse.imageUrl = await this.uploadService.getPresignedUrl(`products/${product.imageName}`)
+
+    productResponse.productImages.map(async (image) => {
+      image.imageUlr = await this.uploadService.getPresignedUrl(`products/${image.url}`)
+      return image
+    })
+
+    return productResponse
   }
 
   async findStoreProducts(store: string){
-    const product =  await this.productRepo.find({
+    const products =  await this.productRepo.find({
       relations: {
         store: true,
         productImages: true,
@@ -267,7 +343,18 @@ export class ProductService {
       }
     })
 
-    return product
+    const productsResponse = products.map(product=> new ProductReponseDto(product))
+
+    productsResponse.map(async (product) => {
+      product.imageUrl = await this.uploadService.getPresignedUrl(`products/${product.imageName}`)
+
+      product.productImages.map(async (image) => {
+        image.imageUlr = await this.uploadService.getPresignedUrl(`products/${image.url}`)
+        return image
+      })
+    })
+
+    return productsResponse
   }
 
   update(id: number, updateProductDto: UpdateProductDto) {

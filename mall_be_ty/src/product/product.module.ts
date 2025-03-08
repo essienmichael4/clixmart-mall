@@ -17,6 +17,8 @@ import { MonthHistory } from './entities/MonthHistory.entity';
 import { UserMonthHistory } from './entities/UserMonthHistory.entity';
 import { YearHistory } from './entities/YearHistory.entity';
 import { UserYearHistory } from './entities/UserYearHistory.entity';
+import { FileService } from 'src/upload/file.service';
+import { UploadService } from 'src/upload/upload.service';
 
 @Module({
   imports: [
@@ -24,6 +26,6 @@ import { UserYearHistory } from './entities/UserYearHistory.entity';
     UploadModule
   ],
   controllers: [ProductController],
-  providers: [ProductService, JwtService],
+  providers: [ProductService, JwtService, FileService, UploadService],
 })
 export class ProductModule {}

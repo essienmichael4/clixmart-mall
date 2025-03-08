@@ -155,7 +155,7 @@ export type Product = {
     quantity?: number,
     status: "DRAFT" | "PUBLISH" | "ARCHIVE",
     inventory: "INSTOCK" | "OUTSTOCK",
-    discription: string,
+    description: string,
     discount: number,
     isDiscounted: "TRUE" | "FALSE"
     createdAt: string,

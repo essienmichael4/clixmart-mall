@@ -7,6 +7,7 @@ import { Inventory, Product, Status } from 'src/product/entities/product.entity'
 import { User } from 'src/user/entities/user.entity';
 import { OrderItem } from './entities/orderItem.entity';
 import { Order } from './entities/order.entity';
+import { v4 } from 'uuid';
 import { ReviewStatus } from 'src/product/entities/review.entity';
 
 @Injectable()
@@ -47,6 +48,7 @@ export class OrderService {
         if(!product) throw new Error("Product not found")
         
         const orderItem = new OrderItem()
+        orderItem.orderItemId = v4()
         orderItem.product = product
         orderItem.quantity = item.quantity
         orderItem.price = product.price
@@ -59,6 +61,7 @@ export class OrderService {
 
       const saveEntity = {
         ...orderEntity,
+        orderId: v4(),
         total: total,
         orderItems: orderItems,
         user: user

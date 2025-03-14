@@ -11,8 +11,8 @@ export class PaymentDetail {
     @PrimaryGeneratedColumn()
     id: number
 
-    // @Column({type: "uuid", unique:true})
-    // paymentDetailId: string
+    @Column({type: "uuid", unique:true})
+    paymentDetailId: string
 
     @Column({ default: Mode.MOMO })
     paymentMode: Mode;

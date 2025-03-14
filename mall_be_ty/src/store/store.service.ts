@@ -11,6 +11,7 @@ import { UserService } from 'src/user/user.service';
 import { User } from 'src/user/entities/user.entity';
 import { NextOfKin } from './entities/nextOfKin.entity';
 import { Status, StoreReview } from './entities/storeReview.entity';
+import { v4 } from 'uuid';
 
 @Injectable()
 export class StoreService {
@@ -35,12 +36,14 @@ export class StoreService {
     
     try{
       const storeReview = await this.storeReviewRepo.save({
-        status: Status.PENDING
+        status: Status.PENDING,
+        storeReviewId: v4()
       })
       const storeEntity =  this.storeRepo.create()
       const saveEntity = {
         ...storeEntity,
         name: createStoreDto.name.toLowerCase(),
+        storeId: v4(),
         url: this.generateStoreUrl(unspaced),
         slug: unspaced,
         storeReview: storeReview
@@ -61,6 +64,7 @@ export class StoreService {
       const storeDetailEntity = this.storeDetailRepo.create()
       const saveEntity = {
         ...storeDetailEntity,
+        storeDetailId: v4(),
         isRegistered: storeDetailsDto.isRegistered,
         nationalId: storeDetailsDto.nationalId
       }
@@ -79,6 +83,7 @@ export class StoreService {
       const nextOfKinEntity = this.nextOfKinRepo.create()
       const saveEntity = {
         ...nextOfKinEntity,
+        nextOfKinId: v4(),
         name: nextOfKinDto.name,
         phone: nextOfKinDto.phone
       }
@@ -98,6 +103,7 @@ export class StoreService {
 
       const saveEntity = {
         ...storeAddressEntity,
+        storeAddressId: v4(),
         country: storeAddressDto.country,
         state: storeAddressDto.state,
         city: storeAddressDto.city,
@@ -107,6 +113,7 @@ export class StoreService {
         phone: storeAddressDto.phone,
         landmark: storeAddressDto.landmark
       }
+      console.log(saveEntity)
 
       const storeAdress = await this.storeAddressRepo.save(saveEntity) 
       store.storeAddress = storeAdress
@@ -123,6 +130,7 @@ export class StoreService {
 
       const saveEntity = {
         ...paymentDetailEntity,
+        paymentDetailId: v4(),
         paymentMode: storePaymentDetailsDto.paymentMode,
         accountName: storePaymentDetailsDto.accountName,
         accountNumber: storePaymentDetailsDto.accountNumber,
@@ -247,7 +255,7 @@ export class StoreService {
   }
 
   generateStoreUrl(name:string): string{
-    const url = `https://localhost:5431/store/${name}`
+    const url = `https://clixmartonline.com/store/${name}`
 
     return url
   }

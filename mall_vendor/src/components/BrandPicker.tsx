@@ -9,7 +9,7 @@ import { cn } from '@/lib/utils'
 import { Brand } from '@/lib/types'
 
 interface Props {
-    category:string,
+    category?:string,
     onChange: (value: string)=>void
 }
 

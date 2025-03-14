@@ -14,8 +14,8 @@ export class StoreReview {
     @PrimaryGeneratedColumn()
     id: number
 
-    // @Column({type: "uuid", unique:true})
-    // storeReviewId: string
+    @Column({type: "uuid", unique:true})
+    storeReviewId: string
 
     @Column({ default: Status.PENDING })
     status: Status;

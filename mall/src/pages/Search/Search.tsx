@@ -2,7 +2,7 @@ import Header from "@/components/Header"
 import ProductCard from "@/components/Cards/ProductCard"
 import useProductsSearch from "@/hooks/useProductSearch"
 import { useCallback, useRef, useState } from "react"
-import { useParams, useSearchParams } from "react-router-dom"
+import { useSearchParams } from "react-router-dom"
 
 const Search = () => {
     const [query] = useSearchParams()

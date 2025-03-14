@@ -86,13 +86,14 @@ export type Product = {
     quantity?: number,
     status: "DRAFT" | "PUBLISH" | "ARCHIVE",
     inventory: "INSTOCK" | "OUTSTOCK",
-    discription: string,
+    description: string,
     discount: number,
     isDiscounted: "TRUE" | "FALSE"
     createdAt: string,
     updatedAt: string,
     category: Category,
     subCategory: SubCategory,
+    imageUrl?: string,
     user?: User
     store?: Store,
     brand?: Brand,

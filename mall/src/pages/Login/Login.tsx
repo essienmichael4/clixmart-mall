@@ -1,4 +1,4 @@
-// import shipping from "../../assets/shipping.jpg"
+import shopping from "../../assets/pexels-kindelmedia-7007188.jpg"
 import LoginForm from "@/components/LoginForm"
 import logo from "../../assets/logo.png"
 
@@ -13,7 +13,7 @@ const Login = () => {
                     </div>
                     <div className="md:hidden">
                         <h2 className="text-4xl mb-2">Sign in</h2>
-                        <p className="text-white/70 text-xs">Welcome to CSL Freight Admin Panel - Let's help you sign in...</p>
+                        <p className="text-white/70 text-xs">Welcome to CLIXMART MALL - Let's help you sign in...</p>
                     </div>
                 </div>
             </div>
@@ -31,9 +31,9 @@ const Login = () => {
                 </div>
             </div>
             <div className="w-full hidden md:block lg:w-[50%] h-full p-4 rounded-lg overflow-hidden">
-                {/* <div className={`w-full h-full bg-slate-500 flex bg-cover rounded-lg bg-center`} style={{backgroundImage:`url(${shipping})`}}>
+                <div className={`w-full h-full bg-slate-500 flex bg-cover rounded-lg bg-center`} style={{backgroundImage:`url(${shopping})`}}>
                     <div className="overlay w-full h-full bg-black opacity-40 sm:hidden"></div>
-                </div> */}
+                </div>
             </div>
         </div>
     </>

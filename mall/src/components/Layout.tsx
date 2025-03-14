@@ -1,17 +1,15 @@
 import { Outlet } from "react-router-dom"
-import Navbar from "./Navbar"
-import SideNav from "./SideNav"
-import { useState } from "react"
+// import { useState } from "react"
 import Header from "./Header"
 
 const Layout = () => {
-  const [isToggled, setIsToggled] = useState(false)
-  const toggleNavbar = ()=>{
+  // const [isToggled, setIsToggled] = useState(false)
+  // const toggleNavbar = ()=>{
 
-    setIsToggled(!isToggled)
-    console.log(isToggled);
+  //   setIsToggled(!isToggled)
+  //   console.log(isToggled);
     
-  }
+  // }
   return (
     <>
       <Header />

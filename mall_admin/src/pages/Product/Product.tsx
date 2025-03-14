@@ -47,18 +47,25 @@ const ProductDetails = () => {
                     </div>
                     <ProductApproval approval={product.data?.productReview?.status as string} id={Number(product.data?.id)} />
                 </div>
-                <div className="flex justify-between flex-wrap mb-4 lg:mb-0 px-4 mt-4">
-                    <div className="min-w-[320px] w-full md:w-1/3 flex flex-wrap gap-4 p-4">
+                <div className="flex justify-between flex-col md:flex-row flex-wrap mb-4 lg:mb-0 px-4 mt-4">
+                    <div className="min-w-[320px] md:max-w-[320px] w-full md:w-1/3 flex flex-wrap gap-4 p-4">
                         <div className="w-full aspect-square border rounded-xl"></div>
                         <div className="w-full flex items-center justify-between">
-                            <button className="flex items-center justify-center w-[18%] aspect-square rounded-lg border"></button>
-                            <button className="flex items-center justify-center w-[18%] aspect-square rounded-lg border"></button>
-                            <button className="flex items-center justify-center w-[18%] aspect-square rounded-lg border"></button>
-                            <button className="flex items-center justify-center w-[18%] aspect-square rounded-lg border"></button>
-                            <button className="flex items-center justify-center w-[18%] aspect-square rounded-lg border"></button>
+                            <button className="flex items-center justify-center w-[18%] aspect-square rounded-lg border">
+                                {product.data?.imageUrl && 
+                                    <img src={product.data.imageUrl} alt="" />
+                                }
+                            </button>
+                            {
+                                product.data?.productImages.map((image, idx) =>{
+                                    return <button key={idx} className="flex items-center justify-center w-[18%] aspect-square rounded-lg border">
+                                        <img src={image.url} alt="" />
+                                    </button>
+                                })
+                            }
                         </div>
                     </div>
-                    <div className="min-w-[320px] w-full md:w-2/3 flex flex-col flex-wrap justify-self-end gap-2 px-4">
+                    <div className="min-w-[320px] w-full flex flex-col flex-wrap justify-self-end gap-2 px-4">
                         <p className="text-xs text-blue-700 font-semibold">{product.data?.category.name} / {product.data?.subCategory.name}</p>
                         <h4 className="text-4xl font-semibold capitalize">{product.data?.name}</h4>
                         <div className="flex items-center justify-between">

@@ -1,6 +1,4 @@
-import { axios_instance } from "@/api/axios"
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator,} from "@/components/ui/breadcrumb"
-// import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { FormatCurrency } from "@/lib/helper"
 import { Product } from "@/lib/types"
 import { useQuery } from "@tanstack/react-query"
@@ -8,14 +6,17 @@ import { Edit, Star, Trash2 } from "lucide-react"
 import { useNavigate, useParams } from "react-router-dom"
 import ProductVisibility from "./ProductVisibility"
 import DescriptionParser from "@/components/DescriptionParser"
+import useAxiosToken from "@/hooks/useAxiosToken"
 
 const ProductDetails = () => {
-    const {id} = useParams()
+    const {store, id} = useParams()
     const navigate = useNavigate()
+    const axios_instance_token = useAxiosToken()
+    
 
     const product = useQuery<Product>({
-        queryKey: ["product", id],
-        queryFn: async() => await axios_instance.get(`/products/${id}`).then(res => {
+        queryKey: ["products", id],
+        queryFn: async() => await axios_instance_token.get(`/products/store/${store}/${id}`).then(res => {
             return res.data
         })
     })
@@ -27,7 +28,7 @@ const ProductDetails = () => {
             <div className="container mx-auto">
                 <div  className="mt-4 mx-4 flex items-center justify-between gap-4">
                     <div className="flex items-center gap-4">
-                        <button onClick={()=> navigate(-1)} className="flex items-center justify-center w-6 h-6 border rounded-full text-gray-400 hover:text-gray-600 hover:border-gray-600">
+                        <button onClick={()=> navigate(-1)} className="flex items-center justify-center w-8 h-8 border rounded-full text-gray-400 hover:text-gray-600 hover:border-gray-600">
                             &larr;
                         </button>
                         <Breadcrumb>
@@ -47,35 +48,33 @@ const ProductDetails = () => {
                         </Breadcrumb>
                     </div>
                     <div className="flex items-center gap-4">
-                        <button className="flex items-center gap-1 text-xs"><Edit  className="w-4 h-4"/> Edit</button>
-                        <button className="flex items-center gap-1 text-xs"><Trash2  className="w-4 h-4"/> Delete</button>
+                        <button className="flex items-center gap-1 text-xs hover:text-emerald-500"><Edit  className="w-4 h-4"/> Edit</button>
+                        <button className="flex items-center gap-1 text-xs hover:text-rose-500"><Trash2  className="w-4 h-4"/> Delete</button>
                     </div>
                 </div>
-                <div className="flex justify-between flex-wrap mb-4 lg:mb-0 px-4 mt-4">
-                    <div className="min-w-[320px] w-full md:w-1/3 flex flex-wrap gap-4 p-4">
+                <div className="flex w-full justify-between flex-col md:flex-row mb-4 lg:mb-0 px-4 mt-4">
+                    <div className="min-w-[320px] md:max-w-[320px] w-full md:w-1/3 flex flex-wrap gap-4 p-4">
                         <div className="w-full aspect-square border rounded-xl"></div>
                         <div className="w-full flex items-center justify-between">
+                            <button className="flex items-center justify-center w-[18%] aspect-square rounded-lg border">
+                                {product.data?.imageUrl && 
+                                    <img src={product.data.imageUrl} alt="" />
+                                }
+                            </button>
+                            {
+                                product.data?.productImages.map((image, idx) =>{
+                                    return <button key={idx} className="flex items-center justify-center w-[18%] aspect-square rounded-lg border">
+                                        <img src={image.url} alt="" />
+                                    </button>
+
+                                })
+                            }
+                            {/* <button className="flex items-center justify-center w-[18%] aspect-square rounded-lg border"></button>
                             <button className="flex items-center justify-center w-[18%] aspect-square rounded-lg border"></button>
-                            <button className="flex items-center justify-center w-[18%] aspect-square rounded-lg border"></button>
-                            <button className="flex items-center justify-center w-[18%] aspect-square rounded-lg border"></button>
-                            <button className="flex items-center justify-center w-[18%] aspect-square rounded-lg border"></button>
-                            <button className="flex items-center justify-center w-[18%] aspect-square rounded-lg border"></button>
+                            <button className="flex items-center justify-center w-[18%] aspect-square rounded-lg border"></button> */}
                         </div>
                     </div>
-                    <div className="min-w-[320px] relative w-full md:w-2/3 flex flex-col flex-wrap justify-self-end gap-2 px-4">
-                        {/* <div className="absolute right-4 top-2">
-                            <p className="text-xs mb-1">Product visibility</p>
-                            <Select>
-                                <SelectTrigger className="w-[110px] text-sm">
-                                    <SelectValue placeholder={product.data?.status} />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    <SelectItem onClick={()=>{}} value="Draft">DRAFT</SelectItem>
-                                    <SelectItem onClick={()=>{}} value="PUBLISH">PUBLISH</SelectItem>
-                                    <SelectItem onClick={()=>{}} value="ARCHIVE">ARCHIVE</SelectItem>
-                                </SelectContent>
-                            </Select>
-                        </div> */}
+                    <div className="min-w-[320px] relative w-full flex flex-col flex-wrap justify-self-end gap-2 px-4">
                         <ProductVisibility id={Number(product.data?.id)} visibility={product.data?.status as string} />
                         <p className="text-xs text-blue-700 font-semibold capitalize">{product.data?.category.name} / {product.data?.subCategory.name}</p>
                         <h4 className="text-4xl font-semibold capitalize">{product.data?.name}</h4>
@@ -106,7 +105,7 @@ const ProductDetails = () => {
                         
                         <div>
                             <p className="text-xs font-semibold text-muted-foreground mb-1">Description</p>
-                            <DescriptionParser description={product.data?.discription as string} />
+                            <DescriptionParser description={product.data?.description as string || ''} />
                         </div>
                     </div>
                 </div>

@@ -6,8 +6,8 @@ export class NextOfKin {
     @PrimaryGeneratedColumn()
     id: number
 
-    // @Column({type: "uuid", unique:true})
-    // nextOfKinId: string
+    @Column({type: "uuid", unique:true})
+    nextOfKinId: string
 
     @Column()
     name:string

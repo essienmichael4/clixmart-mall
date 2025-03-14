@@ -116,7 +116,7 @@ const AddUser = ({trigger}:Props) => {
                                 </FormItem>
                             )} 
                         />
-                        {auth?.user.role === "ADMIN" && <FormField 
+                        {auth?.role === "ADMIN" && <FormField 
                             control={form.control}
                             name="role"
                             render={({}) =>(

@@ -8,6 +8,7 @@ import { Category } from 'src/category/entities/category.entity';
 import { GenerateSlug } from 'src/helpers/common';
 import { SubCategory } from 'src/category/entities/subcategory.entity';
 import { UploadService } from 'src/upload/upload.service';
+import { v4 } from 'uuid';
 
 @Injectable()
 export class BrandService {
@@ -23,6 +24,7 @@ export class BrandService {
       const saveEntity = {
         ...brandEntity,
         name: createBrandDto.name.toLowerCase(),
+        brandId: v4(),
         categories: createBrandDto.category.map(category => {
           const cat = new Category()
           cat.name = category.toLowerCase()

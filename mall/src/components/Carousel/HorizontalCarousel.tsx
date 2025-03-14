@@ -2,14 +2,13 @@ import { Product } from "@/lib/types"
 import ProductHRCard from "../Cards/ProductHRCard"
 import { Button } from "../ui/button"
 import { ArrowBigLeft, ArrowBigRight } from "lucide-react"
-import { useRef, useState } from "react"
+import { useRef } from "react"
 
 interface SectionProps {
     products: Product[]
 }
 
 const HorizontalCarousel = ({products}:SectionProps) => {
-    const [scroll, setScroll] = useState(0)
     const scrollElement = useRef<HTMLDivElement | null>(null)
     const slideRight = () => {
         scrollElement.current!.scrollLeft += 400

@@ -11,8 +11,8 @@ export class StoreDetail {
     @PrimaryGeneratedColumn()
     id: number
 
-    // @Column({type: "uuid", unique:true})
-    // storeDetailId: string
+    @Column({type: "uuid", unique:true})
+    storeDetailId: string
 
     @Column({ default: Registered.FALSE })
     isRegistered: Registered;

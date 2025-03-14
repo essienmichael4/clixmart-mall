@@ -5,7 +5,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { axios_instance } from '@/api/axios'
 import useAuth from '@/hooks/useAuth'
 import { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { toast } from 'sonner'
 import axios from 'axios'
 import { Input } from './ui/input'
@@ -16,6 +16,8 @@ const RegisterForm = () => {
     const {dispatch} = useAuth()
     const [isPending, setIsPending] = useState(false)
     const navigate = useNavigate()
+    const location = useLocation()
+    const from = location.state?.from?.pathname || '/'
     
     const form = useForm<RegisterSchemaType>({
         resolver: zodResolver(RegisterSchema),
@@ -49,7 +51,7 @@ const RegisterForm = () => {
                 id: "login"
             })            
             
-            navigate("/dashboard", {replace:true})
+            navigate(from, {replace:true})
             
         }catch(err:any){
             setIsPending(false)

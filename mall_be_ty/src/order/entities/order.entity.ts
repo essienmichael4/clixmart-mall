@@ -16,6 +16,7 @@ export enum Status {
 
 export enum PaymentStatus {
     PAID = 'PAID',
+    UNPAID = 'UNPAID',
     CANCELLED = 'CANCELLED'
 }
 

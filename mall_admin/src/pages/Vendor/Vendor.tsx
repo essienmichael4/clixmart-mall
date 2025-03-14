@@ -121,7 +121,7 @@ const VendorDetails = () => {
                             <div className='flex flex-wrap gap-8'>
                                 <div>
                                     <span className='text-xs text-gray-300'>Payment Mode</span>
-                                    <p>{store.data?.paymentDetail?.provider ? store.data?.paymentDetail?.provider : "-"}</p>
+                                    <p>{store.data?.paymentDetail?.provider ? store.data?.paymentDetail?.paymentMode : "-"}</p>
                                 </div>
                                 <div>
                                     <span className='text-xs text-gray-300'>Account Provider</span>

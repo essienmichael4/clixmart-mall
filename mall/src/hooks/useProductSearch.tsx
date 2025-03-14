@@ -24,7 +24,7 @@ const useProductsSearch = ({q, page = 1, category, subCategory, take=50, brand}:
     const [prevCategory, setPrevCategory] = useState("")
     const [prevSubCategory, setPrevSubCategory] = useState("")
     
-
+// @ts-ignore
     const productsQuery = useQuery<ProductsResponse>({
         queryKey: ["products", q, page, category, subCategory],
         queryFn: async() => await axios_instance.get(`/products?q=${q || ""}&page=${page}&take=${take}&category=${category || ""}&subCategory=${subCategory || ""}&brand=${brand}`).then(res => {

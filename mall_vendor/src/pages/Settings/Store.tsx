@@ -4,8 +4,8 @@ import { useQuery } from "@tanstack/react-query"
 import { useNavigate, useParams } from "react-router-dom"
 import cover from '@/assets/pexels-donald-tong-23273.jpg'
 import { Separator } from "@/components/ui/separator"
-import { Button } from "@/components/ui/button"
-import { Edit } from "lucide-react"
+// import { Button } from "@/components/ui/button"
+// import { Edit } from "lucide-react"
 
 const VendorDetails = () => {
     const {store} = useParams()

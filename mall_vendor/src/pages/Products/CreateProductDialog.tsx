@@ -44,7 +44,7 @@ const CreateProductDialog = ({store, trigger}:Props) => {
         mutationFn: addProduct,
         onSuccess: (data)=>{
             toast.success("Product added successfully", {
-                id: "add-package"
+                id: "add-product"
             })
 
             form.reset({

@@ -47,7 +47,8 @@ export class ProductService {
         where :{slug: storeName}
       })
       const productReview = await this.productReviewRepo.save({
-        status: ReviewStatus.PENDING
+        status: ReviewStatus.PENDING,
+        reviewId: v4()
       })
 
       const productEntity = this.productRepo.create()
@@ -124,7 +125,8 @@ export class ProductService {
       return  {
         ...productEntity,
         url: filename,
-        product: product
+        product: product,
+        productImageId: v4()
       }
     })
 
@@ -261,12 +263,16 @@ export class ProductService {
 
     const productResponse = new ProductReponseDto(product)
 
-    productResponse.imageUrl = await this.uploadService.getPresignedUrl(`products/${product.imageName}`)
+    if(productResponse.imageName){
+      productResponse.imageUrl = await this.uploadService.getPresignedUrl(`products/${product.imageName}`)
+    }
 
-    productResponse.productImages.map(async (image) => {
-      image.imageUlr = await this.uploadService.getPresignedUrl(`products/${image.url}`)
-      return image
-    })
+    if(productResponse.productImages) {
+      productResponse.productImages.map(async (image) => {
+        image.imageUlr = await this.uploadService.getPresignedUrl(`products/${image.url}`)
+        return image
+      })
+    }
 
     return productResponse
   }

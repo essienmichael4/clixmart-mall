@@ -19,8 +19,8 @@ export class Store {
     @PrimaryGeneratedColumn()
     id: number
 
-    // @Column({type: "uuid", unique:true})
-    // storeId: string
+    @Column({type: "uuid", unique:true})
+    storeId: string
 
     @Column({ unique: true })
     name:string

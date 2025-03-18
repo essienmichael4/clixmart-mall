@@ -25,7 +25,7 @@ const Categories = () => {
     }
 
     return (
-        <ScrollArea className="hidden lg:block lg:w-[230px] lg:h-96">
+        <ScrollArea className="hidden lg:block lg:w-[300px] lg:h-96">
             <h2 className="uppercase text-sm font-semibold">Our Categories</h2>
             {
                 categories.data?.map(category=>{

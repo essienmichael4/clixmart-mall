@@ -1,18 +1,17 @@
 import AliceCarousel from 'react-alice-carousel';
 import 'react-alice-carousel/lib/alice-carousel.css';
-
-const responsive = {
-    0: { items: 1 },
-    568: { items: 2 },
-    1024: { items: 3 },
-};
+import maintenance from '../../assets/pexels-kindelmedia-7007188.jpg'
+// import main from '../../assets/IMG_6806.jpg'
 
 const items = [
-    <div className="item" data-value="1">1</div>,
-    <div className="item" data-value="2">2</div>,
-    <div className="item" data-value="3">3</div>,
-    <div className="item" data-value="4">4</div>,
-    <div className="item" data-value="5">5</div>,
+    <div className="item" data-value="1">
+        <img src={maintenance} className='w-full h-full object-cover' alt="" />
+        {/* <img src={main} className='hidden sm:block w-full h-full object-cover' alt="" /> */}
+    </div>,
+    // <div className="item" data-value="2"></div>,
+    // <div className="item" data-value="3"></div>,
+    // <div className="item" data-value="4"></div>,
+    // <div className="item" data-value="5"></div>,
 ];
 
 const MainCarousel = () => (

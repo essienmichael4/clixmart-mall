@@ -4,8 +4,8 @@ import { Separator } from "@/components/ui/separator"
 import useAxiosToken from "@/hooks/useAxiosToken"
 import useCart from "@/hooks/useCart"
 import { FormatCurrency } from "@/lib/helper"
-import { Product } from "@/lib/types"
-import { useState } from "react"
+// import { Product } from "@/lib/types"
+// import { useState } from "react"
 import { toast } from "sonner"
 
 const Cart = () => {

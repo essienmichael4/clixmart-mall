@@ -73,7 +73,7 @@ export class ProductController {
   public async uploadFiles(@Param('id', ParseIntPipe) id: number, @Req() req:any,
     @UploadedFiles(
       new ParseFilePipeBuilder()
-      .addFileTypeValidator({fileType: /(jpg|jpeg|png|gif)$/})
+      .addFileTypeValidator({fileType: /(jpg|jpeg|png|gif|webp)$/})
         .addMaxSizeValidator({maxSize: MAX_IMAGE_SIZE_IN_BYTE})
         .build({errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY})
     ) files: Array<Express.Multer.File>,){
@@ -154,8 +154,6 @@ export class ProductController {
   @UseGuards(JwtGuard)
   @Get('/store/:store/:id')
   findStoreProduct(@Param('store') store: string, @Param('id', ParseIntPipe) id: number) {
-    console.log({store, id});
-    
     return this.productService.findStoreProduct(store, id);
   }
 

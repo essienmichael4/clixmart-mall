@@ -53,6 +53,32 @@ export type LoadingType = {
     status: "IN_TRANSIT" | "ARRIVED" | "DELIVERED"
 }
 
+export type Order = {
+    id: number,
+    orderId?: string,
+    status: string,
+    total: number,
+    tax: number,
+    discount: number,
+    createdAt: string,
+    updatedAt: string,
+    isPaid: string,
+    orderItems: OrderItem[],
+    user?: User
+}
+
+export type OrderItem = {
+    id: number,
+    orderItemId?: string,
+    name: string,
+    price: number,
+    subTotal: number,
+    quantity: number,
+    status: string,
+    createdAt: string,
+    updatedAt: string,
+    product: Product
+}
 
 export type Package = {
     id:number,
@@ -81,18 +107,21 @@ export type PaymentDetail = {
 
 export type Product = {
     id?: number,
+    productId: string,
     name: string,
     price: number,
     quantity?: number,
+    model?: string,
     status: "DRAFT" | "PUBLISH" | "ARCHIVE",
     inventory: "INSTOCK" | "OUTSTOCK",
-    discription: string,
+    description: string,
     discount: number,
     isDiscounted: "TRUE" | "FALSE"
     createdAt: string,
     updatedAt: string,
     category: Category,
     subCategory: SubCategory,
+    imageUrl?: string,
     user?: User
     store?: Store,
     brand?: Brand,
@@ -167,6 +196,7 @@ export type User = {
     name: string,
     email: string,
     role?: string,
+    phone?: string,
     createdAt?: string,
     updatedAt?:string,
 }

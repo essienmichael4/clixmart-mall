@@ -8,8 +8,8 @@ export class Brand {
     @PrimaryGeneratedColumn()
     id: number
 
-    // @Column({type: "uuid", unique:true})
-    // brandId: string
+    @Column({type: "uuid", unique:true})
+    brandId: string
 
     @Column({unique:true})
     name:string

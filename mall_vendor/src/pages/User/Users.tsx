@@ -27,10 +27,10 @@ const columns:ColumnDef<User>[] =[{
     accessorKey: "id",
     header:({column})=>(<DataTableColumnHeader column={column} title='ID' />),
     cell:({row}) => <div>
-        {auth?.user.role === "ADMIN" ? 
+        {auth?.role === "ADMIN" ? 
             <Link to={`./${row.original.id}`}>
                 <span className='text-gray-400'>#</span>{row.original.id}
-            </Link> : auth?.user.email === row.original.email ? <Link to={`./${row.original.id}`}>
+            </Link> : auth?.email === row.original.email ? <Link to={`./${row.original.id}`}>
                 <span className='text-gray-400'>#</span>{row.original.id}
             </Link> : <span><span className='text-gray-400'>#</span>{row.original.id} </span>
         }
@@ -52,12 +52,12 @@ const columns:ColumnDef<User>[] =[{
   accessorKey: "updatedAt",
   header:({column})=>(<DataTableColumnHeader column={column} title='Actions' />),
   cell:({row}) => <div>
-        {auth?.user.role === "ADMIN" ? 
+        {auth?.role === "ADMIN" ? 
             <span className="flex gap-2 items-center">
                 <EditAccountDialog user={row.original} trigger={<button><Edit className="w-4 h-4 text-emerald-400"/></button>} />
                 <DeleteUser user={row.original} trigger={<button><Trash2 className="w-4 h-4 text-rose-400" /></button>} />
             </span>
-            : auth?.user.email === row.original.email ? 
+            : auth?.email === row.original.email ? 
                 <span className="flex gap-2 items-center">
                     <EditAccountDialog user={row.original} trigger={<button><Edit className="w-4 h-4 text-emerald-400"/></button>} />
                     <DeleteUser user={row.original} trigger={<button><Trash2 className="w-4 h-4 text-rose-400" /></button>} />

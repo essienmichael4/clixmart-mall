@@ -69,6 +69,7 @@
     "react-phone-input-2": "^2.15.1",
     "react-resizable-panels": "^2.1.7",
     "react-router-dom": "^6.24.1",
+    "react-simple-star-rating": "^5.1.7",
     "recharts": "^2.15.0",
     "sonner": "^1.7.1",
     "tailwind-merge": "^2.6.0",

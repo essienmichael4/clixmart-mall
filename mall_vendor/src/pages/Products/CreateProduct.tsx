@@ -23,6 +23,7 @@ import SecondaryImages from "./SecondaryImages"
 const CreateProduct = () => {
     const {store, id} = useParams()
     const [tag, setTag] = useState('')
+    const [discount, setDiscount] = useState('')
     const [tags, setTags] = useState<string[]>([])
     const [category, setCategory] = useState("")
     const navigate = useNavigate()
@@ -36,7 +37,7 @@ const CreateProduct = () => {
     
     const productDetail = useQuery<Product>({
         queryKey: ["products", store, id],
-        queryFn: async() => await axios_instance_token.get(`/products/${store}/${id}`).then(res => {
+        queryFn: async() => await axios_instance_token.get(`/products/store/${store}/${id}`).then(res => {
             return res.data
         })
     })
@@ -81,7 +82,8 @@ const CreateProduct = () => {
     const addProductdetails = async (data:ProductDetailsSchemaType)=>{
         const response = await axios_instance_token.post(`/products/${store}/${id}/product-details`, {
             ...data,
-            tags
+            tags,
+            discount
         },)
 
         return response.data
@@ -91,7 +93,7 @@ const CreateProduct = () => {
         mutationFn: addProductdetails,
         onSuccess: ()=>{
             toast.success("Product added successfully", {
-                id: "add-package"
+                id: "add-product"
             })
 
             form.reset({
@@ -203,14 +205,14 @@ const CreateProduct = () => {
                                     />
 
                                     <FormField 
-                                        control={form.control}
+                                        // control={form.control}
                                         name="discount"
-                                        render={({field}) =>(
+                                        render={({}) =>(
                                             <FormItem className='flex-1 space-y-1'>
                                                 <FormLabel className='text-xs'>Discount</FormLabel>
                                                 <FormControl>
                                                     <div className="flex items-center gap-1">
-                                                        <Input {...field} className="py-4"/> <Percent className="w-8 h-8 bg-gray-300 rounded-md p-2" />
+                                                        <Input onChange={(e)=>setDiscount(e.target.value)} className="py-4"/> <Percent className="w-8 h-8 bg-gray-300 rounded-md p-2" />
                                                     </div>
                                                 </FormControl>
                                             </FormItem>
@@ -266,7 +268,7 @@ const CreateProduct = () => {
                                         <FormItem className='flex-1 space-y-1'>
                                             <FormLabel className='text-xs'>Product Brand</FormLabel>
                                             <FormControl>
-                                                <BrandPicker category={category} onChange={field.onChange} />
+                                                <BrandPicker onChange={field.onChange} />
                                             </FormControl>
                                         </FormItem>
                                     )} 

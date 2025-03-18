@@ -27,7 +27,7 @@ export const ProductDetailsSchema = z.object({
     }).optional().or(z.literal('')),
     quantity: z.coerce.number().positive().min(0).optional(),
     price: z.coerce.number().positive().min(0).optional(),
-    discount: z.coerce.number().positive().min(0).optional(),
+    // discount: z.coerce.number().positive().min(0).optional(),
 })
 
 export type ProductSchemaType = z.infer<typeof ProductSchema>

@@ -131,7 +131,7 @@ const CreateSubCategory = ({trigger}:Props) => {
                     </DialogClose>
                     <Button onClick={form.handleSubmit(onSubmit)} disabled={isPending} className='bg-gradient-to-r from-blue-500 to-blue-800 text-white'
                     >
-                        {!isPending && "Add Package"}
+                        {!isPending && "Add Sub Category"}
                         {isPending && <Loader2 className='animate-spin' /> }
                     </Button>
                 </DialogFooter>

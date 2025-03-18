@@ -1,5 +1,5 @@
 import logo from '../assets/logo.jpeg'
-import { BaggageClaim, GripVertical, LayoutDashboard, Package, PackageSearch, Settings, Ship, ShoppingBag, Store, Users } from 'lucide-react'
+import { BaggageClaim, GripVertical, LayoutDashboard, PackageSearch, Settings, ShoppingBag, Store, Users } from 'lucide-react'
 import { Link, NavLink } from 'react-router-dom'
 
 interface SideNavProps{
@@ -35,7 +35,7 @@ const SideNav = ({isToggled}:SideNavProps) => {
                 <PackageSearch className='h-6 w-6 mr-6' />
                 <span className=''>Products</span>
             </NavLink>
-            <NavLink to={"/users"} className='pl-1 py-2 flex items-center flex-shrink-0 mb-4 text-muted-foreground'>
+            <NavLink to={"/orders"} className='pl-1 py-2 flex items-center flex-shrink-0 mb-4 text-muted-foreground'>
                 <ShoppingBag className='h-6 w-6 mr-6' />
                 <span className=''>Orders</span>
             </NavLink>

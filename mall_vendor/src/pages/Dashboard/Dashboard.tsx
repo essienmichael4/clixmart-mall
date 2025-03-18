@@ -1,4 +1,3 @@
-import ShippingReport from "@/components/ShippingReport"
 import useAxiosToken from "@/hooks/useAxiosToken"
 import { useQuery } from "@tanstack/react-query"
 import { PackageCheck, PackageOpen, Truck } from "lucide-react"
@@ -64,7 +63,6 @@ const Dashboard = () => {
                 </div>
 
                 <div>
-                    <ShippingReport />
                 </div>
             </div>
             

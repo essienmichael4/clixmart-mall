@@ -1,7 +1,7 @@
 import useCart from "@/hooks/useCart"
 import { FormatCurrency } from "@/lib/helper"
 import { Product } from "@/lib/types"
-import { Plus, ShoppingCart } from "lucide-react"
+import { ShoppingCart } from "lucide-react"
 import React from "react"
 
 interface ProductProps {

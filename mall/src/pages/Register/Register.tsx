@@ -1,4 +1,4 @@
-// import shipping from "../../assets/shipping.jpg"
+import shopping from "../../assets/pexels-n-voitkevich-6214476.jpg"
 import logo from "../../assets/logo.png"
 import RegisterForm from "@/components/RegisterForm"
 
@@ -31,9 +31,9 @@ const Register = () => {
                 </div>
             </div>
             <div className="w-full hidden md:block lg:w-[50%] h-full p-4 rounded-lg overflow-hidden">
-                {/* <div className={`w-full h-full bg-slate-500 flex bg-cover rounded-lg bg-center`} style={{backgroundImage:`url(${shipping})`}}>
+                <div className={`w-full h-full bg-slate-500 flex bg-cover rounded-lg bg-center`} style={{backgroundImage:`url(${shopping})`}}>
                     <div className="overlay w-full h-full bg-black opacity-40 sm:hidden"></div>
-                </div> */}
+                </div>
             </div>
         </div>
     </>

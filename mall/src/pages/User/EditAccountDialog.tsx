@@ -21,7 +21,7 @@ interface Props{
 }
 
 const EditAccountDialog = ({user, trigger}:Props) => {
-    const {setAuth} = useAuth()
+    const {dispatch} = useAuth()
     const axios_instance_token = useAxiosToken()
     const [open, setOpen] = useState(false)
 
@@ -48,7 +48,7 @@ const EditAccountDialog = ({user, trigger}:Props) => {
                 id: "user-update"
             })
 
-            setAuth(data)
+            dispatch(data)
 
             form.reset({
                 email: "",

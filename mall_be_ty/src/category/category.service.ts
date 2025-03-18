@@ -6,6 +6,7 @@ import { Category } from './entities/category.entity';
 import { Repository } from 'typeorm';
 import { SubCategory } from './entities/subcategory.entity';
 import { CreateSubCategoryDto, EditSubCategoryDto } from './dto/create-sub-category.dto';
+import { v4 } from 'uuid';
 
 @Injectable()
 export class CategoryService {
@@ -19,6 +20,7 @@ export class CategoryService {
     const saveEntity = {
       ...categoryEntity,
       name: createCategoryDto.name.toLowerCase(),
+      categoryId: v4(),
       slug: this.generateSlug(createCategoryDto.name.toLowerCase())
     }
     try{
@@ -38,6 +40,7 @@ export class CategoryService {
       const saveEntity = {
         ...subCategoryEntity,
         name: createSubCategoryDto.name.toLowerCase(),
+        subCategoryId: v4(),
         slug: this.generateSlug(createSubCategoryDto.name.toLowerCase()),
         category
       }

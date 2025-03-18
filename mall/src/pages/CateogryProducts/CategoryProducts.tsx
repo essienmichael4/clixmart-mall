@@ -2,10 +2,10 @@ import Header from "@/components/Header"
 import ProductCard from "@/components/Cards/ProductCard"
 import useCategoriesProducts from "@/hooks/useCategoriesProducts"
 import { useCallback, useRef, useState } from "react"
-import { useParams } from "react-router-dom"
+// import { useParams } from "react-router-dom"
 
 const CategoryProducts = () => {
-    const query = useParams()
+    // const query = useParams()
     const [page, setPage] = useState(1)
     const {products, isLoading, hasNextPage} = useCategoriesProducts({page, subCategory: []})
     

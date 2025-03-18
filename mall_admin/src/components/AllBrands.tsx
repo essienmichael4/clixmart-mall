@@ -6,7 +6,7 @@ import { ColumnDef, getCoreRowModel, flexRender, useReactTable, getPaginationRow
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from './ui/table'
 import useAxiosToken from '@/hooks/useAxiosToken'
 import { Button } from './ui/button'
-import { Edit, Image, Video } from 'lucide-react'
+import { Edit, Image } from 'lucide-react'
 import EditBrand from '@/pages/Brand/EditBrand'
 import EditBrandImage from '@/pages/Brand/EditBrandImage'
 

@@ -1,9 +1,8 @@
-import { AuthType } from '@/lib/types'
 import useAuth from './useAuth'
 import axios from 'axios'
 
 const useRefreshToken = () => {
-    const {auth, setAuth} = useAuth()
+    const {auth, dispatch} = useAuth()
 
     const refresh = async ()=>{
         const response = await axios.get(`"https://api.cslfreightgh.com/auth/refresh`, {
@@ -12,16 +11,15 @@ const useRefreshToken = () => {
             }
         })
 
-        setAuth(prev =>{
-            const auth:AuthType = {
-                user:prev!.user, 
-                backendTokens: {
-                    accessToken: response.data?.accessToken,
-                    refreshToken: prev!.backendTokens.refreshToken
-                }
+        dispatch({type: "ADD_AUTH", payload:{
+            id: auth?.id,
+            name: auth!.name,
+            email: auth!.email,
+            backendTokens: {
+                accessToken: response.data?.accessToken,
+                refreshToken: auth!.backendTokens.refreshToken
             }
-            return auth
-        })
+        }})
         
         return response.data.accessToken
     }

@@ -6,8 +6,8 @@ export class StoreAddress {
     @PrimaryGeneratedColumn()
     id: number
 
-    // @Column({type: "uuid", unique:true})
-    // storeAddressId: string
+    @Column({type: "uuid", unique:true})
+    storeAddressId: string
 
     @Column()
     country:string

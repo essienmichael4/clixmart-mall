@@ -13,8 +13,8 @@ export class SubCategory {
     @PrimaryGeneratedColumn()
     id: number
 
-    // @Column({type: "uuid", unique:true})
-    // subCategoryId: string
+    @Column({type: "uuid", unique:true})
+    subCategoryId: string
 
     @Column({
         unique: true

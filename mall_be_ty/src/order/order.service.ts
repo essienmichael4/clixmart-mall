@@ -83,6 +83,47 @@ export class OrderService {
     })
   }
 
+  findAllStoreOrders(store: string) {
+    return this.orderRepo.find({
+      relations: {
+          orderItems: {
+            product: {
+              store: true
+            }
+          }
+      }, where: {
+        orderItems: {
+          product: {
+            store: {
+              slug: store
+            }
+          }
+        }
+      }
+    })
+  }
+
+  findStoreOrderItem(store: string, orderId:string) {
+    return this.orderRepo.findOne({
+      relations: {
+          orderItems: {
+            product: {
+              store: true
+            }
+          }
+      }, where: {
+        orderId,
+        orderItems: {
+          product: {
+            store: {
+              slug: store
+            }
+          }
+        }
+      }
+    })
+  }
+
   findOne(id: string) {
     return this.orderRepo.findOne({
       where: {

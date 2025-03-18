@@ -97,9 +97,9 @@ const PrimaryImage = ({ id, trigger}:Props) => {
                                 Cancel
                         </Button>
                     </DialogClose>
-                    <Button onClick={()=>{onSubmit}} disabled={isPending} className='bg-gradient-to-r from-blue-500 to-blue-800 text-white'
+                    <Button onClick={()=>{onSubmit()}} disabled={isPending} className='bg-gradient-to-r from-blue-500 to-blue-800 text-white'
                     >
-                        {!isPending && "Update ETA"}
+                        {!isPending && "Add Image"}
                         {isPending && <Loader2 className='animate-spin' /> }
                     </Button>
                 </DialogFooter>

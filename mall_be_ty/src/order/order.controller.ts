@@ -33,6 +33,18 @@ export class OrderController {
   }
 
   @UseGuards(JwtGuard)
+  @Get("store/:store")
+  findAllStoreOrders(@Param('store') store: string) {
+    return this.orderService.findAllStoreOrders(store);
+  }
+
+  @UseGuards(JwtGuard)
+  @Get("store/:store/:orderId")
+  findAllStoreOrderItems(@Param('store') store: string, @Param('orderId') orderId: string,) {
+    return this.orderService.findStoreOrderItem(store, orderId);
+  }
+
+  @UseGuards(JwtGuard)
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.orderService.findOne(id);

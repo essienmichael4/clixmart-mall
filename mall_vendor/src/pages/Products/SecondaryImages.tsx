@@ -102,7 +102,7 @@ const SecondaryImages = ({ id, trigger}:Props) => {
                                 Cancel
                         </Button>
                     </DialogClose>
-                    <Button onClick={()=>{onSubmit}} disabled={isPending} className='bg-gradient-to-r from-blue-500 to-blue-800 text-white'
+                    <Button onClick={()=>{onSubmit()}} disabled={isPending} className='bg-gradient-to-r from-blue-500 to-blue-800 text-white'
                     >
                         {!isPending && "Update Received"}
                         {isPending && <Loader2 className='animate-spin' /> }

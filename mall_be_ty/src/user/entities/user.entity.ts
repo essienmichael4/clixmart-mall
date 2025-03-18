@@ -5,6 +5,7 @@ import { Product } from "src/product/entities/product.entity";
 import { ProductReview } from "src/product/entities/review.entity";
 import { Follow } from "src/store/entities/follow.entity";
 import { StoreReview } from "src/store/entities/storeReview.entity";
+import { Address } from "./address.entity";
 
 export enum Deleted {
     TRUE = 'TRUE',
@@ -56,6 +57,10 @@ export class User {
     @OneToOne(()=> ProfileImage, (profileImage)=> profileImage.user, {cascade: true})
     @JoinColumn()
     profileImage: ProfileImage
+    
+    @OneToOne(()=> Address, (address)=> address.user, {cascade: true})
+    @JoinColumn()
+    address: Address
 
     @OneToMany(() => Store, (storeEntity) => storeEntity.user, {cascade: true})
     stores: Store[];

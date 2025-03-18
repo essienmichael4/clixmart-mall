@@ -3,7 +3,7 @@ import { FormatCurrency } from "@/lib/helper"
 import { Product } from "@/lib/types"
 import { useQuery } from "@tanstack/react-query"
 import { Edit, Star, Trash2 } from "lucide-react"
-import { useNavigate, useParams } from "react-router-dom"
+import { Link, useNavigate, useParams } from "react-router-dom"
 import ProductVisibility from "./ProductVisibility"
 import DescriptionParser from "@/components/DescriptionParser"
 import useAxiosToken from "@/hooks/useAxiosToken"
@@ -48,7 +48,7 @@ const ProductDetails = () => {
                         </Breadcrumb>
                     </div>
                     <div className="flex items-center gap-4">
-                        <button className="flex items-center gap-1 text-xs hover:text-emerald-500"><Edit  className="w-4 h-4"/> Edit</button>
+                        <Link to={"./edit"} className="flex items-center gap-1 text-xs hover:text-emerald-500"><Edit  className="w-4 h-4"/> Edit</Link>
                         <button className="flex items-center gap-1 text-xs hover:text-rose-500"><Trash2  className="w-4 h-4"/> Delete</button>
                     </div>
                 </div>
@@ -76,7 +76,7 @@ const ProductDetails = () => {
                     </div>
                     <div className="min-w-[320px] relative w-full flex flex-col flex-wrap justify-self-end gap-2 px-4">
                         <ProductVisibility id={Number(product.data?.id)} visibility={product.data?.status as string} />
-                        <p className="text-xs text-blue-700 font-semibold capitalize">{product.data?.category.name} / {product.data?.subCategory.name}</p>
+                        <p className="text-xs text-blue-700 font-semibold capitalize">{product.data?.category?.name} / {product.data?.subCategory?.name}</p>
                         <h4 className="text-4xl font-semibold capitalize">{product.data?.name}</h4>
                         <div className="flex items-center justify-between">
                             <div className="flex items-center gap-3">

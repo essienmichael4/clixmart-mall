@@ -8,19 +8,18 @@ import useAxiosToken from '@/hooks/useAxiosToken'
 import { Button } from './ui/button'
 
 interface FilterProps{
-    filtering:string
+    filtering:string,
+    store?: string | undefined
 }
 
 const emptyData: any[]= []
 
-const AllOrders = ({ filtering}:FilterProps) => {
+const AllOrders = ({ filtering, store }:FilterProps) => {
     const axios_instance_token = useAxiosToken()
 
     const stores = useQuery<Order[]>({
         queryKey: ["orders"],
-        queryFn: async() => await axios_instance_token.get(`/orders`).then(res => {
-            console.log(res.data);
-            
+        queryFn: async() => await axios_instance_token.get(`/orders/${store}`).then(res => {
             return res.data
         })
     })

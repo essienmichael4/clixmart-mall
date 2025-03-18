@@ -20,16 +20,15 @@ import Tags from "@/components/Tags"
 import PrimaryImage from "./PrimaryImage"
 import SecondaryImages from "./SecondaryImages"
 
-const CreateProduct = () => {
+const EditProduct = () => {
     const {store, id} = useParams()
     const [tag, setTag] = useState('')
     const [discount, setDiscount] = useState('')
     const [tags, setTags] = useState<string[]>([])
-    const [category, setCategory] = useState("")
     const navigate = useNavigate()
     const axios_instance_token = useAxiosToken()
     const queryClient = useQueryClient()
-
+    
     const handleCategoryChange = (value:string)=>{
         form.setValue("category", value)
         setCategory(value)
@@ -41,7 +40,9 @@ const CreateProduct = () => {
             return res.data
         })
     })
-
+    
+    const [category, setCategory] = useState(productDetail.data?.name || "")
+    
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       setTag(e.target.value)
     }
@@ -72,10 +73,10 @@ const CreateProduct = () => {
     const form = useForm<ProductDetailsSchemaType>({
         resolver:zodResolver(ProductDetailsSchema),
         defaultValues:{
-            model: "",
-            category: "",
-            subCategory: "",
-            brand: ""
+            model: productDetail.data?.model || "",
+            category: productDetail.data?.category.name || "",
+            subCategory: productDetail.data?.subCategory.name || "",
+            brand: productDetail.data?.brand?.name || ""
         }
     })
 
@@ -93,7 +94,7 @@ const CreateProduct = () => {
         mutationFn: addProductdetails,
         onSuccess: ()=>{
             toast.success("Product added successfully", {
-                id: "add-product"
+                id: "edit-product"
             })
 
             form.reset({
@@ -106,19 +107,19 @@ const CreateProduct = () => {
         },onError: (err:any) => {
             if (axios.isAxiosError(err)){
                 toast.error(err?.response?.data?.message, {
-                    id: "add-product"
+                    id: "edit-product"
                 })
             }else{
                 toast.error(`Something went wrong`, {
-                    id: "add-product"
+                    id: "edit-product"
                 })
             }
         }
     })
 
     const onSubmit = (data:ProductDetailsSchemaType)=>{
-        toast.loading("Adding product...", {
-            id: "add-product"
+        toast.loading("Editing product...", {
+            id: "edit-product"
         })
         mutate(data)
     }
@@ -127,7 +128,7 @@ const CreateProduct = () => {
         <>
         <div className="container mx-auto">
             <div className="flex justify-between flex-wrap mb-4 lg:mb-0 px-4 mt-4">
-                <h2 className="text-2xl">Product Information</h2>
+                <h2 className="text-2xl">Edit Product</h2>
                 <div className="space-x-2">
                     <PrimaryImage id={Number(id)} trigger={<Button variant={"outline"}><Plus /> Add Primary Image</Button>} />
                     <SecondaryImages id={Number(id)} trigger={<Button variant={"outline"}><Plus /> Add Other Images</Button>} />
@@ -138,7 +139,7 @@ const CreateProduct = () => {
                     <div className="border rounded-lg p-4">
                         <div className="flex flex-col md:flex-row">
                             <div className="w-full space-y-2">
-                                <h3 className="text-5xl">{productDetail.data?.name}</h3>
+                                <h3 className="capitalize text-5xl">{productDetail.data?.name}</h3>
                                 {/* <FormField
                                     control={form.control}
                                     name="name"
@@ -297,4 +298,4 @@ const CreateProduct = () => {
     )
 }
 
-export default CreateProduct
+export default EditProduct

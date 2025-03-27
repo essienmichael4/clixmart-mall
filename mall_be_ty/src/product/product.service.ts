@@ -150,10 +150,10 @@ export class ProductService {
           status: ReviewStatus.APPROVED
         },
         category: {
-          ...(category && { name: category.toLowerCase() }),
+          ...(category && { slug: category.toLowerCase() }),
         },
         subCategory: {
-          ...(subCategory && { name: subCategory.toLowerCase() }),
+          ...(subCategory && { slug: subCategory.toLowerCase() }),
         }
       },
       skip: pageOptionsDto.skip,
@@ -166,7 +166,7 @@ export class ProductService {
       product.imageUrl = await this.uploadService.getPresignedUrl(`products/${product.imageName}`)
 
       product.productImages.map(async (image) => {
-        image.imageUlr = await this.uploadService.getPresignedUrl(`products/${image.url}`)
+        image.imageUrl = await this.uploadService.getPresignedUrl(`products/${image.url}`)
         return image
       })
     })
@@ -176,7 +176,7 @@ export class ProductService {
     return new PageDto(productsResponse, pageMetaDto)
   }
 
-  async findProductsByCategory(pageOptionsDto:PageOptionsDto, q?: string, category?: string, subCategory?: string){
+  async findProductsByCategory(pageOptionsDto:PageOptionsDto, category?: string){
     const products = await this.productRepo.find({
       relations:{
         productReview: true,
@@ -185,17 +185,14 @@ export class ProductService {
         brand:true
       },
       where: {
-        ...(q && { name: Like(`%${q.toLowerCase()}%`) }),
+        // ...(q && { name: Like(`%${q.toLowerCase()}%`) }),
         inventory: Inventory.INSTOCK,
         status: Status.PUBLISH,
         productReview: {
           status: ReviewStatus.APPROVED
         },
         category: {
-          ...(category && { name: category.toLowerCase() }),
-        },
-        subCategory: {
-          ...(subCategory && { name: subCategory.toLowerCase() }),
+          ...(category && { slug: category.toLowerCase() }),
         }
       },
       skip: pageOptionsDto.skip,
@@ -208,7 +205,50 @@ export class ProductService {
       product.imageUrl = await this.uploadService.getPresignedUrl(`products/${product.imageName}`)
 
       product.productImages.map(async (image) => {
-        image.imageUlr = await this.uploadService.getPresignedUrl(`products/${image.url}`)
+        image.imageUrl = await this.uploadService.getPresignedUrl(`products/${image.url}`)
+        return image
+      })
+    })
+
+    const productsCount = await this.productRepo.count()
+    const pageMetaDto = new PageMetaDto({itemCount: productsCount, pageOptionsDto})
+    return new PageDto(products, pageMetaDto)
+  }
+
+  async findProductsByCategoryAndSubCategories(pageOptionsDto:PageOptionsDto, category?: string, subCategories?: string[]){
+    const products = await this.productRepo.find({
+      relations:{
+        productReview: true,
+        category: true,
+        subCategory: true,
+        brand:true
+      },
+      where: {
+        // ...(q && { name: Like(`%${q.toLowerCase()}%`) }),
+        inventory: Inventory.INSTOCK,
+        status: Status.PUBLISH,
+        productReview: {
+          status: ReviewStatus.APPROVED
+        },
+        category: {
+          ...(category && { slug: category.toLowerCase() }),
+        },
+        subCategory: {
+          ...(subCategories.length > 0 && {subCategoryId: In(subCategories)})
+          // ...(subCategory && { name: subCategory.toLowerCase() }),
+        }
+      },
+      skip: pageOptionsDto.skip,
+      take: pageOptionsDto.take
+    })
+
+    const productsResponse = products.map(product=> new ProductReponseDto(product))
+
+    productsResponse.map(async (product) => {
+      product.imageUrl = await this.uploadService.getPresignedUrl(`products/${product.imageName}`)
+
+      product.productImages.map(async (image) => {
+        image.imageUrl = await this.uploadService.getPresignedUrl(`products/${image.url}`)
         return image
       })
     })
@@ -238,7 +278,7 @@ export class ProductService {
       product.imageUrl = await this.uploadService.getPresignedUrl(`products/${product.imageName}`)
 
       product.productImages.map(async (image) => {
-        image.imageUlr = await this.uploadService.getPresignedUrl(`products/${image.url}`)
+        image.imageUrl = await this.uploadService.getPresignedUrl(`products/${image.url}`)
         return image
       })
     })
@@ -269,7 +309,38 @@ export class ProductService {
 
     if(productResponse.productImages) {
       productResponse.productImages.map(async (image) => {
-        image.imageUlr = await this.uploadService.getPresignedUrl(`products/${image.url}`)
+        image.imageUrl = await this.uploadService.getPresignedUrl(`products/${image.url}`)
+        return image
+      })
+    }
+
+    return productResponse
+  }
+
+  async findProductByProductId(productId: string) {
+    const product = await this.productRepo.findOne({
+      where: {productId},
+      relations: {
+        store: true,
+        productImages: true,
+        productReview: true,
+        tags: true,
+        brand: true,
+        category: true,
+        subCategory: true,
+        user: true
+      },
+    });
+
+    const productResponse = new ProductReponseDto(product)
+
+    if(productResponse.imageName){
+      productResponse.imageUrl = await this.uploadService.getPresignedUrl(`products/${product.imageName}`)
+    }
+
+    if(productResponse.productImages) {
+      productResponse.productImages.map(async (image) => {
+        image.imageUrl = await this.uploadService.getPresignedUrl(`products/${image.url}`)
         return image
       })
     }
@@ -289,8 +360,8 @@ export class ProductService {
     productsResponse.map(async (product) => {
       product.imageUrl = await this.uploadService.getPresignedUrl(`products/${product.imageName}`)
 
-      product.productImages.map(async (image) => {
-        image.imageUlr = await this.uploadService.getPresignedUrl(`products/${image.url}`)
+      product?.productImages?.map(async (image) => {
+        image.imageUrl = await this.uploadService.getPresignedUrl(`products/${image.url}`)
         return image
       })
     })
@@ -323,7 +394,7 @@ export class ProductService {
     productResponse.imageUrl = await this.uploadService.getPresignedUrl(`products/${product.imageName}`)
 
     productResponse.productImages.map(async (image) => {
-      image.imageUlr = await this.uploadService.getPresignedUrl(`products/${image.url}`)
+      image.imageUrl = await this.uploadService.getPresignedUrl(`products/${image.url}`)
       return image
     })
 
@@ -355,7 +426,7 @@ export class ProductService {
       product.imageUrl = await this.uploadService.getPresignedUrl(`products/${product.imageName}`)
 
       product.productImages.map(async (image) => {
-        image.imageUlr = await this.uploadService.getPresignedUrl(`products/${image.url}`)
+        image.imageUrl = await this.uploadService.getPresignedUrl(`products/${image.url}`)
         return image
       })
     })

@@ -55,7 +55,7 @@ export class ProductController {
       return product
     }
 
-    const filename = `${uuid()}-${file.originalname}`
+    const filename = `${uuid()}-${file.originalname.replace(/\s+/g,'')}`
     const upload = await this.uploadService.addProductImage(buffer, filename) 
     return await this.productService.updateProductImage(id, filename)
     
@@ -81,7 +81,7 @@ export class ProductController {
     const fileUploadResults = []
     const fileNames = []
     for(const file of files){
-        const filename = `${uuid()}-${file.originalname}`
+        const filename = `${uuid()}-${file.originalname.replace(/\s+/g,'')}`
         const uploadFileResponse = await this.uploadService.addProductImage(file.buffer, filename)
         fileUploadResults.push({...uploadFileResponse, success: true})
         fileNames.push(filename)
@@ -122,12 +122,17 @@ export class ProductController {
     return this.productService.findProducts(pageOptionsDto, q, category, subCategory);
   }
   
-  @Get()
+  @Get('categories/:category')
   @HttpCode(HttpStatus.OK)
   @ApiPaginatedResponse(ProductReponseDto)
   @ApiConsumes("application/json")
-  findProductsByCategory(@Query() pageOptionsDto:PageOptionsDto, @Query("category") category?:string, @Query("subCategory") subCategory?:string) {
-    return this.productService.findProducts(pageOptionsDto,  category, subCategory);
+  findProductsByCategory(@Query() pageOptionsDto:PageOptionsDto, @Query("category") category?:string, @Query("subCategories") subCategories?:string) {
+    const allSubCategories = subCategories.split(",")
+    if(allSubCategories.length > 0 && allSubCategories[0]!== ''){
+      return this.productService.findProductsByCategoryAndSubCategories(pageOptionsDto, category, allSubCategories);
+    }else{
+      return this.productService.findProductsByCategory(pageOptionsDto, category);
+    }
   }
 
   @Get("admin/all")
@@ -139,10 +144,15 @@ export class ProductController {
   findAllStoreProducts(@Param('store') store: string) {
     return this.productService.findStoreProducts(store);
   }
+  
+  // @Get('categories/:category')
+  // findCategoriesProducts(@Param('category') category: string, ) {
+  //   return this.productService.findStoreProducts(category);
+  // }
 
   @Get(':id')
-  findOne(@Param('id', ParseIntPipe) id: number) {
-    return this.productService.findOne(id);
+  findOne(@Param('id') id: string) {
+    return this.productService.findProductByProductId(id);
   }
 
   @Get('cart/items')

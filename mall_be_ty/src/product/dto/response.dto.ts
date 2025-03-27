@@ -39,7 +39,7 @@ class ProductImageResponseDto {
     @ApiResponseProperty({
         example: "something.png"
     })
-    public imageUlr?:string 
+    public imageUrl?:string 
 }
 
 export class ProductReponseDto{

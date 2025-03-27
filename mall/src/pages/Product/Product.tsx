@@ -8,12 +8,14 @@ import { FormatCurrency } from "@/lib/helper"
 import { Product } from "@/lib/types"
 import { useQuery } from "@tanstack/react-query"
 import { Heart, Minus, Plus, Star } from "lucide-react"
+import { useState } from "react"
 import { useNavigate, useParams } from "react-router-dom"
 
 const ProductDetails = () => {
     const {id} = useParams()
     const navigate = useNavigate()
     const {increaseCartQuanity, decreaseCartQuantity, getItemQuantity} = useCart()
+    const [activeImage, setActiveImage] = useState("")
 
     const product = useQuery<Product>({
         queryKey: ["product", id],
@@ -22,8 +24,14 @@ const ProductDetails = () => {
         })
     })
 
-    // const itemQuantity = getItemQuantity(Number(product.data?.id))
+    const handleImageClick = (image: string) => {
+        setActiveImage(image)
+    }
+
     const tags = product.data?.tags.length
+    product.data?.imageUrl ? 
+        setActiveImage(product.data.imageUrl) : 
+        product.data?.productImages ? setActiveImage(product.data.productImages[0].url) : setActiveImage("")
     
     return (
         <>
@@ -44,20 +52,28 @@ const ProductDetails = () => {
                             </BreadcrumbItem>
                             <BreadcrumbSeparator className="text-xs"/>
                             <BreadcrumbItem>
-                            <BreadcrumbPage className="text-xs">Cart</BreadcrumbPage>
+                            <BreadcrumbPage className="text-xs">{id}</BreadcrumbPage>
                             </BreadcrumbItem>
                         </BreadcrumbList>
                     </Breadcrumb>
                 </div>
                 <div className="flex justify-between flex-wrap mb-4 lg:mb-0 px-4 mt-4">
                     <div className="min-w-[320px] w-full md:w-1/3 flex flex-wrap gap-4 p-4">
-                        <div className="w-full aspect-square border rounded-xl"></div>
+                    <div className="w-full aspect-square border rounded-xl animate-pulse">
+                        <img src={activeImage} alt="" />
+                    </div>
                         <div className="w-full flex items-center justify-between">
-                            <button className="flex items-center justify-center w-[18%] aspect-square rounded-lg border"></button>
-                            <button className="flex items-center justify-center w-[18%] aspect-square rounded-lg border"></button>
-                            <button className="flex items-center justify-center w-[18%] aspect-square rounded-lg border"></button>
-                            <button className="flex items-center justify-center w-[18%] aspect-square rounded-lg border"></button>
-                            <button className="flex items-center justify-center w-[18%] aspect-square rounded-lg border"></button>
+                            {product.data?.imageUrl && <button onClick={() => handleImageClick(product.data.imageUrl as string)} className="flex items-center justify-center w-[18%] aspect-square rounded-lg border">
+                                    <img src={product.data.imageUrl} alt="" />
+                            </button>
+                            }
+                            {
+                                product.data?.productImages.map((image, idx) =>{
+                                    return <button key={idx} className="flex items-center justify-center w-[18%] aspect-square rounded-lg border">
+                                        <img src={image.url} alt="" />
+                                    </button>
+                                })
+                            }
                         </div>
                     </div>
                     <div className="min-w-[320px] w-full md:w-2/3 flex flex-col flex-wrap justify-self-end gap-2 px-4">
@@ -88,20 +104,19 @@ const ProductDetails = () => {
                             </div>
                         </div>}
                         <div>
-                            {getItemQuantity(Number(product.data?.id)) === 0 && <button onClick={()=> increaseCartQuanity(Number(product.data?.id))} className="uppercase text-xs py-3 bg-blue-700 text-white rounded-md border px-12">Add to cart</button>}
-                            {getItemQuantity(Number(product.data?.id)) > 0 && <div className=''>
+                            {getItemQuantity(product.data!.productId) === 0 && <button onClick={()=> increaseCartQuanity(product.data!.productId)} className="uppercase text-xs py-3 bg-blue-700 text-white rounded-md border px-12">Add to cart</button>}
+                            {getItemQuantity(product.data!.productId) > 0 && <div className=''>
                                 <p className='text-xs font-semibold text-muted-foreground mb-1'>Qty:</p>
                                 <div className="flex items-center gap-4">
-                                    <button onClick={()=>decreaseCartQuantity(Number(product.data?.id))} className='p-1 md:p-2 border rounded-md text-gray-600 hover:text-blue-600 hover:border-blue-400'><Minus className='w-2 h-2 md:w-4 md:h-4'/></button>
-                                    <p>{getItemQuantity(Number(product.data?.id))}</p>
-                                    <button onClick={()=> increaseCartQuanity(Number(product.data?.id))} className='p-1 md:p-2 border rounded-md text-gray-600 hover:text-blue-600 hover:border-blue-400'><Plus className='w-2 h-2 md:w-4 md:h-4'/></button>
-                                    {/* <button onClick={()=>removeFromCart(Number(product.data?.id))} className='p-1 border rounded-md text-gray-600 bg-gray-200 hover:text-rose-600'><Trash2 className='w-2 h-2 md:w-3 md:h-3 '/></button> */}
+                                    <button onClick={()=>decreaseCartQuantity(product.data!.productId)} className='p-1 md:p-2 border rounded-md text-gray-600 hover:text-blue-600 hover:border-blue-400'><Minus className='w-2 h-2 md:w-4 md:h-4'/></button>
+                                    <p>{getItemQuantity(product.data!.productId)}</p>
+                                    <button onClick={()=> increaseCartQuanity(product.data!.productId)} className='p-1 md:p-2 border rounded-md text-gray-600 hover:text-blue-600 hover:border-blue-400'><Plus className='w-2 h-2 md:w-4 md:h-4'/></button>
                                 </div>
                             </div>}
                         </div>
                         <div>
                             <p className="text-xs font-semibold text-muted-foreground mb-1">Description</p>
-                            <DescriptionParser description={product.data?.discription as string} />
+                            <DescriptionParser description={product.data?.description as string} />
                         </div>
                     </div>
                 </div>

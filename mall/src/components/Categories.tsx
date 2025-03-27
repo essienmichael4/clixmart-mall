@@ -38,7 +38,7 @@ const Categories = () => {
                         </div>
                         <div className={`${active==category.id ? 'block' : 'hidden'} pl-10 bg-slate-50`}>
                             {category.subCategories?.map(sub=>{
-                                return <Link to={`/categories/${category.slug}/${sub.slug}`} className="text-xs capitalize py-1 text-nowrap" key={sub.id}>
+                                return <Link to={`/categories/${category.slug}?sub-categories=${sub.subCategoryId}`} className="text-xs block capitalize py-1 text-nowrap" key={sub.id}>
                                     {sub.name}
                                 </Link>
                             })}

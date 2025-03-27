@@ -14,9 +14,10 @@ import useCart from '@/hooks/useCart'
 const Header = () => {
     const [mobileDrawerOpen, setMobileDrawerOpen] = useState(false)
     const {auth, dispatch} = useAuth()
-    const searchIinput = useLocation()
+    const location = useLocation()
+    const urlParams = new URLSearchParams(location.search)
+    const [search, setSearch] = useState(urlParams.get("q"))
     const [active, setActive] = useState<number[]>([])
-    const [search, setSearch] = useState(searchIinput?.search?.split("=")[1])
     const navigate = useNavigate()
     const {categories} = useCategories()
     const {cartItemsCount} = useCart()
@@ -56,16 +57,14 @@ const Header = () => {
                             <span className="text-sm md:text-xl tracking-tight">CLIXMART MALL</span>
                         </Link>
                     </div>
-                    {/* <div> */}
                     <div className="hidden w-full rounded-md md:flex justify-center items-center h-10">
                         <div className="flex w-full sm:w-2/3 md:w-2/4 border h-full items-center px-3 gap-3 rounded-s-md bg-white focus-within:border-gray-500">
                             <Search className="h-4 w-4 text-gray-400 pointer-events-none" />
                             <input type="text" onChange={(e)=>setSearch(e.target.value)}
-                                value={search} placeholder="Search products, categories & brands" className="outline-none w-full bg-transparent"/>
+                                value={search as string} placeholder="Search products, categories & brands" className="outline-none w-full bg-transparent"/>
                         </div>
                         <button className="text-white bg-blue-700 h-full px-6 rounded-e-md hover:bg-blue-500" onClick={handleSearch}>Search</button>
                     </div>
-                    {/* </div> */}
                     <div className="flex justify-center items-center space-x-1">
                         <Link to={"../cart"} className='p-2 relative bg-gray-100 hover:bg-gray-200 rounded-full'>
                             <ShoppingCart className='w-4 h-4 text-gray-500'/>
@@ -102,9 +101,6 @@ const Header = () => {
                         <Link to={"login"} className="py-2 px-3 rounded-md text-sm uppercase text-gray-500" >Login</Link>
                         }
                     </div>
-                    {/* <div className="lg:hidden md:flex flex-col justify-end"> */}
-                        {/* <button onClick={toggleNavbar}>{mobileDrawerOpen ? <X /> : <Menu />}</button> */}
-                    {/* </div> */}
                 </div>
             </div>
 
@@ -141,9 +137,6 @@ const Header = () => {
                                 </Collapsible>
                             })
                         }
-                        {/* <div className="flex flex-col gap-6 mt-2">
-                            <a href="https://forms.gle/cMHhPURSKERJ2BhM6" onClick={toggleNavbar} target="_blank" className="text-center py-2 px-3 rounded-md text-blue-700 border border-blue-700" >Register</a>
-                        </div> */}
                     </ScrollArea>
                 </div>
             }

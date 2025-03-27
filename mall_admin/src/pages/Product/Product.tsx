@@ -15,6 +15,8 @@ const ProductDetails = () => {
     const product = useQuery<Product>({
         queryKey: ["product", id],
         queryFn: async() => await axios_instance.get(`/products/${id}`).then(res => {
+            console.log(res.data);
+            
             return res.data
         })
     })
@@ -23,10 +25,10 @@ const ProductDetails = () => {
     
     return (
         <>
-            <div className="container mx-auto">
+            <div className="container mx-auto mb-8">
                 <div  className="mt-4 mx-4 flex relative items-center justify-between gap-4">
                     <div className="flex items-center gap-4">
-                        <button onClick={()=> navigate(-1)} className="flex items-center justify-center w-6 h-6 border rounded-full text-gray-400 hover:text-gray-600 hover:border-gray-600">
+                        <button onClick={()=> navigate(-1)} className="flex items-center justify-center w-8 h-8 border rounded-full text-gray-400 hover:text-gray-600 hover:border-gray-600">
                             &larr;
                         </button>
                         <Breadcrumb>
@@ -66,7 +68,7 @@ const ProductDetails = () => {
                         </div>
                     </div>
                     <div className="min-w-[320px] w-full flex flex-col flex-wrap justify-self-end gap-2 px-4">
-                        <p className="text-xs text-blue-700 font-semibold">{product.data?.category.name} / {product.data?.subCategory.name}</p>
+                        <p className="text-xs text-blue-700 font-semibold">{product.data?.category?.name} / {product.data?.subCategory?.name}</p>
                         <h4 className="text-4xl font-semibold capitalize">{product.data?.name}</h4>
                         <div className="flex items-center justify-between">
                             <div className="flex items-center gap-3">
@@ -92,7 +94,7 @@ const ProductDetails = () => {
                         <div>
                             <p className="text-xs font-semibold text-muted-foreground mb-1">Description</p>
                             {/* {product.data?.description} */}
-                            <DescriptionParser description={product.data?.description as string} />
+                            <DescriptionParser description={product.data?.description as string || ""} />
                         </div>
                     </div>
                 </div>

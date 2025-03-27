@@ -57,12 +57,13 @@ const Toolbars = ({editor}:Props) => {
     const getSelectedHeading =():HeadingType=>{
         let result: HeadingType = "p"
 
-        if(editor.isActive("headind", {level: 1})) result = "h1"
-        if(editor.isActive("headind", {level: 2})) result = "h2"
-        if(editor.isActive("headind", {level: 3})) result = "h3"
+        if(editor.isActive("heading", {level: 1})) result = "h1"
+        if(editor.isActive("heading", {level: 2})) result = "h2"
+        if(editor.isActive("heading", {level: 3})) result = "h3"
 
         return result
     }
+
     return (
         <div className="border border-input bg-transparent rounded-md space-x-1 p-1">
             <select value={getSelectedHeading()} className="p-2" onChange={handleHeadingSelectionChange}>

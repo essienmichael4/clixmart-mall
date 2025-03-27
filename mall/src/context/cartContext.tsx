@@ -5,15 +5,15 @@ import { useQuery } from "@tanstack/react-query";
 import { createContext } from "react";
 
 type CartItem = {
-    id: number,
+    id: string,
     quantity: number
 }
 
 type ShoppingCartContextType = {
-    getItemQuantity: (id:number) => number,
-    increaseCartQuanity: (id:number) => void,
-    decreaseCartQuantity: (id:number) => void,
-    removeFromCart: (id:number) => void,
+    getItemQuantity: (id:string) => number,
+    increaseCartQuanity: (id:string) => void,
+    decreaseCartQuantity: (id:string) => void,
+    removeFromCart: (id:string) => void,
     getTotalCost: ()=> number,
     cartQuantity: number,
     cartItemsCount: number,
@@ -38,20 +38,20 @@ export const ShoppingCartProvider = ({children}: {children: React.ReactNode}) =>
         })
     })
 
-    function getItemQuantity(id: number){
+    function getItemQuantity(id: string){
         return cartItems.find(item=> item.id === id)?.quantity || 0
     }
 
     function getTotalCost(){
         const total = cartItems.reduce((total, item)=>{
-                const product = cartProducts.data?.find((product)=> product.id === item.id)
+                const product = cartProducts.data?.find((product)=> product.productId === item.id)
                 return total + (product?.price || 0) * item.quantity
             }, 0)
         // })
         return total
     }
 
-    function increaseCartQuanity(id:number){
+    function increaseCartQuanity(id:string){
         setCartItems(currentItems=>{
             if(currentItems.find(item => item.id === id) == null){ 
                 return [...currentItems, {id, quantity: 1}]
@@ -67,7 +67,7 @@ export const ShoppingCartProvider = ({children}: {children: React.ReactNode}) =>
         })
     }
 
-    function decreaseCartQuantity(id:number){
+    function decreaseCartQuantity(id:string){
         setCartItems(currentItems=>{
             if(currentItems.find(item => item.id === id)?.quantity == 1){ 
                 return currentItems.filter(item => item.id !== id)
@@ -83,7 +83,7 @@ export const ShoppingCartProvider = ({children}: {children: React.ReactNode}) =>
         })
     }
 
-    function removeFromCart(id:number){
+    function removeFromCart(id:string){
         setCartItems(currentItems=>{
             return currentItems.filter(item => item.id !== id)
         })

@@ -53,8 +53,17 @@ export type Category = {
     slug:string,
     createdAt:string,
     updatedAt:string,
-    subCategories?: Category[]
+    subCategories?: SubCategory[]
 }
+
+// export type SubCategory = {
+//     id:number,
+//     name:string,
+//     slug:string,
+//     createdAt:string,
+//     updatedAt:string,
+//     subCategories?: Category[]
+// }
 
 export type Package = {
     id:number,
@@ -92,31 +101,34 @@ export interface ProductSearchParams {
 
 export interface CategoryProductsSearchParams {
     category?: string,
-    subCategory?: string[],
+    subCategories?: string[],
     brand?: string,
     page?:number,
     take?:number,
 }
 
 export type Product = {
-    id: number,
+    id?: number,
+    productId: string,
     name: string,
     price: number,
     quantity?: number,
     status: "DRAFT" | "PUBLISH" | "ARCHIVE",
     inventory: "INSTOCK" | "OUTSTOCK",
-    discription: string,
+    description: string,
     discount: number,
     isDiscounted: "TRUE" | "FALSE"
     createdAt: string,
     updatedAt: string,
+    imageUrl?:string,
     category: Category,
     subCategory: SubCategory,
     user?: User
     store?: Store,
     brand?: Brand,
     tags: Tag[],
-    productImages: ProductImage[]
+    productImages: ProductImage[],
+    productReview?: ProductReview
 }
 
 export type ProductImage = {
@@ -171,6 +183,7 @@ export type StoreAddress = {
 
 export type SubCategory = {
     id:number,
+    subCategoryId: string,
     name:string,
     slug:string,
     createdAt:string,

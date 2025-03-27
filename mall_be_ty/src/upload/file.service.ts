@@ -27,11 +27,16 @@ export class FileService {
     // }
     async getSignedUrlCloudfront(filename:string){
         const date = new Date(Date.now() + 1000 * 60 * 60 * 24)
-        return await getSignedUrl({
-            url: "https://dh0ursehl95lm.cloudfront.net/"+filename,
+        const privateKey = process.env.CLOUDFRONT_PRIVATE_KEY
+        // const buff = Buffer.from(privateKey).toString('base64');
+        // console.log(buff);
+        
+        const key = Buffer.from(privateKey , 'base64').toString('ascii')
+        return getSignedUrl({
+            url: `https://dh0ursehl95lm.cloudfront.net/${filename}`,
             dateLessThan: String(date),
-            privateKey: this.configService.getOrThrow('CLOUDFRONT_PRIVATE_KEY'),
-            keyPairId: this.configService.getOrThrow('CLOUDFRONT_KEY_PAIR_ID'),
+            keyPairId: process.env.CLOUDFRONT_KEY_PAIR_ID,
+            privateKey: key,
         })
     }
 

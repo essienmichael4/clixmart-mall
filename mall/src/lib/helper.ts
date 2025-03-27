@@ -20,3 +20,7 @@ export const FormattedTime = (date:Date) => {
 export const FormatCurrency = (price: number) => {
     return CURRENCY_FORMATTER.format(price)
 }
+
+export const scrollToTop = () => {
+    window.scrollTo({top: 0, behavior: "smooth"})
+}

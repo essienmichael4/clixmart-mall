@@ -32,8 +32,6 @@ export const ShoppingCartProvider = ({children}: {children: React.ReactNode}) =>
     const cartProducts = useQuery<Product[] | []>({
         queryKey: ["products", cartItems],
         queryFn: async() => await axios_instance.get(`/products/cart/items?filter=${cartItemIds.toString()}`).then(res => {
-            console.log(res.data);
-            
             return res.data
         })
     })
@@ -44,10 +42,10 @@ export const ShoppingCartProvider = ({children}: {children: React.ReactNode}) =>
 
     function getTotalCost(){
         const total = cartItems.reduce((total, item)=>{
-                const product = cartProducts.data?.find((product)=> product.productId === item.id)
-                return total + (product?.price || 0) * item.quantity
-            }, 0)
-        // })
+            const product = cartProducts.data?.find((product)=> product.productId === item.id)
+            return total + (product?.price || 0) * item.quantity
+        }, 0)
+        
         return total
     }
 

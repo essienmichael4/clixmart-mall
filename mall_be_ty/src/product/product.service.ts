@@ -247,10 +247,12 @@ export class ProductService {
     productsResponse.map(async (product) => {
       product.imageUrl = await this.uploadService.getPresignedUrl(`products/${product.imageName}`)
 
-      product.productImages.map(async (image) => {
-        image.imageUrl = await this.uploadService.getPresignedUrl(`products/${image.url}`)
-        return image
-      })
+      if(product.productImages.length > 0) {
+        product.productImages.map(async (image) => {
+            image.imageUrl = await this.uploadService.getPresignedUrl(`products/${image.url}`)
+          return image
+        })
+      }
     })
 
     const productsCount = await this.productRepo.count()
@@ -277,10 +279,12 @@ export class ProductService {
     productsResponse.map(async (product) => {
       product.imageUrl = await this.uploadService.getPresignedUrl(`products/${product.imageName}`)
 
-      product.productImages.map(async (image) => {
-        image.imageUrl = await this.uploadService.getPresignedUrl(`products/${image.url}`)
-        return image
-      })
+      if(product.productImages.length > 0) {
+        product.productImages.map(async (image) => {
+          image.imageUrl = await this.uploadService.getPresignedUrl(`products/${image.url}`)
+          return image
+        })
+      }
     })
 
     return productsResponse
@@ -348,10 +352,10 @@ export class ProductService {
     return productResponse
   }
 
-  async findCartProducts(products:number[]){
+  async findCartProducts(products:string[]){
     const cartProducts = await this.productRepo.find({
       where: {
-        id: In(products)
+        productId: In(products)
       }
     })
 
@@ -369,7 +373,7 @@ export class ProductService {
     return productsResponse
   }
 
-  async findStoreProduct(store: string, productId: number){
+  async findStoreProduct(store: string, productId: string){
     const product =  await this.productRepo.findOne({
       relations: {
         store: true,
@@ -382,7 +386,7 @@ export class ProductService {
         user: true
       },
       where: {
-        id: productId,
+        productId: productId,
         store: {
           slug: store
         }

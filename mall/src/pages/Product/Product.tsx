@@ -20,6 +20,9 @@ const ProductDetails = () => {
     const product = useQuery<Product>({
         queryKey: ["product", id],
         queryFn: async() => await axios_instance.get(`/products/${id}`).then(res => {
+            res.data?.imageUrl ? 
+                setActiveImage(res.data.imageUrl) : 
+                res.data?.productImages ? setActiveImage(res.data.productImages[0].url) : setActiveImage("")
             return res.data
         })
     })
@@ -29,9 +32,9 @@ const ProductDetails = () => {
     }
 
     const tags = product.data?.tags.length
-    product.data?.imageUrl ? 
-        setActiveImage(product.data.imageUrl) : 
-        product.data?.productImages ? setActiveImage(product.data.productImages[0].url) : setActiveImage("")
+    // product.data?.imageUrl ? 
+    //     setActiveImage(product.data.imageUrl) : 
+    //     product.data?.productImages ? setActiveImage(product.data.productImages[0].url) : setActiveImage("")
     
     return (
         <>
@@ -59,9 +62,9 @@ const ProductDetails = () => {
                 </div>
                 <div className="flex justify-between flex-wrap mb-4 lg:mb-0 px-4 mt-4">
                     <div className="min-w-[320px] w-full md:w-1/3 flex flex-wrap gap-4 p-4">
-                    <div className="w-full aspect-square border rounded-xl animate-pulse">
-                        <img src={activeImage} alt="" />
-                    </div>
+                        <div className="w-full aspect-square border rounded-xl animate-pulse">
+                            <img src={activeImage} alt="" />
+                        </div>
                         <div className="w-full flex items-center justify-between">
                             {product.data?.imageUrl && <button onClick={() => handleImageClick(product.data.imageUrl as string)} className="flex items-center justify-center w-[18%] aspect-square rounded-lg border">
                                     <img src={product.data.imageUrl} alt="" />
@@ -104,19 +107,19 @@ const ProductDetails = () => {
                             </div>
                         </div>}
                         <div>
-                            {getItemQuantity(product.data!.productId) === 0 && <button onClick={()=> increaseCartQuanity(product.data!.productId)} className="uppercase text-xs py-3 bg-blue-700 text-white rounded-md border px-12">Add to cart</button>}
-                            {getItemQuantity(product.data!.productId) > 0 && <div className=''>
+                            {getItemQuantity(id as string) === 0 && <button onClick={()=> increaseCartQuanity(id as string)} className="uppercase text-xs py-3 bg-blue-700 text-white rounded-md border px-12">Add to cart</button>}
+                            {getItemQuantity(id as string) > 0 && <div className=''>
                                 <p className='text-xs font-semibold text-muted-foreground mb-1'>Qty:</p>
                                 <div className="flex items-center gap-4">
-                                    <button onClick={()=>decreaseCartQuantity(product.data!.productId)} className='p-1 md:p-2 border rounded-md text-gray-600 hover:text-blue-600 hover:border-blue-400'><Minus className='w-2 h-2 md:w-4 md:h-4'/></button>
-                                    <p>{getItemQuantity(product.data!.productId)}</p>
-                                    <button onClick={()=> increaseCartQuanity(product.data!.productId)} className='p-1 md:p-2 border rounded-md text-gray-600 hover:text-blue-600 hover:border-blue-400'><Plus className='w-2 h-2 md:w-4 md:h-4'/></button>
+                                    <button onClick={()=>decreaseCartQuantity(id as string)} className='p-1 md:p-2 border rounded-md text-gray-600 hover:text-blue-600 hover:border-blue-400'><Minus className='w-2 h-2 md:w-4 md:h-4'/></button>
+                                    <p>{getItemQuantity(id as string)}</p>
+                                    <button onClick={()=> increaseCartQuanity(id as string)} className='p-1 md:p-2 border rounded-md text-gray-600 hover:text-blue-600 hover:border-blue-400'><Plus className='w-2 h-2 md:w-4 md:h-4'/></button>
                                 </div>
                             </div>}
                         </div>
                         <div>
                             <p className="text-xs font-semibold text-muted-foreground mb-1">Description</p>
-                            <DescriptionParser description={product.data?.description as string} />
+                            <DescriptionParser description={product.data?.description as string || ""} />
                         </div>
                     </div>
                 </div>

@@ -7,19 +7,26 @@ import { Star } from "lucide-react"
 import { useNavigate, useParams } from "react-router-dom"
 import ProductApproval from "./ProductApproval"
 import DescriptionParser from "@/components/DescriptionParser"
+import { useState } from "react"
 
 const ProductDetails = () => {
     const {id} = useParams()
     const navigate = useNavigate()
+    const [activeImage, setActiveImage] = useState("")
 
     const product = useQuery<Product>({
         queryKey: ["product", id],
         queryFn: async() => await axios_instance.get(`/products/${id}`).then(res => {
-            console.log(res.data);
-            
+            res.data?.imageUrl ? 
+                setActiveImage(res.data.imageUrl) : 
+                res.data?.productImages ? setActiveImage(res.data.productImages[0].url) : setActiveImage("")
             return res.data
         })
     })
+
+    const handleImageClick = (image: string) => {
+        setActiveImage(image)
+    }
 
     const tags = product.data?.tags.length
     
@@ -51,13 +58,14 @@ const ProductDetails = () => {
                 </div>
                 <div className="flex justify-between flex-col md:flex-row flex-wrap mb-4 lg:mb-0 px-4 mt-4">
                     <div className="min-w-[320px] md:max-w-[320px] w-full md:w-1/3 flex flex-wrap gap-4 p-4">
-                        <div className="w-full aspect-square border rounded-xl"></div>
+                        <div className="w-full aspect-square border rounded-xl animate-pulse">
+                            <img src={activeImage} alt="" />
+                        </div>
                         <div className="w-full flex items-center justify-between">
-                            <button className="flex items-center justify-center w-[18%] aspect-square rounded-lg border">
-                                {product.data?.imageUrl && 
+                            {product.data?.imageUrl && <button onClick={() => handleImageClick(product.data.imageUrl as string)} className="flex items-center justify-center w-[18%] aspect-square rounded-lg border">
                                     <img src={product.data.imageUrl} alt="" />
-                                }
                             </button>
+                            }
                             {
                                 product.data?.productImages.map((image, idx) =>{
                                     return <button key={idx} className="flex items-center justify-center w-[18%] aspect-square rounded-lg border">

@@ -28,6 +28,9 @@ const Home = () => {
             <div className='container flex gap-8 px-4 mx-auto mt-8'>
                 <Categories />
                 <Billboard />
+                {/* <div className='w-40'>
+                    info
+                </div> */}
             </div>
             <div className='container space-y-2 px-4 mx-auto mt-8'>
                 <h3>Top Products</h3>

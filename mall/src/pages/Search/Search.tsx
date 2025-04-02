@@ -28,12 +28,9 @@ const Search = () => {
         <>
             <Header />
             <div className='container space-y-2 px-4 mx-auto mt-8'>
-                <h3>Top Products</h3>
                 {isLoading && "loading..."}
                 <div className='flex flex-wrap'>
                     {products.map((product, i)=>{
-                        console.log(product);
-                        
                         if(products.length === i+1) return <ProductCard ref={lastProductRef} key={i} product={product} />
                        return <ProductCard key={i} product={product} />
                     }) }

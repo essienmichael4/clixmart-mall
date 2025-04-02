@@ -7,7 +7,7 @@ import { Minus, Plus, Trash2 } from 'lucide-react'
 import { FormatCurrency } from '@/lib/helper'
 
 interface CartItemsProps {
-    id: number,
+    id: string,
     quantity: number
 }
 

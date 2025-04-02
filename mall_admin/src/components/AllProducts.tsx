@@ -32,7 +32,7 @@ const AllProducts = ({ status, filtering}:FilterProps) => {
         accessorKey: "id",
         header:({column})=>(<DataTableColumnHeader column={column} title='ID.' />),
         cell:({row}) => <div>
-            <Link to={`./${row.original.id}`}>
+            <Link to={`./${row.original.productId}`}>
                 <span className='text-gray-400'>#</span>{row.original.id}
             </Link>
         </div>
@@ -40,7 +40,7 @@ const AllProducts = ({ status, filtering}:FilterProps) => {
         accessorKey: "name",
         header:({column})=>(<DataTableColumnHeader column={column} title='Product Name' />),
         cell:({row}) => <div>
-            <Link to={`./${row.original.id}`}>
+            <Link to={`./${row.original.productId}`}>
                 {row.original.name}
             </Link>
         </div>

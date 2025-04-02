@@ -158,12 +158,13 @@ export class ProductController {
   @Get('cart/items')
   findCartItems(@Query("filter") filter:string) {
     const search = filter.split(',')
-    return this.productService.findCartProducts(search.map(val => Number(val)))
+    if(search.length > 0 && search[0] == '') return
+    return this.productService.findCartProducts(search)
   }
 
   @UseGuards(JwtGuard)
   @Get('/store/:store/:id')
-  findStoreProduct(@Param('store') store: string, @Param('id', ParseIntPipe) id: number) {
+  findStoreProduct(@Param('store') store: string, @Param('id') id: string) {
     return this.productService.findStoreProduct(store, id);
   }
 

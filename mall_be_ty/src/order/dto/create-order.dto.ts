@@ -5,12 +5,13 @@ import { IsArray, IsDefined, IsNotEmpty, IsNumber, IsOptional, IsString, Validat
 export class ItemDto{
     @ApiProperty({
         description: "product id",
-        example: 15,
+        example: "edded-ehdyt-dsddd-123ed",
         required: true
     })
     @IsDefined()
-    @IsNumber()
-    id:number 
+    @IsString()
+    @IsNotEmpty()
+    id:string 
 
     @ApiProperty({
         description: "quantity",
@@ -27,7 +28,7 @@ export class CreateOrderDto {
         type: [ItemDto],
         isArray: true,
         description: "order items",
-        example: [{id: 2, quantity: 15}],
+        example: [{id: "edded-ehdyt-dsddd-123ed", quantity: 15}],
         required: true
     })
     @IsArray()

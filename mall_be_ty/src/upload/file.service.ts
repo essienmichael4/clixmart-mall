@@ -58,11 +58,28 @@ export class FileService {
         }))
     }
 
+    async uploadCategory(imageBuffer: Buffer, filename:string){
+        return await this.s3Client.send(
+            new PutObjectCommand({
+            Bucket: this.configService.getOrThrow('BUCKET_NAME'),
+            Body: imageBuffer,
+            Key: `category/${filename}`
+        }))
+    }
+
     async deleteBrandImage(filename:string){
         return await this.s3Client.send(
             new DeleteObjectCommand({
             Bucket: this.configService.getOrThrow('BUCKET_NAME'),
             Key: `brands/${filename}`
+        }))
+    }
+
+    async deleteCategoryImage(filename:string){
+        return await this.s3Client.send(
+            new DeleteObjectCommand({
+            Bucket: this.configService.getOrThrow('BUCKET_NAME'),
+            Key: `category/${filename}`
         }))
     }
 

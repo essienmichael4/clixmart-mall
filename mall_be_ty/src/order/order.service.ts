@@ -2,13 +2,18 @@ import { Injectable } from '@nestjs/common';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { DataSource, QueryRunner, Repository } from 'typeorm';
 import { Inventory, Product, Status } from 'src/product/entities/product.entity';
 import { User } from 'src/user/entities/user.entity';
 import { OrderItem } from './entities/orderItem.entity';
 import { Order } from './entities/order.entity';
 import { v4 } from 'uuid';
 import { ReviewStatus } from 'src/product/entities/review.entity';
+import { MonthHistory } from 'src/product/entities/MonthHistory.entity';
+import { YearHistory } from 'src/product/entities/YearHistory.entity';
+import { UserMonthHistory } from 'src/product/entities/UserMonthHistory.entity';
+import { UserYearHistory } from 'src/product/entities/UserYearHistory.entity';
+import { GetDay, GetMonth, GetYear } from 'src/helpers/common';
 
 @Injectable()
 export class OrderService {
@@ -17,10 +22,18 @@ export class OrderService {
     @InjectRepository(User) private readonly userRepo:Repository<User>,
     @InjectRepository(OrderItem) private readonly orderItemRepo:Repository<OrderItem>,
     @InjectRepository(Order) private readonly orderRepo:Repository<Order>,
+    @InjectRepository(MonthHistory) private readonly monthHistoryRepo:Repository<MonthHistory>,
+    @InjectRepository(YearHistory) private readonly yearHistoryRepo:Repository<YearHistory>,
+    @InjectRepository(UserMonthHistory) private readonly userMonthHistoryRepo:Repository<UserMonthHistory>,
+    @InjectRepository(UserYearHistory) private readonly userYearHistoryRepo:Repository<UserYearHistory>,
+    private readonly dataSource:DataSource
   ){}
 
   async create(createOrderDto: CreateOrderDto, userId:number) {
+    const queryRunner = this.dataSource.createQueryRunner()
     try{
+      await queryRunner.connect()
+      await queryRunner.startTransaction()
       const user = await this.userRepo.findOne({where: {
           id:userId
         }
@@ -36,7 +49,7 @@ export class OrderService {
       for(const item of createOrderDto.items){
         const product = await this.productRepo.findOne({
           where: {
-            id: item.id,
+            productId: item.id,
             inventory: Inventory.INSTOCK,
             status: Status.PUBLISH,
             productReview: {
@@ -67,12 +80,25 @@ export class OrderService {
         user: user
       }
 
-      const order = await this.orderRepo.save(saveEntity)
-      
+      const order = await this.createUserOrder(saveEntity, queryRunner)
+      await this.upsertMonthHistoryOrder(queryRunner)
+      await this.upsertYearHistoryOrder(queryRunner)
+      await this.upsertUserYearHistoryOrder(user.id, queryRunner)
+      await this.upsertUserMonthHistoryOrder(user.id, queryRunner)
+      await queryRunner.commitTransaction()
       return order
     }catch(err){
+      await queryRunner.rollbackTransaction()
       throw err
+    }finally{
+      await queryRunner.release()
     }
+  }
+
+  async createUserOrder(payload, queryRunner: QueryRunner){
+    return await queryRunner.manager.save(Order, {
+      ...payload
+    })
   }
 
   findAll() {
@@ -149,7 +175,91 @@ export class OrderService {
     return `This action updates a #${id} order`;
   }
 
+  async upsertMonthHistoryOrder(queryRunner: QueryRunner){
+    const day = GetDay()
+    const month = GetMonth()
+    const year = GetYear()
+    
+    const monthHistory = await this.monthHistoryRepo.findOne({
+      where: { day, month, year }
+    })
+
+    if(monthHistory){
+      monthHistory.orders += 1
+      return await queryRunner.manager.save(MonthHistory, {...monthHistory})
+    }else{
+      const newMonthHistory = this.monthHistoryRepo.create({
+        day, month, year, orders: 1
+    })
+      return await queryRunner.manager.save(MonthHistory, {...newMonthHistory})
+    }
+
+  }
+
+  async upsertYearHistoryOrder(queryRunner: QueryRunner){
+    const month = GetMonth()
+    const year = GetYear()
+    
+    const yearHistory = await this.yearHistoryRepo.findOne({
+      where: { month, year }
+    })
+
+    if(yearHistory){
+      yearHistory.orders += 1
+      return await queryRunner.manager.save(YearHistory, {...yearHistory})
+    }else{
+      const newYearHistory = this.yearHistoryRepo.create({
+       month, year, orders: 1
+    })
+      return await queryRunner.manager.save(YearHistory, {...newYearHistory})
+    }
+
+  }
+
+  async upsertUserMonthHistoryOrder(userId:number, queryRunner: QueryRunner){
+    const day = GetDay()
+    const month = GetMonth()
+    const year = GetYear()
+    
+    const monthHistory = await this.userMonthHistoryRepo.findOne({
+      where: { day, month, year, userId }
+    })
+
+    if(monthHistory){
+      monthHistory.orders += 1
+      return await queryRunner.manager.save(UserMonthHistory, {...monthHistory})
+    }else{
+      const newMonthHistory = this.userMonthHistoryRepo.create({
+        day, month, year, orders: 1, userId
+    })
+      return await queryRunner.manager.save(UserMonthHistory, {...newMonthHistory})
+    }
+
+  }
+
+  async upsertUserYearHistoryOrder(userId:number, queryRunner: QueryRunner){
+    const month = GetMonth()
+    const year = GetYear()
+    
+    const yearHistory = await this.userYearHistoryRepo.findOne({
+      where: { month, year, userId }
+    })
+
+    if(yearHistory){
+      yearHistory.orders += 1
+      return await queryRunner.manager.save(UserYearHistory, {...yearHistory})
+    }else{
+      const newYearHistory = this.userYearHistoryRepo.create({
+       month, year, orders: 1, userId
+    })
+      return await queryRunner.manager.save(UserYearHistory, {...newYearHistory})
+    }
+
+  }
+
   remove(id: number) {
     return `This action removes a #${id} order`;
   }
+
+
 }

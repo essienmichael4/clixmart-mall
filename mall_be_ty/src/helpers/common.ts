@@ -9,3 +9,21 @@ export const GenerateSlug = (name:string): string => {
     return removecloseBrackets
 }
 
+export const GetDay = ()=>{
+    const currentDate = new Date()
+    const day = currentDate.getUTCDate()
+    return day
+}
+
+export const GetMonth = ()=>{
+    const currentDate = new Date()
+    const month = currentDate.getUTCMonth()
+    return month
+}
+
+export const GetYear = ()=>{
+    const currentDate = new Date()
+    const year = currentDate.getUTCFullYear()
+    return year
+}
+

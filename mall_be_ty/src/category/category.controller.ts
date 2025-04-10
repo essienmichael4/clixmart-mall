@@ -1,10 +1,16 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UsePipes, ValidationPipe, HttpCode, HttpStatus, ParseIntPipe } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UsePipes, ValidationPipe, HttpCode, HttpStatus, ParseIntPipe, Req, UseInterceptors, UploadedFile, ParseFilePipeBuilder, BadRequestException, NotFoundException } from '@nestjs/common';
 import { CategoryService } from './category.service';
+import { UploadService } from 'src/upload/upload.service';
 import { CreateCategoryDto, EditCategoryDto } from './dto/create-category.dto';
-import { UpdateCategoryDto } from './dto/update-category.dto';
-import { ApiConsumes, ApiCreatedResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { uuid } from 'uuidv4';
+import { ApiConsumes, ApiCreatedResponse, ApiForbiddenResponse, ApiInternalServerErrorResponse, ApiOkResponse, ApiOperation, ApiTags, ApiUnprocessableEntityResponse } from '@nestjs/swagger';
 import { CategoryResponseDto, SubCategoryResponseDto } from './dto/categoryResponse.dto';
 import { CreateSubCategoryDto, EditSubCategoryDto } from './dto/create-sub-category.dto';
+import { UploadFile } from 'src/decorators/file.decorator';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { ImageFileFilter } from 'src/helpers/file-helper';
+
+const MAX_IMAGE_SIZE_IN_BYTE = 2 * 1024 * 1024
 
 @Controller('categories')
 @UsePipes(new ValidationPipe({
@@ -13,7 +19,41 @@ import { CreateSubCategoryDto, EditSubCategoryDto } from './dto/create-sub-categ
 }))
 @ApiTags("categories")
 export class CategoryController {
-  constructor(private readonly categoryService: CategoryService) {}
+  constructor(private readonly categoryService: CategoryService, private readonly uploadService:UploadService) {}
+
+  @Post(':id/upload')
+  @UploadFile('file')
+  @ApiForbiddenResponse({description: 'UNAUTHORIZED_REQUEST'})
+  @ApiUnprocessableEntityResponse({description: 'BAD_REQUEST'})
+  @ApiInternalServerErrorResponse({description: 'INTERNAL_SERVER_ERROR'})
+  @ApiConsumes("multipart/form-data")
+  @UseInterceptors(
+    FileInterceptor("file", {
+      fileFilter: ImageFileFilter
+    })
+  )
+  public async uploadFile(@Param('id', ParseIntPipe) id: number, @Req() req:any,
+    @UploadedFile(
+      new ParseFilePipeBuilder()
+      .addMaxSizeValidator({maxSize: MAX_IMAGE_SIZE_IN_BYTE})
+      .build({errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY})
+  ) file: Express.Multer.File){
+    if(!file || req.fileValidationError){
+      throw new BadRequestException("Invalid file provided, [Image files allowed]")
+    }
+
+    const category = await this.categoryService.findOne(id)
+    if(!category) return new NotFoundException("Category not found")
+
+    if( category.url ){
+      await this.uploadService.deleteCategoryImage(category.url)
+    }
+    const buffer = file.buffer
+    const filename = `${uuid()}-${file.originalname.replace(/\s+/g,'')}`
+    const upload = await this.uploadService.addCategoryImage(buffer, filename) 
+    
+    return this.categoryService.updateCategoryImage(id, filename) 
+  }
 
   @HttpCode(HttpStatus.CREATED)
   @ApiCreatedResponse({type: CategoryResponseDto, description: "Category created successfully"})

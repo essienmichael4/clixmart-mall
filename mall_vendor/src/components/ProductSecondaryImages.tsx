@@ -13,15 +13,19 @@ const ProductSecondaryImages = ({ handleFileChange}:Props) => {
     const onDrop = useCallback((acceptedFiles:File[]) => {
       // Do something with the files
       handleFileChange(acceptedFiles)
-      setFiles((prev) => {
-        let result = prev
+      setFiles(() => {
+        let result
         let newFiles = acceptedFiles!.map((file) =>
         Object.assign(file, {
           preview: URL.createObjectURL(file),
         }))
         
-        //@ts-ignore
-        result = [...result, ...newFiles]
+        if(result === undefined){
+          result = [...newFiles]
+        }else{
+          
+          result = [...result, ...newFiles]
+        }
         
         return result
       })
@@ -62,7 +66,22 @@ const ProductSecondaryImages = ({ handleFileChange}:Props) => {
         <div className="flex flex-col mt-4 gap-2">
             <p className='text-xs 2xl:text-sm font-bold'>Alipay/WeChat QR code</p>
             
-            {!files || files.length == 0 && <div
+            {!files && <div
+                {...getRootProps({
+                className:
+                    'dropzone dropzone-border border border-dashed relative overflow-hidden rounded-xl bg-transparent p-10 cursor-pointer w-full flex flex-col gap-y-4 items-center aspect-video justify-center',
+                })}
+            >
+                <input {...getInputProps()} />
+                <FileIcon className=' text-gray-500'/>
+        
+                <p className="text-base md:text-xl text-gray-500">
+                    Drag and drop or click to upload an image
+                </p>
+                
+            </div>}
+            
+            {files?.length == 0 && <div
                 {...getRootProps({
                 className:
                     'dropzone dropzone-border border border-dashed relative overflow-hidden rounded-xl bg-transparent p-10 cursor-pointer w-full flex flex-col gap-y-4 items-center aspect-video justify-center',
@@ -84,16 +103,16 @@ const ProductSecondaryImages = ({ handleFileChange}:Props) => {
                 })}
                 >
                     <input {...getInputProps()} />
-                    <FileIcon className=' text-gray-500'/>
+                    <FileIcon className=' w-10 h-10 text-gray-500'/>
             
-                    <p className="text-base md:text-xl text-gray-500">
+                    <p className="text-xs text-center text-gray-500">
                         Drag and drop or click to upload an image
                     </p>
                     
                 </div>}
               {files && files.map((file, i)=> (<div className='aspect-square w-[47%] relative'>
                 <button type='button' className='absolute top-2 right-2 bg-white/80 p-1 rounded-lg' onClick={() => handleRemoveImage(i)}><Trash2 className='text-rose-700 w-4 h-4' /></button>
-                <img key={i} src={file.preview} alt={file.name} />
+                <img className='aspect-square' key={i} src={file.preview} alt={file.name} />
                 </div>)
               )}
             </div>}

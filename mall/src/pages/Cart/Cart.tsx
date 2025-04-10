@@ -21,7 +21,7 @@ const Cart = () => {
 
     const handleCreateOrder = async ( )=>{
         toast.loading("Ordering...", {
-            id: "login"
+            id: "order"
         })
         const response = await axios_instance_token.post("/orders", {
             items: cartItems
@@ -29,7 +29,7 @@ const Cart = () => {
 
         console.log(response.data);
         toast.loading("Done...", {
-            id: "login"
+            id: "order"
         })
         
     }

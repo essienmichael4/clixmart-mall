@@ -27,6 +27,9 @@ export class Category {
     })
     slug:string
 
+    @Column({nullable: true})
+    url:string
+
     @CreateDateColumn({ type: 'timestamp' })
     createdAt: Date;
 

@@ -72,6 +72,7 @@ const CreateProduct = () => {
     const form = useForm<ProductDetailsSchemaType>({
         resolver:zodResolver(ProductDetailsSchema),
         defaultValues:{
+            name: productDetail.data?.name,
             model: "",
             category: "",
             subCategory: "",
@@ -96,13 +97,10 @@ const CreateProduct = () => {
                 id: "add-product"
             })
 
-            form.reset({
-                // name: "",
-            })
+            form.reset({})
 
             queryClient.invalidateQueries({queryKey: ["products"]})
             navigate(`../products/${store}`)
-            // setOpen(prev => !prev)
         },onError: (err:any) => {
             if (axios.isAxiosError(err)){
                 toast.error(err?.response?.data?.message, {
@@ -139,7 +137,7 @@ const CreateProduct = () => {
                         <div className="flex flex-col md:flex-row">
                             <div className="w-full space-y-2">
                                 <h3 className="text-5xl">{productDetail.data?.name}</h3>
-                                {/* <FormField
+                                <FormField
                                     control={form.control}
                                     name="name"
                                     render={({field}) =>(
@@ -150,13 +148,13 @@ const CreateProduct = () => {
                                             </FormControl>
                                         </FormItem>
                                     )} 
-                                /> */}
+                                />
 
                                 <FormField
                                     control={form.control}
                                     name="description"
                                     render={({field}) =>(
-                                        <FormItem className='flex-1 space-y-1'>
+                                        <FormItem className='md:max-w-[400px] lg:max-w-[480px] xl:max-w-[700px] space-y-1'>
                                             <FormLabel className='text-xs'>Description</FormLabel>
                                             <FormControl>
                                                 <Tiptap onChange={field.onChange} />

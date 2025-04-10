@@ -94,6 +94,12 @@ export class CategoryService {
     })
   }
 
+  updateCategoryImage(id:number, filename:string){
+    return this.categoryRepo.update(id, {
+      url: filename
+    })
+  }
+
   removeCategory(id: number) {
     return this.categoryRepo.delete(id)
   }

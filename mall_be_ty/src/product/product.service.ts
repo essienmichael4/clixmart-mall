@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { CreateProductDto, ProductDetailsDto } from './dto/create-product.dto';
 import { UpdateProductDto, UpdateProductReviewStatusDto, UpdateProductStatusDto } from './dto/update-product.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { In, Like, Repository } from 'typeorm';
+import { DataSource, In, Like, QueryRunner, Repository } from 'typeorm';
 import { Store } from 'src/store/entities/store.entity';
 import { Inventory, Product, Status } from './entities/product.entity';
 import { ProductReview, ReviewStatus } from './entities/review.entity';
@@ -17,8 +17,12 @@ import { PageMetaDto } from 'src/common/dto/pageMeta.dto';
 import { PageDto } from 'src/common/dto/page.dto';
 import { v4 } from 'uuid';
 import { ProductReponseDto } from './dto/response.dto';
-import { FileService } from 'src/upload/file.service';
 import { UploadService } from 'src/upload/upload.service';
+import { MonthHistory } from './entities/MonthHistory.entity';
+import { UserMonthHistory } from './entities/UserMonthHistory.entity';
+import { UserYearHistory } from './entities/UserYearHistory.entity';
+import { YearHistory } from './entities/YearHistory.entity';
+import { GetDay, GetMonth, GetYear } from 'src/helpers/common';
 
 @Injectable()
 export class ProductService {
@@ -32,24 +36,34 @@ export class ProductService {
     @InjectRepository(Category) private readonly categoryRepo:Repository<Category>,
     @InjectRepository(SubCategory) private readonly subCategoryRepo:Repository<SubCategory>,
     @InjectRepository(Brand) private readonly brandRepo:Repository<Brand>,
-    private readonly uploadService: UploadService
+    @InjectRepository(MonthHistory) private readonly monthHistoryRepo:Repository<MonthHistory>,
+    @InjectRepository(YearHistory) private readonly yearHistoryRepo:Repository<YearHistory>,
+    @InjectRepository(UserMonthHistory) private readonly userMonthHistoryRepo:Repository<UserMonthHistory>,
+    @InjectRepository(UserYearHistory) private readonly userYearHistoryRepo:Repository<UserYearHistory>,
+    private readonly uploadService: UploadService,
+    private readonly dataSource:DataSource
   ){}
 
   async create(storeName: string, userId: number, createProductDto: CreateProductDto) {
+    const queryRunner = this.dataSource.createQueryRunner()
+
+    const user = await this.userRepo.findOne({where: {
+        id:userId
+      }
+    })
+    const store = await this.storeRepo.findOne({
+      where :{slug: storeName}
+    })
+
     try{
-      const user = await this.userRepo.findOne({where: {
-          id:userId
-        }, relations: {
-          products: true
-        }
-      })
-      const store = await this.storeRepo.findOne({
-        where :{slug: storeName}
-      })
-      const productReview = await this.productReviewRepo.save({
+      await queryRunner.connect()
+      await queryRunner.startTransaction()
+
+      const productReviewEntity = this.productReviewRepo.create({
         status: ReviewStatus.PENDING,
         reviewId: v4()
       })
+      const productReview = await this.createProductReview(productReviewEntity, queryRunner)
 
       const productEntity = this.productRepo.create()
       const saveEntity = {
@@ -58,26 +72,48 @@ export class ProductService {
         slug: this.generateSlug(createProductDto.name.toLowerCase()),
         productReview: productReview,
         productId: v4(),
-        store
+        store,
+        user
       }
 
-      const product = await this.productRepo.save(saveEntity)
-      user.products = [...user.products, product]
-      await this.userRepo.save(user)
+      const product = await this.createProduct(saveEntity, queryRunner)
+      await this.upsertMonthHistoryProducts(queryRunner)
+      await this.upsertYearHistoryProducts(queryRunner)
+      await this.upsertUserYearHistoryProducts(user.id, queryRunner)
+      await this.upsertUserMonthHistoryProducts(user.id, queryRunner)
+      
+      await queryRunner.commitTransaction()
+
       return product
     }catch(err){
+      await queryRunner.rollbackTransaction()
       throw err
+    }finally{
+      await queryRunner.release()
     }
   }
 
-  async productDetails(store:string, productId:number, productDetails:ProductDetailsDto){
+  async createProduct(payload:Product, queryRunner: QueryRunner){
+    return await queryRunner.manager.save(Product, {
+      ...payload
+    })
+  }
+
+  async createProductReview(payload:ProductReview, queryRunner: QueryRunner){
+    return await queryRunner.manager.save(ProductReview, {
+      ...payload
+    })
+  }
+
+  async productDetails(store:string, productId:string, productDetails:ProductDetailsDto){
     try{
+      const {name} = productDetails
       const product = await this.productRepo.findOne({
         relations: {
           store: true
         },
         where:{
-          id:productId,
+          productId,
           store: {
             slug: store
           }
@@ -96,6 +132,9 @@ export class ProductService {
         return saveEntity
       })
 
+      if(name){
+        product.name = name
+      }
       product.category = category
       product.subCategory = subCategory
       product.brand = brand
@@ -112,9 +151,9 @@ export class ProductService {
     }
   }
 
-  async addOtherProductImages(id:number, filenames: string[]){
+  async addOtherProductImages(productId:string, filenames: string[]){
     const product = await this.productRepo.findOne({
-      where: {id},
+      where: {productId},
       relations:{
         productImages: true
       }
@@ -182,10 +221,10 @@ export class ProductService {
         productReview: true,
         category: true,
         subCategory: true,
-        brand:true
+        brand:true,
+        productImages: true
       },
       where: {
-        // ...(q && { name: Like(`%${q.toLowerCase()}%`) }),
         inventory: Inventory.INSTOCK,
         status: Status.PUBLISH,
         productReview: {
@@ -204,10 +243,12 @@ export class ProductService {
     productsResponse.map(async (product) => {
       product.imageUrl = await this.uploadService.getPresignedUrl(`products/${product.imageName}`)
 
-      product.productImages.map(async (image) => {
-        image.imageUrl = await this.uploadService.getPresignedUrl(`products/${image.url}`)
-        return image
-      })
+      if(product.productImages.length > 0) {
+        product.productImages.map(async (image) => {
+          image.imageUrl = await this.uploadService.getPresignedUrl(`products/${image.url}`)
+          return image
+        })
+      }
     })
 
     const productsCount = await this.productRepo.count()
@@ -224,7 +265,6 @@ export class ProductService {
         brand:true
       },
       where: {
-        // ...(q && { name: Like(`%${q.toLowerCase()}%`) }),
         inventory: Inventory.INSTOCK,
         status: Status.PUBLISH,
         productReview: {
@@ -235,7 +275,6 @@ export class ProductService {
         },
         subCategory: {
           ...(subCategories.length > 0 && {subCategoryId: In(subCategories)})
-          // ...(subCategory && { name: subCategory.toLowerCase() }),
         }
       },
       skip: pageOptionsDto.skip,
@@ -247,7 +286,7 @@ export class ProductService {
     productsResponse.map(async (product) => {
       product.imageUrl = await this.uploadService.getPresignedUrl(`products/${product.imageName}`)
 
-      if(product.productImages.length > 0) {
+      if(product.productImages?.length > 0) {
         product.productImages.map(async (image) => {
             image.imageUrl = await this.uploadService.getPresignedUrl(`products/${image.url}`)
           return image
@@ -438,19 +477,27 @@ export class ProductService {
     return productsResponse
   }
 
-  update(id: number, updateProductDto: UpdateProductDto) {
-    return `This action updates a #${id} product`;
+  update(productId: string, updateProductDto: UpdateProductDto) {
+    const {name, price, quantity, discount, model, description} = updateProductDto
+    return this.productRepo.update(productId, {
+      ...(name && { name: name.toLowerCase() }),
+      ...(price && { price: price }),
+      ...(quantity && { quantity: quantity }),
+      ...(discount && { discount: discount }),
+      ...(model && { model: model }),
+      ...(description && { description: description }),
+    });
   }
 
-  updateStatus(id: number, updateProductStatusDto: UpdateProductStatusDto) {
-    return this.productRepo.update(id, {
+  updateStatus(productId: string, updateProductStatusDto: UpdateProductStatusDto) {
+    return this.productRepo.update(productId, {
       status: updateProductStatusDto.status
     })
   }
 
-  async updateReviewStatus(id: number, updateProductReviewStatusDto: UpdateProductReviewStatusDto) {
+  async updateReviewStatus(productId: string, updateProductReviewStatusDto: UpdateProductReviewStatusDto) {
     const product = await this.productRepo.findOne({
-      where: {id},
+      where: {productId},
       relations: {
         productReview: true
       }
@@ -459,10 +506,92 @@ export class ProductService {
     await this.productRepo.save(product)
   }
 
-  updateProductImage(id: number, filename:string) {
-    return this.productRepo.update(id, {
+  updateProductImage(productId: number, filename:string) {
+    return this.productRepo.update(productId, {
       imageName: filename
     });
+  }
+
+  async upsertMonthHistoryProducts(queryRunner: QueryRunner){
+    const day = GetDay()
+    const month = GetMonth()
+    const year = GetYear()
+    
+    const monthHistory = await this.monthHistoryRepo.findOne({
+      where: { day, month, year }
+    })
+
+    if(monthHistory){
+      monthHistory.products += 1
+      return await queryRunner.manager.save(MonthHistory, {...monthHistory})
+    }else{
+      const newMonthHistory = this.monthHistoryRepo.create({
+        day, month, year, products: 1
+    })
+      return await queryRunner.manager.save(MonthHistory, {...newMonthHistory})
+    }
+
+  }
+  
+  async upsertYearHistoryProducts(queryRunner: QueryRunner){
+    const month = GetMonth()
+    const year = GetYear()
+    
+    const yearHistory = await this.yearHistoryRepo.findOne({
+      where: { month, year }
+    })
+
+    if(yearHistory){
+      yearHistory.products += 1
+      return await queryRunner.manager.save(YearHistory, {...yearHistory})
+    }else{
+      const newYearHistory = this.yearHistoryRepo.create({
+        month, year, products: 1
+    })
+      return await queryRunner.manager.save(YearHistory, {...newYearHistory})
+    }
+
+  }
+
+  async upsertUserMonthHistoryProducts(userId:number, queryRunner: QueryRunner){
+    const day = GetDay()
+    const month = GetMonth()
+    const year = GetYear()
+    
+    const monthHistory = await this.userMonthHistoryRepo.findOne({
+      where: { day, month, year, userId }
+    })
+
+    if(monthHistory){
+      monthHistory.products += 1
+      return await queryRunner.manager.save(UserMonthHistory, {...monthHistory})
+    }else{
+      const newMonthHistory = this.userMonthHistoryRepo.create({
+        day, month, year, products: 1, userId
+    })
+      return await queryRunner.manager.save(UserMonthHistory, {...newMonthHistory})
+    }
+
+  }
+
+  async upsertUserYearHistoryProducts(userId:number, queryRunner: QueryRunner){
+    const month = GetMonth()
+    const year = GetYear()
+    
+    const yearHistory = await this.userYearHistoryRepo.findOne({
+      where: { month, year, userId }
+    })
+
+    if(yearHistory){
+      yearHistory.products += 1
+      return await queryRunner.manager.save(UserYearHistory, {...yearHistory})
+    }else{
+      const newYearHistory = this.userYearHistoryRepo.create({
+        month, year, products: 1, userId
+    })
+      return await queryRunner.manager.save(UserYearHistory, {...newYearHistory})
+    }
+
   }
 
   remove(id: number) {

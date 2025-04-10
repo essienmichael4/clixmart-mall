@@ -26,7 +26,7 @@ const useProductsSearch = ({page = 1, category, subCategories, take=50, brand}:C
 // @ts-ignore
     const productsQuery = useQuery<ProductsResponse>({
         queryKey: ["products", page, category, subCategories],
-        queryFn: async() => await axios_instance.get(`/products/categories/${category}?page=${page}&take=${take}&subCategories=${subCategories?.toString()}&brand=${brand}`).then(res => {
+        queryFn: async() => await axios_instance.get(`/products/categories/${category}?page=${page}&take=${take}&subCategories=${subCategories?.toString()}&brand=${brand || ""}`).then(res => {
             setIsLoading(true)            
             return res.data
         }).then((res)=>{

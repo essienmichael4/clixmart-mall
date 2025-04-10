@@ -12,18 +12,18 @@ export class YearHistory {
     @PrimaryColumn()
     year: number;
 
-    @Column()
+    @Column({ default:0 })
     orders: number;
 
-    @Column()
+    @Column({ default:0 })
     products: number;
 
-    @Column("float")
+    @Column({ type: "float", default: 0 })
     revenue: number;
 
-    @Column()
+    @Column({ default:0 })
     users: number;
 
-    @Column()
+    @Column({ default:0 })
     stores: number;
 }

@@ -15,6 +15,15 @@ export class CreateProductDto {
 
 export class ProductDetailsDto {
     @ApiProperty({
+        description: "Product name",
+        example: "Electric Kettle",
+        required: false
+    })
+    @IsString()
+    @IsOptional()
+    name?:string 
+
+    @ApiProperty({
         description: "Category name",
         example: "Electronics",
         required: true

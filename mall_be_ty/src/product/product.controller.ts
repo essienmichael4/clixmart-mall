@@ -70,7 +70,7 @@ export class ProductController {
   @UseInterceptors(
     FilesInterceptor("files")
   )
-  public async uploadFiles(@Param('id', ParseIntPipe) id: number, @Req() req:any,
+  public async uploadFiles(@Param('id') id: string, @Req() req:any,
     @UploadedFiles(
       new ParseFilePipeBuilder()
       .addFileTypeValidator({fileType: /(jpg|jpeg|png|gif|webp)$/})
@@ -86,7 +86,7 @@ export class ProductController {
         fileUploadResults.push({...uploadFileResponse, success: true})
         fileNames.push(filename)
     }
-    // const buffer = file.buffer
+    
     return await this.productService.addOtherProductImages(id, fileNames)
   }
 
@@ -109,7 +109,7 @@ export class ProductController {
   @ApiOkResponse({type: "", description: "Product created successfully"})
   @ApiOperation({description: "Create Product api"})
   @ApiConsumes("application/json")
-  async addProductDetails(@Param('store') store: string, @Param('id', ParseIntPipe) id: number, @Body() productDetails: ProductDetailsDto, @User() user:UserInfo) {
+  async addProductDetails(@Param('store') store: string, @Param('id') id: string, @Body() productDetails: ProductDetailsDto, @User() user:UserInfo) {
     const product = await this.productService.productDetails(store, id, productDetails);
     return product
   }
@@ -145,6 +145,12 @@ export class ProductController {
     return this.productService.findStoreProducts(store);
   }
   
+  @UseGuards(JwtGuard)
+  @Get('/store/:store/:id')
+  findStoreProduct(@Param('store') store: string, @Param('id') id: string) {
+    return this.productService.findStoreProduct(store, id);
+  }
+  
   // @Get('categories/:category')
   // findCategoriesProducts(@Param('category') category: string, ) {
   //   return this.productService.findStoreProducts(category);
@@ -162,25 +168,20 @@ export class ProductController {
     return this.productService.findCartProducts(search)
   }
 
-  @UseGuards(JwtGuard)
-  @Get('/store/:store/:id')
-  findStoreProduct(@Param('store') store: string, @Param('id') id: string) {
-    return this.productService.findStoreProduct(store, id);
-  }
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateProductDto: UpdateProductDto) {
-    return this.productService.update(+id, updateProductDto);
+    return this.productService.update(id, updateProductDto);
   }
 
   @Patch(':id/status')
   updateStatus(@Param('id') id: string, @Body() updateProductStatusDto: UpdateProductStatusDto) {
-    return this.productService.updateStatus(+id, updateProductStatusDto);
+    return this.productService.updateStatus(id, updateProductStatusDto);
   }
 
   @Patch(':id/approval')
   updateReviewStatus(@Param('id') id: string, @Body() updateProductReviewStatusDto: UpdateProductReviewStatusDto) {
-    return this.productService.updateReviewStatus(+id, updateProductReviewStatusDto);
+    return this.productService.updateReviewStatus(id, updateProductReviewStatusDto);
   }
 
   @Delete(':id')

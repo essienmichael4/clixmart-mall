@@ -1,5 +1,4 @@
 import { useQuery } from "@tanstack/react-query"
-import { ScrollArea } from "./ui/scroll-area"
 import { Category } from "@/lib/types"
 import { axios_instance } from "@/api/axios"
 import { Checkbox } from "@/components/ui/checkbox"
@@ -12,7 +11,7 @@ interface CategoriesCheckParams {
     subCategoriesChange : (value: string)=>void
 }
 
-const CategoriesCheck = ({activeCategory, subCategories, subCategoriesChange}:CategoriesCheckParams) => {
+const MobileCategoriesCheck = ({activeCategory, subCategories, subCategoriesChange}:CategoriesCheckParams) => {
     // console.log(subCategories);
     
     const categories = useQuery<Category[]>({
@@ -23,9 +22,9 @@ const CategoriesCheck = ({activeCategory, subCategories, subCategoriesChange}:Ca
     })
 
     return (
-        <ScrollArea className="hidden lg:block lg:w-[300px] lg:h-96  px-2">
-            <h2 className="uppercase text-sm font-semibold">Categories</h2>
-            <Separator />
+        <div className="block lg:hidden lg:w-[300px] pl-4 pr-2">
+            <h2 className="uppercase text-sm font-semibold mb-2">Categories</h2>
+            <Separator className="mb-2"/>
             {
                 categories.data?.map(category=>{
                     return <div key={category.id}>
@@ -51,8 +50,8 @@ const CategoriesCheck = ({activeCategory, subCategories, subCategoriesChange}:Ca
                     </div>
                 })
             }
-        </ScrollArea>
+        </div>
   )
 }
 
-export default CategoriesCheck
+export default MobileCategoriesCheck

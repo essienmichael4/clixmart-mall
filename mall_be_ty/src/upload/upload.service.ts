@@ -18,8 +18,16 @@ export class UploadService {
     return await this.fileService.uploadBrand(imageBuffer, filename)
   }
 
+  async addCategoryImage(imageBuffer: Buffer, filename:string){
+    return await this.fileService.uploadCategory(imageBuffer, filename)
+  }
+
   async deleteBrandImage(filename:string){
     return await this.fileService.deleteBrandImage(filename)
+  }
+
+  async deleteCategoryImage(filename:string){
+    return await this.fileService.deleteCategoryImage(filename)
   }
 
   async addProductImage(imageBuffer: Buffer, filename:string){

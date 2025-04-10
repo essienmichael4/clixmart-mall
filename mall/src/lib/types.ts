@@ -133,7 +133,8 @@ export type Product = {
 
 export type ProductImage = {
     id: number,
-    url: string
+    url: string,
+    imageUrl?: string
 }
 
 export type ProductReview = {

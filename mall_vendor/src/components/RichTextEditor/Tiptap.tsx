@@ -26,7 +26,7 @@ const Tiptap = ({ onChange }: Props) => {
     return (
         <div className="flex flex-col justify-center gap-2">
             <Toolbars editor={editor} />
-            <EditorContent editor={editor} />
+            <EditorContent editor={editor} className="border rounded-lg"/>
         </div>
     )
 }

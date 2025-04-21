@@ -7,16 +7,24 @@ import { Link, useNavigate, useParams } from "react-router-dom"
 import ProductVisibility from "./ProductVisibility"
 import DescriptionParser from "@/components/DescriptionParser"
 import useAxiosToken from "@/hooks/useAxiosToken"
+import { useState } from "react"
 
 const ProductDetails = () => {
     const {store, id} = useParams()
     const navigate = useNavigate()
     const axios_instance_token = useAxiosToken()
-    
+    const [activeImage, setActiveImage] = useState("")
+
+    const handleImageClick = (image: string) => {
+        setActiveImage(image)
+    }
 
     const product = useQuery<Product>({
         queryKey: ["products", id],
         queryFn: async() => await axios_instance_token.get(`/products/store/${store}/${id}`).then(res => {
+            res.data?.imageUrl ? 
+                setActiveImage(res.data.imageUrl) : 
+                res.data?.productImages ? setActiveImage(res.data.productImages[0].url) : setActiveImage("")
             return res.data
         })
     })
@@ -53,29 +61,28 @@ const ProductDetails = () => {
                     </div>
                 </div>
                 <div className="flex w-full justify-between flex-col md:flex-row mb-4 lg:mb-0 px-4 mt-4">
-                    <div className="min-w-[320px] md:max-w-[320px] w-full md:w-1/3 flex flex-wrap gap-4 p-4">
-                        <div className="w-full aspect-square border rounded-xl"></div>
+                    <div className="min-w-[320px] md:max-w-[320px] w-full md:w-1/3 flex flex-wrap gap-4 p-4 md:max-h-[320px]">
+                        <div className="w-full block aspect-square border overflow-hidden rounded-xl">
+                            <img src={activeImage} alt="" />
+                        </div>
                         <div className="w-full flex items-center justify-between">
-                            <button className="flex items-center justify-center w-[18%] aspect-square rounded-lg border">
+                            <button onClick={() => handleImageClick(product.data?.imageUrl as string)} className="flex items-center justify-center w-[18%] aspect-square rounded-lg border overflow-hidden">
                                 {product.data?.imageUrl && 
                                     <img src={product.data.imageUrl} alt="" />
                                 }
                             </button>
                             {
                                 product.data?.productImages.map((image, idx) =>{
-                                    return <button key={idx} className="flex items-center justify-center w-[18%] aspect-square rounded-lg border">
+                                    return <button key={idx} onClick={() => handleImageClick(image.imageUrl as string)} className="flex items-center justify-center overflow-hidden w-[18%] aspect-square rounded-lg border">
                                         <img src={image.url} alt="" />
                                     </button>
 
                                 })
                             }
-                            {/* <button className="flex items-center justify-center w-[18%] aspect-square rounded-lg border"></button>
-                            <button className="flex items-center justify-center w-[18%] aspect-square rounded-lg border"></button>
-                            <button className="flex items-center justify-center w-[18%] aspect-square rounded-lg border"></button> */}
                         </div>
                     </div>
                     <div className="min-w-[320px] relative w-full flex flex-col flex-wrap justify-self-end gap-2 px-4">
-                        <ProductVisibility id={Number(product.data?.id)} visibility={product.data?.status as string} />
+                        <ProductVisibility id={product.data?.productId as string} visibility={product.data?.status as string} />
                         <p className="text-xs text-blue-700 font-semibold capitalize">{product.data?.category?.name} / {product.data?.subCategory?.name}</p>
                         <h4 className="text-4xl font-semibold capitalize">{product.data?.name}</h4>
                         <div className="flex items-center justify-between">

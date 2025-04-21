@@ -1,10 +1,10 @@
 import { ApiProperty, PartialType } from '@nestjs/swagger';
-import { CreateProductDto } from './create-product.dto';
-import { IsDefined, IsEnum } from 'class-validator';
+import { ProductDetailsDto } from './create-product.dto';
+import { IsEnum } from 'class-validator';
 import { Status } from '../entities/product.entity';
 import { ReviewStatus } from '../entities/review.entity';
 
-export class UpdateProductDto extends PartialType(CreateProductDto) {}
+export class UpdateProductDto extends PartialType(ProductDetailsDto) {}
 
 export class UpdateProductStatusDto {
     @ApiProperty({

@@ -7,6 +7,9 @@ export const ProductSchema = z.object({
 })
 
 export const ProductDetailsSchema = z.object({
+    name: z.string().min(2, {
+        message: "Must be a valid product name."
+    }).optional().or(z.literal('')),
     model: z.string().min(2, {
         message: "Model must be a valid product model."
     }).optional().or(z.literal('')),

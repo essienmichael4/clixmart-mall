@@ -12,6 +12,7 @@ import { StoreModule } from './store/store.module';
 import { OrderModule } from './order/order.module';
 import { BrandModule } from './brand/brand.module';
 import { UploadModule } from './upload/upload.module';
+import { StatsModule } from './stats/stats.module';
 
 @Module({
   imports: [
@@ -20,9 +21,9 @@ import { UploadModule } from './upload/upload.module';
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({
-        type: 'postgres',
+        type: 'mysql',
         host: configService.get("DB_HOST"),
-        port: +configService.get("DB_PORT"),
+        // port: +configService.get("DB_PORT"),
         username: configService.get("DB_USERNAME"),
         password: configService.get("DB_PASSWORD"),
         database: configService.get("DB_NAME"),
@@ -38,7 +39,8 @@ import { UploadModule } from './upload/upload.module';
     StoreModule,
     OrderModule,
     BrandModule,
-    UploadModule],
+    UploadModule,
+    StatsModule],
   controllers: [AppController],
   providers: [AppService],
 })

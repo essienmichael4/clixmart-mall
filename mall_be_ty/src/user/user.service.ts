@@ -3,30 +3,56 @@ import { CreateUserDto, FindUsersDto } from './dto/create-user.dto';
 import { UpdateUserDto, UpdateUserPasswordRequest, UpdateUserRequest } from './dto/update-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
-import { Like, Repository } from 'typeorm';
+import { DataSource, Like, QueryRunner, Repository } from 'typeorm';
 import { compare, hash } from 'bcryptjs';
 import { v4 } from 'uuid';
+import { GetDay, GetMonth, GetYear } from 'src/helpers/common';
+import { MonthHistory } from 'src/product/entities/MonthHistory.entity';
+import { YearHistory } from 'src/product/entities/YearHistory.entity';
 
 @Injectable()
 export class UserService {
-  constructor(@InjectRepository(User) private readonly userRepo:Repository<User>){}
+  constructor(
+    @InjectRepository(User) private readonly userRepo:Repository<User>,
+    @InjectRepository(MonthHistory) private readonly monthHistoryRepo:Repository<MonthHistory>,
+    @InjectRepository(YearHistory) private readonly yearHistoryRepo:Repository<YearHistory>,
+    private readonly dataSource:DataSource
+  ){}
 
   async create(createUserDto: CreateUserDto):Promise<User> {
-    const userEntity = this.userRepo.create()
-    const saveEntity = {
-      ...userEntity,
-      ...createUserDto,
-      userId: v4(),
-      password: await this.hashPassword(createUserDto.password),
-      name: createUserDto.name.toLowerCase(),
-      email: createUserDto.email.toLowerCase()  
-    }
-
+    const queryRunner =this.dataSource.createQueryRunner()
     try{
-      return await this.userRepo.save(saveEntity)
+      await queryRunner.connect()
+      await queryRunner.startTransaction()
+
+      const userEntity = this.userRepo.create()
+      const saveEntity = {
+        ...userEntity,
+        ...createUserDto,
+        userId: v4(),
+        password: await this.hashPassword(createUserDto.password),
+        name: createUserDto.name.toLowerCase(),
+        email: createUserDto.email.toLowerCase()  
+      }
+
+      const user = await this.createUser(saveEntity, queryRunner)
+      await this.upsertMonthHistoryUsers(queryRunner)
+      await this.upsertYearHistoryUsers(queryRunner)
+
+      await queryRunner.commitTransaction()
+      return user
     }catch(err){
+      await queryRunner.rollbackTransaction()
       throw err
+    }finally{
+      await queryRunner.release()
     }
+  }
+
+  async createUser(payload:User, queryRunner:QueryRunner){
+    return await queryRunner.manager.save(User, {
+      ...payload
+    })
   }
 
   findAll() {
@@ -47,6 +73,22 @@ export class UserService {
     return users
   }
   
+  async findUserByEmail(email:string){
+    return await this.userRepo.findOneBy({email})
+  }
+
+  async findUserById(id:number){
+    return await this.userRepo.findOneBy({id})
+  }
+  
+  findOne(id: number) {
+    return this.userRepo.findOneBy({id});
+  }
+  
+  // update(id: number, updateUserDto: UpdateUserDto) {
+    //   return `This action updates a #${id} user`;
+    // }
+
   async updateUserPassword(id:number, fields:UpdateUserPasswordRequest){
     try{
       const updatedUser = await this.findUserById(id)
@@ -78,29 +120,55 @@ export class UserService {
   
     return await this.userRepo.findOneBy({id});
   }
+
+  async upsertMonthHistoryUsers(queryRunner: QueryRunner){
+    const day = GetDay()
+    const month = GetMonth()
+    const year = GetYear()
+    
+    const monthHistory = await this.monthHistoryRepo.findOne({
+      where: { day, month, year }
+    })
+
+    if(monthHistory){
+      monthHistory.users += 1
+      return await queryRunner.manager.save(MonthHistory, {...monthHistory})
+    }else{
+      const newMonthHistory = this.monthHistoryRepo.create({
+        day, month, year, users: 1
+    })
+      return await queryRunner.manager.save(MonthHistory, {...newMonthHistory})
+    }
+
+  }
   
-  async findUserByEmail(email:string){
-    return await this.userRepo.findOneBy({email})
+  async upsertYearHistoryUsers(queryRunner: QueryRunner){
+    const month = GetMonth()
+    const year = GetYear()
+    
+    const yearHistory = await this.yearHistoryRepo.findOne({
+      where: { month, year }
+    })
+
+    if(yearHistory){
+      yearHistory.users += 1
+      return await queryRunner.manager.save(YearHistory, {...yearHistory})
+    }else{
+      const newYearHistory = this.yearHistoryRepo.create({
+        month, year, users: 1
+    })
+      return await queryRunner.manager.save(YearHistory, {...newYearHistory})
+    }
+
   }
-
-  async findUserById(id:number){
-    return await this.userRepo.findOneBy({id})
-  }
-
-  findOne(id: number) {
-    return this.userRepo.findOneBy({id});
-  }
-
-  // update(id: number, updateUserDto: UpdateUserDto) {
-  //   return `This action updates a #${id} user`;
-  // }
-
+    
   remove(id: number) {
     return `This action removes a #${id} user`;
   }
-
+  
   async hashPassword(password:string){
     const hashedPassword = await hash(password, 10)
     return hashedPassword
   }
 }
+  

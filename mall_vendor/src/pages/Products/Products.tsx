@@ -25,10 +25,6 @@ const Products = () => {
               
           <div className="flex gap-2 flex-wrap">
             <button onClick={()=> setStatus("")} className={`${status === "" && 'active bg-slate-400'} text-xs py-2 px-4 rounded-md`}>All</button>
-            {/* <button onClick={()=> setStatus("ON_HOLD")} className={`${status === "ON_HOLD" && 'active bg-slate-400'} text-xs py-2 px-4 rounded-md`}>On hold</button>
-            <button  onClick={()=> setStatus("EN_ROUTE")} className={`${status === "EN_ROUTE" && 'active bg-slate-400'} text-xs py-2 px-4 rounded-md`}>En route</button>
-            <button  onClick={()=> setStatus("ARRIVED")} className={`${status === "ARRIVED" && 'active bg-slate-400'} text-xs py-2 px-4 rounded-md`}>Arrived</button>
-            <button  onClick={()=> setStatus("DELIVERED")} className={`${status === "DELIVERED" && 'active bg-slate-400'} text-xs py-2 px-4 rounded-md`}>Delivered</button> */}
           </div>
 
           <div className="w-full sm:w-[320px]">
@@ -41,14 +37,6 @@ const Products = () => {
 
         <div className="mt-8">
           <AllProducts store={store as string} status={status} filtering={filtering} />
-          {/* <div className="w-full columns-2 sm:columns-3 lg:column-4 gap-4">
-              <div className='w-full break-inside-avoid'>
-                  <div className="flex flex-col items-center justify-center gap-4 rounded-md p-6 text-md border border-neutral-300">
-                    <Plus />
-                    <p className="text-xs">Add Product</p>
-                  </div>
-              </div>
-          </div> */}
         </div>
       </div>
     </>

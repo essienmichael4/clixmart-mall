@@ -79,20 +79,20 @@ const AllOrders = ({ filtering}:FilterProps) => {
         accessorKey: "isPaid",
         header:({column})=>(<DataTableColumnHeader column={column} title='Payment Status' />),
         cell:({row}) => {
-            return <div className='capitalize'>
-                <Link to={`./${row.original.id}`}>
+            return <div>
+                {/* <Link to={`./${row.original.id}`}> */}
                     {row.original.isPaid}
-                </Link>
+                {/* </Link> */}
             </div>
         }
     },{
         accessorKey: "status",
         header:({column})=>(<DataTableColumnHeader column={column} title='Order Status' />),
         cell:({row}) => {
-            return <div className='capitalize'>
-                <Link to={`./${row.original.id}`}>
+            return <div className=''>
+                {/* <Link to={`./${row.original.id}`}> */}
                     {row.original.status}
-                </Link>
+                {/* </Link> */}
             </div>
         }
     },

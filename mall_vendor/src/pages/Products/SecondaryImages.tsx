@@ -85,10 +85,10 @@ const SecondaryImages = ({ id, trigger}:Props) => {
             <DialogContent className='w-[90%] mx-auto rounded-2xl'>
                 <DialogHeader className='items-start'>
                     <DialogTitle>
-                        Edit Package
+                        Edit Product Images
                     </DialogTitle>
                 </DialogHeader>
-                <div >   
+                <div className='w-[100%]'>   
                     <ProductSecondaryImages handleFileChange={handleFilesChange} />
                 </div>
                 <DialogFooter >
@@ -96,15 +96,13 @@ const SecondaryImages = ({ id, trigger}:Props) => {
                         <Button 
                             type='button'
                             variant={"secondary"}
-                            onClick={()=>{
-                                // form.reset()
-                            }} >
+                            >
                                 Cancel
                         </Button>
                     </DialogClose>
                     <Button onClick={()=>{onSubmit()}} disabled={isPending} className='bg-gradient-to-r from-blue-500 to-blue-800 text-white'
                     >
-                        {!isPending && "Update Received"}
+                        {!isPending && "Update Images"}
                         {isPending && <Loader2 className='animate-spin' /> }
                     </Button>
                 </DialogFooter>

@@ -52,7 +52,7 @@ const CreateProductDialog = ({store, trigger}:Props) => {
             })
 
             queryClient.invalidateQueries({queryKey: ["products"]})
-            navigate(`/products/${store}/${data.id}/product-info`)
+            navigate(`/products/${store}/${data.productId}/product-info`)
             setOpen(prev => !prev)
         },onError: (err:any) => {
             if (axios.isAxiosError(err)){

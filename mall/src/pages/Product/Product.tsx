@@ -72,7 +72,7 @@ const ProductDetails = () => {
                             }
                             {
                                 product.data?.productImages.map((image, idx) =>{
-                                    return <button key={idx} className="flex items-center justify-center w-[18%] aspect-square rounded-lg border">
+                                    return <button key={idx}  onClick={() => handleImageClick(image.imageUrl as string)} className="flex items-center justify-center w-[18%] aspect-square rounded-lg border">
                                         <img src={image.url} alt="" />
                                     </button>
                                 })

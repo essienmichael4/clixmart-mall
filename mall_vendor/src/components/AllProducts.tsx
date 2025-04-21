@@ -6,7 +6,6 @@ import { ColumnDef, getCoreRowModel, flexRender, useReactTable, getPaginationRow
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from './ui/table'
 import useAxiosToken from '@/hooks/useAxiosToken'
 import { Button } from './ui/button'
-// import { DotsVerticalIcon } from '@radix-ui/react-icons'
 
 interface FilterProps{
     filtering:string,
@@ -21,9 +20,7 @@ const AllProducts = ({store, status, filtering}:FilterProps) => {
 
     const orders = useQuery<Product[]>({
         queryKey: ["products", status],
-        queryFn: async() => await axios_instance_token.get(`/products/store/${store}?status=${status}`).then(res => {
-            console.log(res.data);
-            
+        queryFn: async() => await axios_instance_token.get(`/products/store/${store}?status=${status}`).then(res => {            
             return res.data
         })
     })
@@ -39,22 +36,32 @@ const AllProducts = ({store, status, filtering}:FilterProps) => {
     },{
         accessorKey: "name",
         header:({column})=>(<DataTableColumnHeader column={column} title='Product Name' />),
-        cell:({row}) => <div>
-            <Link to={`./${row.original.productId}`}>
-                {row.original.name}
+        cell:({row}) => <div className=''>
+            <Link className='flex items-center gap-2' to={`./${row.original.productId}`}>
+                <div className='rounded-full overflow-hidden w-8 h-8'>
+                    <img src={row.original.imageUrl} alt="" />
+                </div>
+                <div className='flex flex-col'>
+                    <span className='capitalize'>
+                        {row.original.name}
+                    </span>
+                    <span className='text-xs text-gray-500'>
+                        {row.original.productId}
+                    </span>
+                </div>
             </Link>
         </div>
     },{
         accessorKey: "category.name",
         header:({column})=>(<DataTableColumnHeader column={column} title='Category' />),
-        cell:({row}) => <div>
+        cell:({row}) => <div className='capitalize'>
             {row.original?.category?.name}
         </div>
     },{
         accessorKey: "subCategory.name",
         header:({column})=>(<DataTableColumnHeader column={column} title='Subcategory' />),
         cell:({row}) => {
-            return <div className='text-muted-foreground text-nowrap'>
+            return <div className='text-muted-foreground text-nowrap capitalize'>
                 {row.original?.subCategory?.name}
             </div>
         }

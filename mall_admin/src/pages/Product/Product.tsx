@@ -54,21 +54,21 @@ const ProductDetails = () => {
                             </BreadcrumbList>
                         </Breadcrumb>
                     </div>
-                    <ProductApproval approval={product.data?.productReview?.status as string} id={Number(product.data?.id)} />
+                    <ProductApproval approval={product.data?.productReview?.status as string} id={product.data?.productId as string} />
                 </div>
                 <div className="flex justify-between flex-col md:flex-row flex-wrap mb-4 lg:mb-0 px-4 mt-4">
                     <div className="min-w-[320px] md:max-w-[320px] w-full md:w-1/3 flex flex-wrap gap-4 p-4">
-                        <div className="w-full aspect-square border rounded-xl animate-pulse">
+                        <div className="w-full aspect-square border rounded-xl overflow-hidden">
                             <img src={activeImage} alt="" />
                         </div>
                         <div className="w-full flex items-center justify-between">
-                            {product.data?.imageUrl && <button onClick={() => handleImageClick(product.data.imageUrl as string)} className="flex items-center justify-center w-[18%] aspect-square rounded-lg border">
+                            {product.data?.imageUrl && <button onClick={() => handleImageClick(product.data.imageUrl as string)} className="flex items-center justify-center w-[18%] aspect-square rounded-lg border overflow-hidden">
                                     <img src={product.data.imageUrl} alt="" />
                             </button>
                             }
                             {
                                 product.data?.productImages.map((image, idx) =>{
-                                    return <button key={idx} className="flex items-center justify-center w-[18%] aspect-square rounded-lg border">
+                                    return <button key={idx} onClick={() => handleImageClick(image.imageUrl as string)} className="flex items-center justify-center w-[18%] aspect-square rounded-lg border overflow-hidden">
                                         <img src={image.url} alt="" />
                                     </button>
                                 })

@@ -6,7 +6,7 @@ import { toast } from "sonner"
 
 interface ProductApprovalProps{
     approval:string,
-    id: number
+    id: string
 }
 
 const ProductApproval = ({approval, id}:ProductApprovalProps) => {

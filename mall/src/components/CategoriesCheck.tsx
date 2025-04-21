@@ -22,8 +22,6 @@ const CategoriesCheck = ({activeCategory, subCategories, subCategoriesChange}:Ca
         })
     })
 
-
-
     return (
         <ScrollArea className="hidden lg:block lg:w-[300px] lg:h-96  px-2">
             <h2 className="uppercase text-sm font-semibold">Categories</h2>
@@ -43,7 +41,7 @@ const CategoriesCheck = ({activeCategory, subCategories, subCategoriesChange}:Ca
                                     />
                                     <label
                                         htmlFor={sub.slug}
-                                        className="text-xs leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                                        className="text-xs capitalize leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
                                     >
                                         {sub.name}
                                     </label>

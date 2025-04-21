@@ -3,7 +3,7 @@ import { CreateStoreDto, NextOfKinDto, StoreAddressDto, StoreDetailsDto, StorePa
 import { UpdateStoreDto, UpdateStoreReviewDto } from './dto/update-store.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Store } from './entities/store.entity';
-import { Repository } from 'typeorm';
+import { DataSource, QueryRunner, Repository } from 'typeorm';
 import { StoreDetail } from './entities/storeDetails.entity';
 import { StoreAddress } from './entities/storeAddress.entity';
 import { PaymentDetail } from './entities/paymentDetails.entity';
@@ -11,7 +11,10 @@ import { UserService } from 'src/user/user.service';
 import { User } from 'src/user/entities/user.entity';
 import { NextOfKin } from './entities/nextOfKin.entity';
 import { Status, StoreReview } from './entities/storeReview.entity';
+import { MonthHistory } from 'src/product/entities/MonthHistory.entity';
+import { YearHistory } from 'src/product/entities/YearHistory.entity';
 import { v4 } from 'uuid';
+import { GetDay, GetMonth, GetYear } from 'src/helpers/common';
 
 @Injectable()
 export class StoreService {
@@ -22,11 +25,15 @@ export class StoreService {
     @InjectRepository(StoreAddress) private readonly storeAddressRepo:Repository<StoreAddress>,
     @InjectRepository(PaymentDetail) private readonly paymentDetailRepo:Repository<PaymentDetail>,
     @InjectRepository(NextOfKin) private readonly nextOfKinRepo:Repository<NextOfKin>,
+    @InjectRepository(MonthHistory) private readonly monthHistoryRepo:Repository<MonthHistory>,
+    @InjectRepository(YearHistory) private readonly yearHistoryRepo:Repository<YearHistory>,
     @InjectRepository(User) private readonly userRepo:Repository<User>,
     private userService: UserService,
+    private readonly dataSource:DataSource
   ){}
 
   async create(createStoreDto: CreateStoreDto, userId:number) {
+    const queryRunner = this.dataSource.createQueryRunner()
     const user = await this.userRepo.findOne({where: {
         id:userId
       }, relations: ["stores"]
@@ -35,10 +42,16 @@ export class StoreService {
     const unspaced = this.generateUspacedName(createStoreDto.name.toLowerCase())
     
     try{
-      const storeReview = await this.storeReviewRepo.save({
+      await queryRunner.connect()
+      await queryRunner.startTransaction()
+
+      const storeReviewEntity = await this.storeReviewRepo.create({
         status: Status.PENDING,
         storeReviewId: v4()
       })
+
+      const storeReview = await this.createStoreReview(storeReviewEntity, queryRunner)
+
       const storeEntity =  this.storeRepo.create()
       const saveEntity = {
         ...storeEntity,
@@ -46,16 +59,22 @@ export class StoreService {
         storeId: v4(),
         url: this.generateStoreUrl(unspaced),
         slug: unspaced,
-        storeReview: storeReview
+        storeReview: storeReview,
+        user
       }
     
-      const store = await this.storeRepo.save(saveEntity)
-      user.stores = [...user.stores, store]
-      await this.userRepo.save(user)
+      const store = await this.createStore(saveEntity, queryRunner)
+      await this.upsertMonthHistoryStores(queryRunner)
+      await this.upsertYearHistoryStores(queryRunner)
+
+      await queryRunner.commitTransaction()
       return store
     }catch(err){
+      await queryRunner.rollbackTransaction()
       throw err
-    };
+    }finally{
+      await queryRunner.release()
+    }
   }
 
   async addStoreDetails(id:number,storeDetailsDto:StoreDetailsDto){
@@ -149,6 +168,19 @@ export class StoreService {
     return `This action returns all store`;
   }
 
+  
+    async createStore(payload:Store, queryRunner: QueryRunner){
+      return await queryRunner.manager.save(Store, {
+        ...payload
+      })
+    }
+  
+    async createStoreReview(payload:StoreReview, queryRunner: QueryRunner){
+      return await queryRunner.manager.save(StoreReview, {
+        ...payload
+      })
+    }
+
   findAll() {
     return this.storeRepo.find({
       relations: {
@@ -238,6 +270,47 @@ export class StoreService {
     }catch(err){
       throw err
     };
+  }
+
+  async upsertMonthHistoryStores(queryRunner: QueryRunner){
+    const day = GetDay()
+    const month = GetMonth()
+    const year = GetYear()
+    
+    const monthHistory = await this.monthHistoryRepo.findOne({
+      where: { day, month, year }
+    })
+
+    if(monthHistory){
+      monthHistory.stores += 1
+      return await queryRunner.manager.save(MonthHistory, {...monthHistory})
+    }else{
+      const newMonthHistory = this.monthHistoryRepo.create({
+        day, month, year, stores: 1
+    })
+      return await queryRunner.manager.save(MonthHistory, {...newMonthHistory})
+    }
+
+  }
+  
+  async upsertYearHistoryStores(queryRunner: QueryRunner){
+    const month = GetMonth()
+    const year = GetYear()
+    
+    const yearHistory = await this.yearHistoryRepo.findOne({
+      where: { month, year }
+    })
+
+    if(yearHistory){
+      yearHistory.stores += 1
+      return await queryRunner.manager.save(YearHistory, {...yearHistory})
+    }else{
+      const newYearHistory = this.yearHistoryRepo.create({
+        month, year, stores: 1
+    })
+      return await queryRunner.manager.save(YearHistory, {...newYearHistory})
+    }
+
   }
 
   remove(id: number) {

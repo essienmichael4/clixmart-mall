@@ -47,12 +47,12 @@ const CategoryProducts = () => {
 
     return (
         <>
-            <Header />
+            <Header subCategoriesChange={handleSubCategoriesChange} subCategories={subCategories} activeCategory={category as string}/>
             <div className='container space-y-2 px-4 mx-auto mt-8'>
                 <div className="flex">
                     <CategoriesCheck subCategoriesChange={handleSubCategoriesChange} subCategories={subCategories} activeCategory={category as string} />
                     {isLoading && "loading..."}
-                    <div className='flex flex-wrap'>
+                    <div className='w-full flex flex-wrap'>
                         {products?.map((product, i)=>{
                             console.log(product);
                             

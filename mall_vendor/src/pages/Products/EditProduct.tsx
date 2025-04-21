@@ -25,6 +25,7 @@ const EditProduct = () => {
     const [tag, setTag] = useState('')
     const [discount, setDiscount] = useState('')
     const [tags, setTags] = useState<string[]>([])
+    const [activeImage, setActiveImage] = useState("")
     const navigate = useNavigate()
     const axios_instance_token = useAxiosToken()
     const queryClient = useQueryClient()
@@ -33,10 +34,17 @@ const EditProduct = () => {
         form.setValue("category", value)
         setCategory(value)
     }
+
+    const handleImageClick = (image: string) => {
+        setActiveImage(image)
+    }
     
     const productDetail = useQuery<Product>({
         queryKey: ["products", store, id],
         queryFn: async() => await axios_instance_token.get(`/products/store/${store}/${id}`).then(res => {
+            res.data?.imageUrl ? 
+                setActiveImage(res.data.imageUrl) : 
+                res.data?.productImages ? setActiveImage(res.data.productImages[0].url) : setActiveImage("")
             return res.data
         })
     })
@@ -73,10 +81,11 @@ const EditProduct = () => {
     const form = useForm<ProductDetailsSchemaType>({
         resolver:zodResolver(ProductDetailsSchema),
         defaultValues:{
-            model: productDetail.data?.model || "",
-            category: productDetail.data?.category.name || "",
-            subCategory: productDetail.data?.subCategory.name || "",
-            brand: productDetail.data?.brand?.name || ""
+            name: productDetail.data?.name,
+            model: productDetail.data?.model,
+            category: productDetail.data?.category?.name,
+            subCategory: productDetail.data?.subCategory?.name,
+            brand: productDetail.data?.brand?.name
         }
     })
 
@@ -97,13 +106,10 @@ const EditProduct = () => {
                 id: "edit-product"
             })
 
-            form.reset({
-                // name: "",
-            })
+            form.reset({})
 
             queryClient.invalidateQueries({queryKey: ["products"]})
             navigate(`../products/${store}`)
-            // setOpen(prev => !prev)
         },onError: (err:any) => {
             if (axios.isAxiosError(err)){
                 toast.error(err?.response?.data?.message, {
@@ -138,9 +144,9 @@ const EditProduct = () => {
                 <form className="p-4 mt-4">
                     <div className="border rounded-lg p-4">
                         <div className="flex flex-col md:flex-row">
-                            <div className="w-full space-y-2">
+                            <div className="w-full md: space-y-2">
                                 <h3 className="capitalize text-5xl">{productDetail.data?.name}</h3>
-                                {/* <FormField
+                                <FormField
                                     control={form.control}
                                     name="name"
                                     render={({field}) =>(
@@ -151,13 +157,13 @@ const EditProduct = () => {
                                             </FormControl>
                                         </FormItem>
                                     )} 
-                                /> */}
+                                />
 
                                 <FormField
                                     control={form.control}
                                     name="description"
                                     render={({field}) =>(
-                                        <FormItem className='flex-1 space-y-1'>
+                                        <FormItem className='md:max-w-[400px] lg:max-w-[480px] xl:max-w-[700px] space-y-1'>
                                             <FormLabel className='text-xs'>Description</FormLabel>
                                             <FormControl>
                                                 <Tiptap onChange={field.onChange} />
@@ -277,15 +283,23 @@ const EditProduct = () => {
                                 
                                 <div className="space-y-2">
                                     <h4 className="text-xs">Images</h4>
-                                    <div className="aspect-square border rounded-lg flex">
-
+                                    <div className="aspect-square border rounded-lg flex overflow-hidden">
+                                        <img src={activeImage} alt="" />
                                     </div>
                                     <div className="flex w-full justify-between">
-                                        <div className="aspect-square w-[18%] rounded-lg border"></div>
-                                        <div className="aspect-square w-[18%] rounded-lg border"></div>
-                                        <div className="aspect-square w-[18%] rounded-lg border"></div>
-                                        <div className="aspect-square w-[18%] rounded-lg border"></div>
-                                        <div className="aspect-square w-[18%] rounded-lg border"></div>
+                                    <button onClick={() => handleImageClick(productDetail.data?.imageUrl as string)} className="flex overflow-hidden items-center justify-center w-[18%] aspect-square rounded-lg border">
+                                        {productDetail.data?.imageUrl && 
+                                            <img src={productDetail.data.imageUrl} alt="" />
+                                        }
+                                    </button>
+                                    {
+                                        productDetail.data?.productImages.map((image, idx) =>{
+                                            return <button key={idx}  onClick={() => handleImageClick(image.imageUrl as string)} className="flex overflow-hidden items-center justify-center w-[18%] aspect-square rounded-lg border">
+                                                <img src={image.url} alt="" />
+                                            </button>
+
+                                        })
+                                    }
                                     </div>
                                 </div>
                             </div>

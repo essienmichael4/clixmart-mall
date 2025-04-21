@@ -91,9 +91,7 @@ const PrimaryImage = ({ id, trigger}:Props) => {
                         <Button 
                             type='button'
                             variant={"secondary"}
-                            onClick={()=>{
-                                // form.reset()
-                            }} >
+                            >
                                 Cancel
                         </Button>
                     </DialogClose>

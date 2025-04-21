@@ -36,9 +36,19 @@ const AllProducts = ({store, status, filtering}:FilterProps) => {
     },{
         accessorKey: "name",
         header:({column})=>(<DataTableColumnHeader column={column} title='Product Name' />),
-        cell:({row}) => <div className='capitalize'>
-            <Link to={`./${row.original.productId}`}>
-                {row.original.name}
+        cell:({row}) => <div className=''>
+            <Link className='flex items-center gap-2' to={`./${row.original.productId}`}>
+                <div className='rounded-full overflow-hidden w-8 h-8'>
+                    <img src={row.original.imageUrl} alt="" />
+                </div>
+                <div className='flex flex-col'>
+                    <span className='capitalize'>
+                        {row.original.name}
+                    </span>
+                    <span className='text-xs text-gray-500'>
+                        {row.original.productId}
+                    </span>
+                </div>
             </Link>
         </div>
     },{

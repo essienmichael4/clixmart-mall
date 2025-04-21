@@ -6,7 +6,7 @@ import { toast } from "sonner"
 
 interface ProductVisibilityProps{
     visibility:string,
-    id: number
+    id: string
 }
 
 const ProductVisibility = ({visibility, id}:ProductVisibilityProps) => {
@@ -29,6 +29,7 @@ const ProductVisibility = ({visibility, id}:ProductVisibilityProps) => {
             })
 
             queryClient.invalidateQueries({queryKey: ["product", id]})
+            queryClient.invalidateQueries({queryKey: ["products"]})
 
         },onError: (err:any) => {
             if (axios.isAxiosError(err)){

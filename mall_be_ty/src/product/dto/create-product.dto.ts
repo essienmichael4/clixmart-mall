@@ -65,7 +65,7 @@ export class ProductDetailsDto {
 
     @ApiProperty({
         description: "price",
-        example: "¢ 1500.00",
+        example: 1500,
         required: true
     })
     @IsDefined()
@@ -73,8 +73,8 @@ export class ProductDetailsDto {
     price:number 
 
     @ApiProperty({
-        description: "price",
-        example: "15",
+        description: "quantity",
+        example: 15,
         required: true
     })
     @IsDefined()
@@ -83,7 +83,7 @@ export class ProductDetailsDto {
 
     @ApiProperty({
         description: "discount",
-        example: "5",
+        example: 5,
         required: false
     })
     @IsNumber()

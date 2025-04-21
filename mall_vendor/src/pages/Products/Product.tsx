@@ -82,7 +82,7 @@ const ProductDetails = () => {
                         </div>
                     </div>
                     <div className="min-w-[320px] relative w-full flex flex-col flex-wrap justify-self-end gap-2 px-4">
-                        <ProductVisibility id={Number(product.data?.id)} visibility={product.data?.status as string} />
+                        <ProductVisibility id={product.data?.productId as string} visibility={product.data?.status as string} />
                         <p className="text-xs text-blue-700 font-semibold capitalize">{product.data?.category?.name} / {product.data?.subCategory?.name}</p>
                         <h4 className="text-4xl font-semibold capitalize">{product.data?.name}</h4>
                         <div className="flex items-center justify-between">

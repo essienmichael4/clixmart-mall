@@ -489,8 +489,12 @@ export class ProductService {
     });
   }
 
-  updateStatus(productId: string, updateProductStatusDto: UpdateProductStatusDto) {
-    return this.productRepo.update(productId, {
+  async updateStatus(productId: string, updateProductStatusDto: UpdateProductStatusDto) {
+    const product = await this.productRepo.findOne({
+      where: {productId},
+    })
+
+    return await this.productRepo.update(product.id, {
       status: updateProductStatusDto.status
     })
   }
@@ -587,7 +591,7 @@ export class ProductService {
       return await queryRunner.manager.save(UserYearHistory, {...yearHistory})
     }else{
       const newYearHistory = this.userYearHistoryRepo.create({
-        month, year, products: 1, userId
+        month, year, products: 1, userId, orders: 0
     })
       return await queryRunner.manager.save(UserYearHistory, {...newYearHistory})
     }

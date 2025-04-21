@@ -13,6 +13,7 @@ import { uuid } from 'uuidv4';
 import { PageOptionsDto } from 'src/common/dto/pageOptions.dto';
 import { ApiPaginatedResponse } from 'src/decorators/pagination.decorator';
 import { ProductReponseDto } from './dto/response.dto';
+import { ProductFilterDto } from './dto/request.dto';
 
 const MAX_IMAGE_SIZE_IN_BYTE = 2 * 1024 * 1024
 
@@ -136,7 +137,9 @@ export class ProductController {
   }
 
   @Get("admin/all")
-  findAll() {
+  findAll(@Query() productFilterDto:ProductFilterDto) {
+    console.log(productFilterDto);
+    
     return this.productService.findAll();
   }
   

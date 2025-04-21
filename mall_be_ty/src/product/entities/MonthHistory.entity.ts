@@ -1,7 +1,7 @@
 import { Entity, Column, PrimaryColumn } from "typeorm"
 export type Status = "CANCELLED" | "PENDING" | "HELD" | "COMPLETED"
 
-@Entity()
+@Entity({name: "monthHistory"})
 export class MonthHistory {
     @PrimaryColumn()
     day: number;

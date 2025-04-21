@@ -12,10 +12,12 @@ import { UserYearHistory } from 'src/product/entities/UserYearHistory.entity';
 import { YearHistory } from 'src/product/entities/YearHistory.entity';
 import { Store } from 'src/store/entities/store.entity';
 import { User } from 'src/user/entities/user.entity';
+import { Order } from 'src/order/entities/order.entity';
+import { OrderItem } from 'src/order/entities/orderItem.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Product, Store, User, Category, SubCategory, Brand, MonthHistory, UserMonthHistory, YearHistory, UserYearHistory]),
+    TypeOrmModule.forFeature([Product, Store, Order, OrderItem, User, Category, SubCategory, Brand, MonthHistory, UserMonthHistory, YearHistory, UserYearHistory]),
   ],
   controllers: [StatsController],
   providers: [StatsService],

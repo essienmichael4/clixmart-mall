@@ -1,28 +1,24 @@
+import HistoryChart from "@/components/HistoryChart/HistoryChart"
 import useAxiosToken from "@/hooks/useAxiosToken"
 import { useQuery } from "@tanstack/react-query"
 import { PackageCheck, PackageOpen, Truck } from "lucide-react"
+import { useParams } from "react-router-dom"
 
 interface countRequest {
-    count:number
+    revenue: string,
+    products: number,
+    orders: number
 }
 
 const Dashboard = () => {
     const axios_instance_token = useAxiosToken()
+    const {store} = useParams()
 
-    const loadedQuery = useQuery<countRequest>({
-        queryKey: ["packages", "loaded"],
-        queryFn: async() => await axios_instance_token.get(`/packages/dashboard/loaded`).then(res => res.data)
+    const statsQuery = useQuery<countRequest>({
+        queryKey: ["stats", "vendor"],
+        queryFn: async() => await axios_instance_token.get(`/stats/vendor/${store}`).then(res => res.data)
     })
 
-    const enrouteQuery = useQuery<countRequest>({
-        queryKey: ["packages", "enroute"],
-        queryFn: async() => await axios_instance_token.get(`/packages/dashboard/enroute`).then(res => res.data)
-    })
-
-    const arrivedQuery = useQuery<countRequest>({
-        queryKey: ["packages", "arrived"],
-        queryFn: async() => await axios_instance_token.get(`/packages/dashboard/arrived`).then(res => res.data)
-    })
     return (
         <>
             <div className="container w-full mx-auto mt-4 px-4">
@@ -34,7 +30,7 @@ const Dashboard = () => {
                             </div>
                             <div>
                                 <h3 className="text-sm font-bold text-muted-foreground">Total Revenue</h3>
-                                <p className="text-3xl">{loadedQuery.data?.count}</p>
+                                <p className="text-3xl">{statsQuery.data?.revenue}</p>
                             </div>
                         </div>
                     </div>
@@ -45,7 +41,7 @@ const Dashboard = () => {
                             </div>
                             <div>
                                 <h3 className="text-sm font-bold text-muted-foreground">Total Produts</h3>
-                                <p className="text-3xl">{enrouteQuery.data?.count}</p>
+                                <p className="text-3xl">{statsQuery.data?.products}</p>
                             </div>
                         </div>
                     </div>
@@ -56,12 +52,15 @@ const Dashboard = () => {
                             </div>
                             <div>
                                 <h3 className="text-sm font-bold text-muted-foreground">Total Orders</h3>
-                                <p className="text-3xl">{arrivedQuery.data?.count}</p>
+                                <p className="text-3xl">{statsQuery.data?.orders}</p>
                             </div>
                         </div>
                     </div>
                 </div>
 
+                <div className='p-4 bg-white/15 mt-4 rounded-xl backdrop-blur-sm'>
+                    <HistoryChart />
+                </div>
                 <div>
                 </div>
             </div>

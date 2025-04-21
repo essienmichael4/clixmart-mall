@@ -1,34 +1,33 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Param, Query } from '@nestjs/common';
 import { StatsService } from './stats.service';
-import { CreateStatDto } from './dto/create-stat.dto';
-import { UpdateStatDto } from './dto/update-stat.dto';
+import { StatiticsRequestDto, StatsHistoryDto } from './dto/request.dto';
 
 @Controller('stats')
 export class StatsController {
   constructor(private readonly statsService: StatsService) {}
 
-  @Post()
-  create(@Body() createStatDto: CreateStatDto) {
-    return this.statsService.create(createStatDto);
+  @Get('admin')
+  adminStats( @Query() statiticsRequestDto:StatiticsRequestDto) {
+    return this.statsService.getAdminStatistics(statiticsRequestDto.from, statiticsRequestDto.to);
   }
 
-  @Get()
-  findAll() {
-    return this.statsService.findAll();
+  @Get('vendor/:store')
+  vendorStats(@Param('store') store: string, @Query() statiticsRequestDto:StatiticsRequestDto) {
+    return this.statsService.getStoreStatistics(store, statiticsRequestDto.from, statiticsRequestDto.to);
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.statsService.findOne(+id);
+  @Get('history-periods')
+  historyPeriods() {
+    return this.statsService.getPeriods();
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateStatDto: UpdateStatDto) {
-    return this.statsService.update(+id, updateStatDto);
+  @Get('admin-history')
+  adminHistory(@Query() statsHistoryDto:StatsHistoryDto) {
+    return this.statsService.getHistoryData(statsHistoryDto.timeframe, statsHistoryDto.month, statsHistoryDto.year);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.statsService.remove(+id);
+  @Get('vendor-history')
+  vendorHistory(@Query() statsHistoryDto:StatsHistoryDto) {
+    return this.statsService.getUserHistoryData(statsHistoryDto.timeframe, statsHistoryDto.month, statsHistoryDto.year);
   }
 }

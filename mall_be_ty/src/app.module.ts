@@ -13,6 +13,7 @@ import { OrderModule } from './order/order.module';
 import { BrandModule } from './brand/brand.module';
 import { UploadModule } from './upload/upload.module';
 import { StatsModule } from './stats/stats.module';
+import { MailerModule } from './mailer/mailer.module';
 
 @Module({
   imports: [
@@ -21,9 +22,9 @@ import { StatsModule } from './stats/stats.module';
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({
-        type: 'mysql',
+        type: 'postgres',
         host: configService.get("DB_HOST"),
-        // port: +configService.get("DB_PORT"),
+        port: +configService.get("DB_PORT"),
         username: configService.get("DB_USERNAME"),
         password: configService.get("DB_PASSWORD"),
         database: configService.get("DB_NAME"),
@@ -40,7 +41,8 @@ import { StatsModule } from './stats/stats.module';
     OrderModule,
     BrandModule,
     UploadModule,
-    StatsModule],
+    StatsModule,
+    MailerModule],
   controllers: [AppController],
   providers: [AppService],
 })

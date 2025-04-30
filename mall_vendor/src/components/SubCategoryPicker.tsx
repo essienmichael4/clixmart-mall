@@ -10,14 +10,16 @@ import { Category } from '@/lib/types'
 
 interface Props {
     category:string,
+    defaultValue?: string,
     onChange: (value: string)=>void
 }
 
-const SubCategoryPicker = ({ category, onChange }:Props) => {
+const SubCategoryPicker = ({ category, onChange, defaultValue }:Props) => {
     const [open, setOpen] = useState(false)
     const [value, setValue] = useState(category)
 
     useEffect(()=>{
+        if(defaultValue) setValue(defaultValue)
         if(!value) return
         onChange(value)
     }, [onChange, value])
@@ -47,7 +49,7 @@ const SubCategoryPicker = ({ category, onChange }:Props) => {
                 </Button>
             </PopoverTrigger>
             <PopoverContent className='w-full p-0'>
-                <Command onSubmit={e=> e.preventDefault()}>
+                <Command defaultValue={"Electronics"} onSubmit={e=> e.preventDefault()}>
                     <CommandInput placeholder='Search sub category'/>
                     <CommandEmpty>
                         <p>Category not found</p>
@@ -57,7 +59,7 @@ const SubCategoryPicker = ({ category, onChange }:Props) => {
                         <CommandList>
                             {categoriesQuery?.data && 
                                 categoriesQuery?.data?.map((category:Category) => {                              
-                                    console.log(categoriesQuery.data)
+                                    // console.log(categoriesQuery.data)
                                     return (
                                         <CommandItem key={category.name} onSelect={()=>{
                                             setValue(category.name)
@@ -79,7 +81,7 @@ const SubCategoryPicker = ({ category, onChange }:Props) => {
 function CategoryRow({category}:{category:Category}){
     return (
         <div className="flex items-center gap-2">
-            <span>{category.name}</span>
+            <span className='capitalize'>{category.name}</span>
         </div>
     )
 }

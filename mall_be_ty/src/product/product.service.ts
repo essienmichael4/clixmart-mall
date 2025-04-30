@@ -23,6 +23,7 @@ import { UserMonthHistory } from './entities/UserMonthHistory.entity';
 import { UserYearHistory } from './entities/UserYearHistory.entity';
 import { YearHistory } from './entities/YearHistory.entity';
 import { GetDay, GetMonth, GetYear } from 'src/helpers/common';
+import { ProductFilterDto } from './dto/request.dto';
 
 @Injectable()
 export class ProductService {
@@ -169,7 +170,7 @@ export class ProductService {
       }
     })
 
-    return this.productImageRepo.insert(productImagesEntities)
+    return await this.productImageRepo.insert(productImagesEntities)
   }
 
   async findProducts(pageOptionsDto:PageOptionsDto, q?: string, category?: string, subCategory?: string){
@@ -243,17 +244,17 @@ export class ProductService {
     productsResponse.map(async (product) => {
       product.imageUrl = await this.uploadService.getPresignedUrl(`products/${product.imageName}`)
 
-      if(product.productImages.length > 0) {
+      if(product.productImages?.length > 0) {
         product.productImages.map(async (image) => {
-          image.imageUrl = await this.uploadService.getPresignedUrl(`products/${image.url}`)
+            image.imageUrl = await this.uploadService.getPresignedUrl(`products/${image.url}`)
           return image
         })
       }
     })
-
+    
     const productsCount = await this.productRepo.count()
     const pageMetaDto = new PageMetaDto({itemCount: productsCount, pageOptionsDto})
-    return new PageDto(products, pageMetaDto)
+    return new PageDto(productsResponse, pageMetaDto)
   }
 
   async findProductsByCategoryAndSubCategories(pageOptionsDto:PageOptionsDto, category?: string, subCategories?: string[]){
@@ -293,10 +294,10 @@ export class ProductService {
         })
       }
     })
-
+    
     const productsCount = await this.productRepo.count()
     const pageMetaDto = new PageMetaDto({itemCount: productsCount, pageOptionsDto})
-    return new PageDto(products, pageMetaDto)
+    return new PageDto(productsResponse, pageMetaDto)
   }
 
   async findAll() {
@@ -329,9 +330,45 @@ export class ProductService {
     return productsResponse
   }
 
-  async findOne(id: number) {
+  async findAllByStatusOrReviewStatus(productFilterDto:ProductFilterDto) {
+    const {status, review} = productFilterDto
+    const products = await this.productRepo.find({
+      relations: {
+        store: true,
+        productImages: true,
+        productReview: true,
+        tags: true,
+        brand: true,
+        category: true,
+        subCategory: true,
+        user: true
+      },where: {
+        ...(status && { status:  status}),
+        productReview: {
+          ...(review && {status: review})
+        }
+      }
+    });
+
+    const productsResponse = products.map(product=> new ProductReponseDto(product))
+
+    productsResponse.map(async (product) => {
+      product.imageUrl = await this.uploadService.getPresignedUrl(`products/${product.imageName}`)
+
+      if(product.productImages.length > 0) {
+        product.productImages.map(async (image) => {
+          image.imageUrl = await this.uploadService.getPresignedUrl(`products/${image.url}`)
+          return image
+        })
+      }
+    })
+
+    return productsResponse
+  }
+
+  async findOne(id: string) {
     const product = await this.productRepo.findOne({
-      where: {id},
+      where: {productId: id},
       relations: {
         store: true,
         productImages: true,
@@ -444,7 +481,8 @@ export class ProductService {
     return productResponse
   }
 
-  async findStoreProducts(store: string){
+  async findStoreProducts(store: string, productFilterDto:ProductFilterDto){
+    const {status, review} = productFilterDto
     const products =  await this.productRepo.find({
       relations: {
         store: true,
@@ -457,7 +495,10 @@ export class ProductService {
         user: true
       },
       where: {
-        store: {
+        ...(status && { status:  status}),
+        productReview: {
+          ...(review && {status: review})
+        }, store: {
           slug: store
         }
       }
@@ -489,6 +530,59 @@ export class ProductService {
     });
   }
 
+  async updateProductDetails(store:string, productId:string, productDetails:ProductDetailsDto){
+    try{
+      const product = await this.productRepo.findOne({
+        relations: {
+          store: true,
+          // tags: true
+        },
+        where:{
+          productId,
+          store: {
+            slug: store
+          }
+        }
+      })
+      const category = await this.categoryRepo.findOneBy({name: productDetails.category.toLowerCase()})
+      const subCategory = await this.subCategoryRepo.findOneBy({name: productDetails.subCategory.toLowerCase()})
+      const brand = await this.brandRepo.findOneBy({name: productDetails.brand.toLowerCase()})
+      let newtags = []
+      productDetails.tags.map(async(tag)=>{
+        const savedTag = await this.tagRepo.findOneBy({name: tag})
+        if(savedTag){
+          newtags.push(savedTag)
+          return
+        } 
+
+        const tagEntity = this.tagRepo.create()
+        const saveEntity = {
+          ...tagEntity,
+          name: tag.toLowerCase(),
+          tagId: v4(),
+        }
+        const newTag = await this.tagRepo.save(saveEntity)
+        newtags.push(newTag)
+        return 
+      })
+
+      product.name = productDetails.name.toLowerCase()
+      product.category = category
+      product.subCategory = subCategory
+      product.brand = brand
+      product.model = productDetails.model
+      product.description = productDetails.description
+      product.price = productDetails.price
+      product.quantity = productDetails.quantity
+      product.discount = productDetails.discount || 0
+      product.tags = newtags
+
+      return await this.productRepo.save(product)
+    }catch(err){
+      throw err
+    }
+  }
+
   async updateStatus(productId: string, updateProductStatusDto: UpdateProductStatusDto) {
     const product = await this.productRepo.findOne({
       where: {productId},
@@ -510,8 +604,12 @@ export class ProductService {
     await this.productRepo.save(product)
   }
 
-  updateProductImage(productId: number, filename:string) {
-    return this.productRepo.update(productId, {
+  async updateProductImage(productId: string, filename:string) {
+    const product = await this.productRepo.findOne({
+      where: {productId},
+    })
+
+    return await this.productRepo.update(product.id, {
       imageName: filename
     });
   }
@@ -575,7 +673,6 @@ export class ProductService {
     })
       return await queryRunner.manager.save(UserMonthHistory, {...newMonthHistory})
     }
-
   }
 
   async upsertUserYearHistoryProducts(userId:number, queryRunner: QueryRunner){
@@ -595,7 +692,6 @@ export class ProductService {
     })
       return await queryRunner.manager.save(UserYearHistory, {...newYearHistory})
     }
-
   }
 
   remove(id: number) {

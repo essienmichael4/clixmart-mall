@@ -137,6 +137,7 @@ export type Product = {
     createdAt: string,
     updatedAt: string,
     imageUrl?:string,
+    imageName?:string,
     category: Category,
     subCategory: SubCategory,
     user?: User
@@ -158,6 +159,13 @@ export type ProductReview = {
     status: "PENDING" | "APPROVED" | "REJECTED",
     description: string,
     user: User
+}
+
+export type ProductStats = {
+    products: number,
+    count: {period: string, statistics: number, products: number},
+    revenue: {period: string, statistics: number, revenue: number},
+    sold: {period: string, statistics: number, sold: number}
 }
 
 export type Store = {

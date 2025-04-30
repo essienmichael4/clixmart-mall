@@ -1,0 +1,294 @@
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Order Success</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f9f9f9;
+      margin: 0;
+      padding: 0;
+      color: hsl(0, 0%, 20%);
+    }
+    table {
+        border-spacing: 0;
+    }
+    td {
+        padding: 0;
+    }
+    img {
+        border: 0;
+    }
+
+    .container {
+        width: 100%;
+        table-layout: fixed;
+        background-color: #ebebeb;
+        padding-bottom: 60px;
+    }
+
+    .main {
+        width: 100%;
+        max-width: 600px;
+        background-color: #ffffff;
+        margin: 0 auto;
+        border-spacing: 0;
+        color: #171a1b;
+    }
+    .button {
+        background-color: #171a1b;
+        color: #ebebeb;
+        text-decoration: none;
+        padding: 12px 20px;
+        font-size: 14px;
+    }
+    .inverted {
+        color: #171a1b;
+        background-color: #ebebeb;
+        text-decoration: none;
+        padding: 12px 20px;
+        font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+
+    <center class="container">
+        <table class="main" width="100%">
+            <tr>
+                <td height="8" style="background-color: #171a1b;"></td>
+            </tr>
+            <tr>
+                <td>
+                    <table width="100%">
+                        <tr>
+                            <td style="text-align: center;">
+                                <img src="https://clixmartonline.com/assets/logo-DkekmCp_.png" width="90px" height="90px" alt="Clixmart" style="margin-top: 30px;">
+                                <h3>Clixmart</h3>
+                                <h2>Thanks for your order!</h2>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <table width="100%">
+                        <tr>
+                            <td style="padding: 15px;">
+                                <p style="font-size: 15px;">Hi <strong>{{user.name}}</strong>,</p>
+
+                                <p style="font-size: 15px;">This email is to confirm your order has been placed successfully, and will be processed & shipped to you soon..</p>
+                                <p style="font-size: 15px;">Once everything is confirmed, and ready for pickup, we'll send another email with delivery details and 
+                                    any other information about your order.</p>
+                                <p style="font-size: 15px;">In the meantime, if you have any questions, send us an email at <span style="color: blue;">sell.clixmart@gmail.com</span> and we'll be happy to help.</p>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <table>
+                        <tr>
+                            <td style="padding-left: 15px;">
+                                <table class="column">
+                                    <tr>
+                                        <td>
+                                            <a href="" class="button">View your order &#10141;</a>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                            <td style="padding-left: 15px;">
+                                <table class="column">
+                                    <tr>
+                                        <td>
+                                            <a href="" class="inverted">View your order</a>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <table width="100%" style="margin-top: 30px;">
+                        <tr>
+                            <td height="2" style="background-color: #ebebeb;"></td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 15px;">
+                                <h3>Order {{orderId}} Summary</h3>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <table width="100%">
+                        {{#each products}}
+                        <tr>
+                            <td>
+                                <table width="94%" style="margin: 0 auto; border-bottom: 1px solid #ebebeb;">
+                                    <tr>
+                                        <td width="60px" height="60px">
+                                            <img src='{{this.imageUrl}}' width="50px" height="50px" >
+                                        </td>
+                                        <td>
+                                            <span style="font-size: 13px;">{{this.name}}</span>
+                                            <span style="font-size: 13px;">x {{this.quantity}}</span>
+                                        </td>
+                                        
+                                        <td style="margin: 0 auto 0 0;">
+                                            <p style="font-size: 13px; ">{{this.price}}</p>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                        {{/each}}
+                        
+                    </table>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <table width="100%">
+                        <tr>
+                            <td>
+                                <table width="80%" style="margin: 0 15px 0 auto; border-bottom: 1px solid #ebebeb;">
+                                    <tr>
+                                        <td>
+                                            <span style="font-size: 13px;">Discount</span>
+                                        </td>
+                                        
+                                        <td style="margin: 0 auto 0 0; width: 80px;">
+                                            <p style="font-size: 13px; ">20</p>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <table width="80%" style="margin: 0 15px 0 auto; border-bottom: 1px solid #ebebeb;">
+                                    <tr>
+                                        <td>
+                                            <span style="font-size: 13px;">Subtotal</span>
+                                        </td>
+                                        
+                                        <td style="margin: 0 auto 0 0; width: 80px;">
+                                            <p style="font-size: 13px; ">20</p>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <table width="80%" style="margin: 0 15px 0 auto; border-bottom: 1px solid #ebebeb;">
+                                    <tr>
+                                        <td>
+                                            <span style="font-size: 13px;">Shipping</span>
+                                        </td>
+                                        
+                                        <td style="margin: 0 auto 0 0; width: 80px;">
+                                            <p style="font-size: 13px; ">20</p>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <table width="80%" style="margin: 0 15px 0 auto; border-bottom: 1px solid #ebebeb;">
+                                    <tr>
+                                        <td>
+                                            <span style="font-size: 13px;">Total</span>
+                                        </td>
+                                        
+                                        <td style="margin: 0 auto 0 0; width: 80px;">
+                                            <p style="font-size: 13px; ">20</p>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <table width="80%" style="margin: 0 15px 0 auto; border-bottom: 1px solid #ebebeb;">
+                                    <tr>
+                                        <td>
+                                            <span style="font-size: 13px;">Payment method</span>
+                                        </td>
+                                        
+                                        <td style="margin: 0 auto 0 0;">
+                                            <p style="font-size: 13px; ">Payment on delivery/pick-up</p>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <table width="100%" style="margin-top: 30px;">
+                        <tr>
+                            <td height="2" style="background-color: #ebebeb;"></td>
+                        </tr>
+                        <tr>
+                            <td style="padding-left: 15px;">
+                                <h3>Customer information</h3>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <table width="100%">
+                        <tr>
+                            <td>
+                                <table>
+                                    <tr>
+                                        <td style="padding-left: 15px;">
+                                            <h5>Shipping address</h5>
+                                            <p style="font-size: 13px;">5th Avenue</p>
+                                            <p style="font-size: 13px;">Dr Lumumber Street</p>
+                                            <p style="font-size: 13px;">Tema, Community 2.</p>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                            <td>
+                                <table >
+                                    <tr>
+                                        <td style="padding-right: 15px;">
+                                            <h5>Billing address</h5>
+                                            <p style="font-size: 13px;">5th Avenue</p>
+                                            <p style="font-size: 13px;">Dr Lumumber Street</p>
+                                            <p style="font-size: 13px;">Tema, Community 2.</p>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                        <tr>
+                        </tr>
+                        
+                    </table>
+                </td>
+            </tr>
+        </table>
+    </center>
+</body>
+</html>

@@ -10,14 +10,16 @@ import { Brand } from '@/lib/types'
 
 interface Props {
     category?:string,
-    onChange: (value: string)=>void
+    onChange: (value: string)=>void,
+    defaultValue?: string,
 }
 
-const BrandPicker = ({ category, onChange }:Props) => {
+const BrandPicker = ({ category, onChange, defaultValue }:Props) => {
     const [open, setOpen] = useState(false)
     const [value, setValue] = useState(category)
 
     useEffect(()=>{
+        if(defaultValue) setValue(defaultValue)
         if(!value) return
         onChange(value)
     }, [onChange, value])
@@ -77,7 +79,7 @@ const BrandPicker = ({ category, onChange }:Props) => {
 function BrandRow({brand}:{brand:Brand}){
     return (
         <div className="flex items-center gap-2">
-            <span>{brand.name}</span>
+            <span className='uppercase'>{brand.name}</span>
         </div>
     )
 }

@@ -13,7 +13,7 @@ const NotFound = () => {
             <div className="flex flex-col items-center">
                 <div className='flex items-center gap-4'>
                     <img src={logo} alt="logo" className='w-24 mb-4 '/>
-                    <h2 className='text-3xl'>CSL Freight Forwarding</h2>
+                    <h2 className='text-3xl'>CLIXMART MALL</h2>
                 </div>
                 <h3 className="font-bold text-7xl">404</h3>
                 <p className="font-semibold text-2xl">Sorry, we couldn't find the page you were looking for.</p>

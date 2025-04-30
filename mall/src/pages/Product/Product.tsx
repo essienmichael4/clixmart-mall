@@ -60,9 +60,9 @@ const ProductDetails = () => {
                         </BreadcrumbList>
                     </Breadcrumb>
                 </div>
-                <div className="flex justify-between flex-wrap mb-4 lg:mb-0 px-4 mt-4">
-                    <div className="min-w-[320px] w-full md:w-1/3 flex flex-wrap gap-4 p-4">
-                        <div className="w-full aspect-square border rounded-xl animate-pulse">
+                <div className="flex justify-between flex-col md:flex-row flex-wrap mb-4 lg:mb-0 px-4 mt-4">
+                    <div className="min-w-[320px] md:max-w-[320px] w-full md:w-1/3 flex flex-wrap gap-4 p-4">
+                        <div className="w-full aspect-square border rounded-xl overflow-hidden">
                             <img src={activeImage} alt="" />
                         </div>
                         <div className="w-full flex items-center justify-between">

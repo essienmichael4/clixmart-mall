@@ -1,16 +1,18 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Not, Repository } from 'typeorm';
 import { MonthHistory } from 'src/product/entities/MonthHistory.entity';
 import { YearHistory } from 'src/product/entities/YearHistory.entity';
 import { HistoryDataDto } from './dto/response.dto';
 import { UserMonthHistory } from 'src/product/entities/UserMonthHistory.entity';
 import { UserYearHistory } from 'src/product/entities/UserYearHistory.entity';
 import { Order } from 'src/order/entities/order.entity';
-import { Product } from 'src/product/entities/product.entity';
+import { Product, Status } from 'src/product/entities/product.entity';
 import { Store } from 'src/store/entities/store.entity';
 import { User } from 'src/user/entities/user.entity';
 import { OrderItem } from 'src/order/entities/orderItem.entity';
+import { calcPercentageDifference, DateToUTCDate } from 'src/helpers/common';
+import { endOfDay, endOfMonth, endOfYear, endOfYesterday, startOfDay, startOfMonth, startOfYear, startOfYesterday, subYears } from 'date-fns';
 
 @Injectable()
 export class StatsService {
@@ -84,11 +86,11 @@ export class StatsService {
       .select("SUM(orderItem.price)", "total")
 
     if(from) {
-      query.andWhere("order.createdAt >= :from", { from: new Date(from as string).toISOString() })
+      query.andWhere("orderItem.createdAt >= :from", { from: new Date(from as string).toISOString() })
     }
 
     if(to) {
-      query.andWhere("order.createdAt <= :to", { to: new Date(to as string).toISOString() })
+      query.andWhere("orderItem.createdAt <= :to", { to: new Date(to as string).toISOString() })
     }
 
     const result = await query.getRawOne()
@@ -103,11 +105,11 @@ export class StatsService {
       .select("COUNT(product.id)", "count")
 
     if(from) {
-      query.andWhere("order.createdAt >= :from", { from: new Date(from as string).toISOString() })
+      query.andWhere("product.createdAt >= :from", { from: new Date(from as string).toISOString() })
     }
 
     if(to) {
-      query.andWhere("order.createdAt <= :to", { to: new Date(to as string).toISOString() })
+      query.andWhere("product.createdAt <= :to", { to: new Date(to as string).toISOString() })
     }
 
     const result = await query.getRawOne()
@@ -199,9 +201,7 @@ export class StatsService {
         return await this.getYearHistory(year)
     }
     if(timeframe === "MONTH"){
-      console.log("here");
-      
-        return await this.getMonthHistory(month, year)
+      return await this.getMonthHistory(month, year)
     }
   }
 
@@ -424,4 +424,114 @@ export class StatsService {
 
     return history;
   };
+
+  async adminProductsData(timeframe?:string, from?:string, to?: string){
+    const productsCount = await this.adminProductsCount()
+    
+    if(timeframe == "DAY"){
+      const prevDayCount = await this.adminProductsCount(startOfYesterday(), endOfYesterday())
+      const currentDayCount = await this.adminProductsCount(startOfDay(new Date()), endOfDay(new Date()))
+
+      const prevDayRevenue = await this.adminProductsRevenue(startOfYesterday(), endOfYesterday())
+      const currentDayRevenue = await this.adminProductsRevenue(startOfDay(new Date()), endOfDay(new Date()))
+
+      const prevDayItemsSold = await this.adminProductsOrdered(startOfYesterday(), endOfYesterday())
+      const currentDayItemsSold = await this.adminProductsOrdered(startOfDay(new Date()), endOfDay(new Date()))
+
+      const count = {period: timeframe, products: currentDayCount, statistics: currentDayCount - prevDayCount}
+      const revenue = {period: timeframe, revenue: currentDayRevenue, statistics: calcPercentageDifference(prevDayRevenue, currentDayRevenue) | 0}
+      const sold = {period: timeframe, sold: currentDayItemsSold, statistics: calcPercentageDifference(prevDayItemsSold, currentDayItemsSold) | 0}
+      return {
+        products: productsCount, count, revenue, sold
+      }
+    }else if(timeframe == "MONTH"){
+      const prevMonthCount = await this.adminProductsCount(startOfMonth(new Date().setDate(0)), endOfMonth(new Date().setDate(0)))
+      const currentMonthCount = await this.adminProductsCount(startOfMonth(new Date()), endOfMonth(new Date()))
+
+      const prevMonthRevenue = await this.adminProductsRevenue(startOfMonth(new Date().setDate(0)), endOfMonth(new Date().setDate(0)))
+      const currentMonthRevenue = await this.adminProductsRevenue(startOfMonth(new Date()), endOfMonth(new Date()))
+
+      const prevMonthItemsSold = await this.adminProductsOrdered(startOfMonth(new Date().setDate(0)), endOfMonth(new Date().setDate(0)))
+      const currentMonthItemsSold = await this.adminProductsOrdered(startOfMonth(new Date()), endOfMonth(new Date()))
+
+      const count = {period: timeframe, products: currentMonthCount, statistics: currentMonthCount - prevMonthCount}
+      const revenue = {period: timeframe, revenue: currentMonthRevenue, statistics: calcPercentageDifference(prevMonthRevenue, currentMonthRevenue) | 0}
+      const sold = {period: timeframe, sold: currentMonthItemsSold, statistics: calcPercentageDifference(prevMonthItemsSold, currentMonthItemsSold) | 0}
+      return {
+        products: productsCount, count, revenue, sold
+      }
+
+    }else if(timeframe == "YEAR"){
+      const prevYearCount = await this.adminProductsCount(startOfYear(subYears(new Date(), 1)), endOfYear(subYears(new Date(), 1)))
+      const currentYearCount = await this.adminProductsCount(startOfYear(new Date()), endOfYear(new Date()))
+
+      const prevYearRevenue = await this.adminProductsRevenue(startOfYear(subYears(new Date(), 1)), endOfYear(subYears(new Date(), 1)))
+      const currentYearRevenue = await this.adminProductsRevenue(startOfYear(new Date()), endOfYear(new Date()))
+
+      const prevYearItemsSold = await this.adminProductsOrdered(startOfYear(subYears(new Date(), 1)), endOfYear(subYears(new Date(), 1)))
+      const currentYearItemsSold = await this.adminProductsOrdered(startOfYear(new Date()), endOfYear(new Date()))
+
+      const count = {period: timeframe, products: currentYearCount, statistics: currentYearCount - prevYearCount}
+      const revenue = {period: timeframe, revenue: currentYearRevenue, statistics: calcPercentageDifference(prevYearRevenue, currentYearRevenue) | 0}
+      const sold = {period: timeframe, sold: currentYearItemsSold, statistics: calcPercentageDifference(prevYearItemsSold, currentYearItemsSold) | 0}
+      return {
+        products: productsCount, count, revenue, sold
+      }
+    }
+  }
+
+  async adminProductsCount(from?:Date, to?: Date){
+    const query = this.productRepo.createQueryBuilder("product")
+      .select("COUNT(product.id)", "count")
+      .andWhere("product.status != :status", {status: Status.ARCHIVE})
+
+    if(from) {
+      query.andWhere("product.createdAt >= :from", { from: DateToUTCDate(new Date(from)) })
+    }
+
+    if(to) {
+      query.andWhere("product.createdAt <= :to", { to: DateToUTCDate(new Date(to)) })
+    }
+
+    const result = await query.getRawOne()
+    return parseInt(result.count, 10)
+  }
+
+  async adminProductsRevenue(from?:Date, to?: Date){
+    const query = this.productRepo.createQueryBuilder("product")
+      .where("product.status != :status", {status: Status.ARCHIVE})
+
+    if(from) {
+      query.andWhere("product.createdAt >= :from", { from: DateToUTCDate(new Date(from)).toISOString() })
+    }
+
+    if(to) {
+      query.andWhere("product.createdAt <= :to", { to: DateToUTCDate(new Date(to)).toISOString() })
+    }
+
+    const products = await query.getMany()
+    
+    const result = products.reduce((acc, product)=>{
+      return acc += product.price * product.quantity
+    }, 0)
+
+    return result
+  }
+
+  async adminProductsOrdered(from?:Date, to?: Date){
+    const query = this.orderItemRepo.createQueryBuilder("orderItem")
+      .select("COUNT(orderItem.id)", "count")
+      .andWhere("orderItem.status != :status", {status: "CANCELLED"})
+
+    if(from) {
+      query.andWhere("orderItem.createdAt >= :from", { from: DateToUTCDate(new Date(from)) })
+    }
+
+    if(to) {
+      query.andWhere("orderItem.createdAt <= :to", { to: DateToUTCDate(new Date(to)) })
+    }
+
+    const result = await query.getRawOne()
+    return parseInt(result.count, 10)
+  }
 }

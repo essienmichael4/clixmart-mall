@@ -9,20 +9,32 @@ import { Button } from './ui/button'
 
 interface FilterProps{
     filtering:string,
-    status:string,
-    store: string
+    status?:string,
+    store: string,
+    review?: string
 }
 
 const emptyData: any[]= []
 
-const AllProducts = ({store, status, filtering}:FilterProps) => {
+const AllProducts = ({store, status, review, filtering}:FilterProps) => {
     const axios_instance_token = useAxiosToken()
+    const  fetchProducts = async ():Promise<Product[]> => {
+        const search = []
+        if(review && review !== undefined && review !== null && review !== "null") search.push(["review", review])
+        if(status && status !== undefined && status !== null && status !== "null") search.push(["status", status])
+        const params = new URLSearchParams(search).toString()
+        console.log(search);
 
-    const orders = useQuery<Product[]>({
-        queryKey: ["products", status],
-        queryFn: async() => await axios_instance_token.get(`/products/store/${store}?status=${status}`).then(res => {            
+        const products = await axios_instance_token.get(`/products/store/${store}?${params}`).then(res => {            
             return res.data
         })
+
+        return products
+    }
+
+    const orders = useQuery<Product[]>({
+        queryKey: ["products", {status, review}],
+        queryFn: async() => await fetchProducts()
     })
 
     const columns:ColumnDef<Product>[] =[{
@@ -124,68 +136,70 @@ const AllProducts = ({store, status, filtering}:FilterProps) => {
     })
 
     return (
-        <div className="my-8 p-2 md:px-0 rounded-2xl">
-            <div className="w-full rounded-md  bg-white/75">
-                <Table>
-                    <TableHeader>
-                    {table.getHeaderGroups().map((headerGroup) => (
-                        <TableRow key={headerGroup.id}>
-                        {headerGroup.headers.map((header) => {
-                            return (
-                            <TableHead key={header.id}>
-                                {header.isPlaceholder
-                                ? null
-                                : flexRender(
-                                    header.column.columnDef.header,
-                                    header.getContext()
-                                    )}
-                            </TableHead>
-                            )
-                        })}
-                        </TableRow>
-                    ))}
-                    </TableHeader>
-                    <TableBody>
-                    {table.getRowModel().rows?.length ? (
-                        table.getRowModel().rows.map((row) => (
-                        <TableRow
-                            key={row.id}
-                            data-state={row.getIsSelected() && "selected"}
-                        >
-                            {row.getVisibleCells().map((cell) => (
-                            <TableCell className='py-6' key={cell.id}>
-                                {flexRender(cell.column.columnDef.cell, cell.getContext())}
+        <div className='p-4 mb-8 rounded-lg border'>
+            <div className="my-4 md:px-0 rounded-2xl">
+                <div className="w-full rounded-md  bg-white/75">
+                    <Table>
+                        <TableHeader>
+                        {table.getHeaderGroups().map((headerGroup) => (
+                            <TableRow key={headerGroup.id}>
+                            {headerGroup.headers.map((header) => {
+                                return (
+                                <TableHead key={header.id}>
+                                    {header.isPlaceholder
+                                    ? null
+                                    : flexRender(
+                                        header.column.columnDef.header,
+                                        header.getContext()
+                                        )}
+                                </TableHead>
+                                )
+                            })}
+                            </TableRow>
+                        ))}
+                        </TableHeader>
+                        <TableBody>
+                        {table.getRowModel().rows?.length ? (
+                            table.getRowModel().rows.map((row) => (
+                            <TableRow
+                                key={row.id}
+                                data-state={row.getIsSelected() && "selected"}
+                            >
+                                {row.getVisibleCells().map((cell) => (
+                                <TableCell className='py-6' key={cell.id}>
+                                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                                </TableCell>
+                                ))}
+                            </TableRow>
+                            ))
+                        ) : (
+                            <TableRow>
+                            <TableCell colSpan={columns.length} className="h-24 text-center">
+                                No results.
                             </TableCell>
-                            ))}
-                        </TableRow>
-                        ))
-                    ) : (
-                        <TableRow>
-                        <TableCell colSpan={columns.length} className="h-24 text-center">
-                            No results.
-                        </TableCell>
-                        </TableRow>
-                    )}
-                    </TableBody>
-                </Table>
-            </div>
-            <div className="flex items-center justify-end space-x-2 py-4">
-                <Button
-                variant="outline"
-                size="sm"
-                onClick={() => table.previousPage()}
-                disabled={!table.getCanPreviousPage()}
-                >
-                Previous
-                </Button>
-                <Button
-                variant="outline"
-                size="sm"
-                onClick={() => table.nextPage()}
-                disabled={!table.getCanNextPage()}
-                >
-                Next
-                </Button>
+                            </TableRow>
+                        )}
+                        </TableBody>
+                    </Table>
+                </div>
+                <div className="flex items-center justify-end space-x-2 py-4">
+                    <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => table.previousPage()}
+                    disabled={!table.getCanPreviousPage()}
+                    >
+                    Previous
+                    </Button>
+                    <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => table.nextPage()}
+                    disabled={!table.getCanNextPage()}
+                    >
+                    Next
+                    </Button>
+                </div>
             </div>
         </div>
     )

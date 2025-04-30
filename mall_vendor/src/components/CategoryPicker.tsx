@@ -9,14 +9,16 @@ import { cn } from '@/lib/utils'
 import { Category } from '@/lib/types'
 
 interface Props {
-    onChange: (value: string)=>void
+    onChange: (value: string)=>void,
+    defaultValue?: string
 }
 
-const CategoryPicker = ({ onChange }:Props) => {
+const CategoryPicker = ({ onChange, defaultValue }:Props) => {
     const [open, setOpen] = useState(false)
     const [value, setValue] = useState("")
 
     useEffect(()=>{
+        if(defaultValue) setValue(defaultValue)
         if(!value) return
         onChange(value)
     }, [onChange, value])

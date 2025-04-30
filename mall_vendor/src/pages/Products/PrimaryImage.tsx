@@ -10,7 +10,7 @@ import Dropzone from '@/components/Dropzone'
 
 interface Props{
     trigger?: React.ReactNode,
-    id:number
+    id:string
 }
 
 const PrimaryImage = ({ id, trigger}:Props) => {

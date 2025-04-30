@@ -28,6 +28,9 @@ export class Order {
     @Column({type: "uuid", unique:true})
     orderId: string
 
+    @Column({nullable: true})
+    shownOrderId: string
+
     @Column({ default: Status.PENDING })
     status: Status;
 

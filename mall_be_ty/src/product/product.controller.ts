@@ -37,7 +37,7 @@ export class ProductController {
       fileFilter: ImageFileFilter
     })
   )
-  public async uploadFile(@Param('id', ParseIntPipe) id: number, @Req() req:any,
+  public async uploadFile(@Param('id') id: string, @Req() req:any,
     @UploadedFile(
       new ParseFilePipeBuilder()
         .addMaxSizeValidator({maxSize: MAX_IMAGE_SIZE_IN_BYTE})
@@ -105,10 +105,10 @@ export class ProductController {
   
   @UseGuards(JwtGuard)
   @Post(':store/:id/product-details')
-  @HttpCode(HttpStatus.CREATED)
-  @ApiCreatedResponse({type: "", description: "Product created successfully"})
-  @ApiOkResponse({type: "", description: "Product created successfully"})
-  @ApiOperation({description: "Create Product api"})
+  @HttpCode(HttpStatus.OK)
+  @ApiCreatedResponse({type: "", description: "Product updated successfully"})
+  @ApiOkResponse({type: "", description: "Product updated successfully"})
+  @ApiOperation({description: "Update Product api"})
   @ApiConsumes("application/json")
   async addProductDetails(@Param('store') store: string, @Param('id') id: string, @Body() productDetails: ProductDetailsDto, @User() user:UserInfo) {
     const product = await this.productService.productDetails(store, id, productDetails);
@@ -127,7 +127,7 @@ export class ProductController {
   @HttpCode(HttpStatus.OK)
   @ApiPaginatedResponse(ProductReponseDto)
   @ApiConsumes("application/json")
-  findProductsByCategory(@Query() pageOptionsDto:PageOptionsDto, @Query("category") category?:string, @Query("subCategories") subCategories?:string) {
+  findProductsByCategory(@Query() pageOptionsDto:PageOptionsDto, @Param("category") category?:string, @Query("subCategories") subCategories?:string) {
     const allSubCategories = subCategories.split(",")
     if(allSubCategories.length > 0 && allSubCategories[0]!== ''){
       return this.productService.findProductsByCategoryAndSubCategories(pageOptionsDto, category, allSubCategories);
@@ -136,16 +136,31 @@ export class ProductController {
     }
   }
 
+    
+  @Get('categories/:category/home')
+  @HttpCode(HttpStatus.OK)
+  @ApiPaginatedResponse(ProductReponseDto)
+  @ApiConsumes("application/json")
+  findProductsByCategoryHome(@Query() pageOptionsDto:PageOptionsDto, @Param("category") category?:string,) {
+    return this.productService.findProductsByCategory(pageOptionsDto, category);
+  }
+    
+  @Get('sub-categories/:subCategory/home')
+  @HttpCode(HttpStatus.OK)
+  @ApiPaginatedResponse(ProductReponseDto)
+  @ApiConsumes("application/json")
+  findProductsBySubCategoryHome(@Query() pageOptionsDto:PageOptionsDto, @Query("subCategory") subCategory?:string,) {
+    return this.productService.findProductsByCategory(pageOptionsDto, subCategory);
+  }
+
   @Get("admin/all")
   findAll(@Query() productFilterDto:ProductFilterDto) {
-    console.log(productFilterDto);
-    
-    return this.productService.findAll();
+    return this.productService.findAllByStatusOrReviewStatus(productFilterDto);
   }
   
   @Get('store/:store')
-  findAllStoreProducts(@Param('store') store: string) {
-    return this.productService.findStoreProducts(store);
+  findAllStoreProducts(@Param('store') store: string, @Query() productFilterDto:ProductFilterDto) {
+    return this.productService.findStoreProducts(store, productFilterDto);
   }
   
   @UseGuards(JwtGuard)
@@ -171,10 +186,20 @@ export class ProductController {
     return this.productService.findCartProducts(search)
   }
 
-
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateProductDto: UpdateProductDto) {
     return this.productService.update(id, updateProductDto);
+  }
+
+  @UseGuards(JwtGuard)
+  @Patch(':store/:id/product-details')
+  @HttpCode(HttpStatus.OK)
+  @ApiCreatedResponse({type: "", description: "Product edited successfully"})
+  @ApiOkResponse({type: "", description: "Product edited successfully"})
+  @ApiOperation({description: "Edit Product api"})
+  @ApiConsumes("application/json")
+  updateDetails(@Param('store') store: string, @Param('id') id: string, @Body() productDetails: ProductDetailsDto, @User() user:UserInfo) {
+    return this.productService.updateProductDetails(store, id, productDetails);
   }
 
   @Patch(':id/status')

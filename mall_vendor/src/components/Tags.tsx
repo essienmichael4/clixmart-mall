@@ -1,6 +1,7 @@
 interface ITagsProps{
     tag:string,
     tags:string[],
+    // defaultValue?: string[],
     handleChange:(e: React.ChangeEvent<HTMLInputElement>)=>void,
     handleKeyDown:(e: React.KeyboardEvent<HTMLInputElement>)=>void,
     removeTag:(index:number)=>void

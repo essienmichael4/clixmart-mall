@@ -10,7 +10,7 @@ import ProductSecondaryImages from '@/components/ProductSecondaryImages'
 
 interface Props{
     trigger?: React.ReactNode,
-    id:number,
+    id:string,
 }
 
 const SecondaryImages = ({ id, trigger}:Props) => {

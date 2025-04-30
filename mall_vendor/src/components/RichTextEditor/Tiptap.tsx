@@ -5,15 +5,16 @@ import Underline from '@tiptap/extension-underline'
 import TextAlign from '@tiptap/extension-text-align'
 
 interface Props {
-    onChange: (richText: string)=> void
+    onChange: (richText: string)=> void,
+    defaultValue?: string
 }
 
-const Tiptap = ({ onChange }: Props) => {
+const Tiptap = ({ onChange, defaultValue }: Props) => {
     const editor = useEditor({
         extensions: [StarterKit.configure(), Underline, TextAlign.configure({
             types: ['heading', 'paragraph'],
           })],
-        content: "",
+        content: defaultValue,
         editorProps: {
             attributes: {
                 class: "prose prose-sm sm:prose-base lg:prose-lg xl:prose-2xl m-5 focus:outline-none"

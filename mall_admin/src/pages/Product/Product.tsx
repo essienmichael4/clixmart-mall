@@ -17,6 +17,8 @@ const ProductDetails = () => {
     const product = useQuery<Product>({
         queryKey: ["product", id],
         queryFn: async() => await axios_instance.get(`/products/${id}`).then(res => {
+            console.log(res.data);
+            
             res.data?.imageUrl ? 
                 setActiveImage(res.data.imageUrl) : 
                 res.data?.productImages ? setActiveImage(res.data.productImages[0].url) : setActiveImage("")
@@ -29,6 +31,8 @@ const ProductDetails = () => {
     }
 
     const tags = product.data?.tags.length
+    console.log(product.data);
+    
     
     return (
         <>
@@ -75,7 +79,7 @@ const ProductDetails = () => {
                             }
                         </div>
                     </div>
-                    <div className="min-w-[320px] w-full flex flex-col flex-wrap justify-self-end gap-2 px-4">
+                    <div className="min-w-[320px] w-full md:w-2/3 flex flex-col flex-wrap justify-self-end gap-2 px-4">
                         <p className="text-xs text-blue-700 font-semibold">{product.data?.category?.name} / {product.data?.subCategory?.name}</p>
                         <h4 className="text-4xl font-semibold capitalize">{product.data?.name}</h4>
                         <div className="flex items-center justify-between">
@@ -101,7 +105,6 @@ const ProductDetails = () => {
                         
                         <div>
                             <p className="text-xs font-semibold text-muted-foreground mb-1">Description</p>
-                            {/* {product.data?.description} */}
                             <DescriptionParser description={product.data?.description as string || ""} />
                         </div>
                     </div>

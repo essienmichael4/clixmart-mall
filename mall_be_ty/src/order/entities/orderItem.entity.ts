@@ -11,7 +11,10 @@ export enum Status {
     PENDING = 'PENDING',
     SHIPPING = 'SHIPPING',
     SHIPPED = 'SHIPPED',
-    DELIVERED = 'DELIVERED'
+    DELIVERED = 'DELIVERED',
+    FAILED = 'FAILED',
+    CANCELLED = 'CANCELLED',
+    RETURNED = 'RETURNED'
 }
 
 @Entity({name: "orderItem"})

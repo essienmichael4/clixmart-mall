@@ -75,6 +75,7 @@ export class OrderService {
       const saveEntity = {
         ...orderEntity,
         orderId: v4(),
+        shownOrderId: this.generateAmazonStyleOrderId(),
         total: total,
         orderItems: orderItems,
         user: user
@@ -259,6 +260,13 @@ export class OrderService {
 
   remove(id: number) {
     return `This action removes a #${id} order`;
+  }
+
+  generateAmazonStyleOrderId(): string {
+    const part1 = Math.floor(100 + Math.random() * 900);       // 3 digits
+    const part2 = Math.floor(1000000 + Math.random() * 9000000); // 7 digits
+    const part3 = Math.floor(1000000 + Math.random() * 9000000); // 7 digits
+    return `ORD-${part1}-${part2}-${part3}`;
   }
 
 

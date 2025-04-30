@@ -1,6 +1,6 @@
 import { Controller, Get, Param, Query } from '@nestjs/common';
 import { StatsService } from './stats.service';
-import { StatiticsRequestDto, StatsHistoryDto } from './dto/request.dto';
+import { ProductTimeFrame, StatiticsRequestDto, StatsHistoryDto } from './dto/request.dto';
 
 @Controller('stats')
 export class StatsController {
@@ -29,5 +29,12 @@ export class StatsController {
   @Get('vendor-history')
   vendorHistory(@Query() statsHistoryDto:StatsHistoryDto) {
     return this.statsService.getUserHistoryData(statsHistoryDto.timeframe, statsHistoryDto.month, statsHistoryDto.year);
+  }
+
+  @Get('admin/products')
+  async adminProductStats(@Query("timeframe") timeframe:string){
+    const data = await this.statsService.adminProductsData(timeframe)
+    
+    return data
   }
 }

@@ -21,9 +21,11 @@ const AllProducts = ({ review, status, filtering}:FilterProps) => {
     const axios_instance_token = useAxiosToken()
     const  fetchProducts = async ():Promise<Product[]> => {
         const search = []
-        if(review) search.push(["review", review])
-        if(status) search.push(["status", status])
+        if(review && review !== undefined && review !== null && review !== "null") search.push(["review", review])
+        if(status && status !== undefined && status !== null && status !== "null") search.push(["status", status])
         const params = new URLSearchParams(search).toString()
+        console.log(search);
+        
         const products = await axios_instance_token.get(`/products/admin/all?${params}`).then(res => {
             return res.data
         })

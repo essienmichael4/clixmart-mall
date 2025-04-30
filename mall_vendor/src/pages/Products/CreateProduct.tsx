@@ -127,8 +127,8 @@ const CreateProduct = () => {
             <div className="flex justify-between flex-wrap mb-4 lg:mb-0 px-4 mt-4">
                 <h2 className="text-2xl">Product Information</h2>
                 <div className="space-x-2">
-                    <PrimaryImage id={Number(id)} trigger={<Button variant={"outline"}><Plus /> Add Primary Image</Button>} />
-                    <SecondaryImages id={Number(id)} trigger={<Button variant={"outline"}><Plus /> Add Other Images</Button>} />
+                    <PrimaryImage id={id as string} trigger={<Button variant={"outline"}><Plus /> Add Primary Image</Button>} />
+                    <SecondaryImages id={id as string} trigger={<Button variant={"outline"}><Plus /> Add Other Images</Button>} />
                 </div>
             </div>
             <Form {...form}>

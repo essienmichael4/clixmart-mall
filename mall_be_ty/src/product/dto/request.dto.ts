@@ -1,22 +1,24 @@
 import { ApiProperty } from "@nestjs/swagger"
-import { IsOptional, IsString } from "class-validator"
+import { IsEnum, IsOptional, IsString } from "class-validator"
+import { Status } from "../entities/product.entity"
+import { ReviewStatus } from "../entities/review.entity"
 
 export class ProductFilterDto {
     @ApiProperty({
-        description: "From date",
-        example: 1,
-        required: false
-    })
-    @IsString()
+            description: "Status",
+            example: Status.DRAFT,
+            required: false
+        })
+    @IsEnum(Status)
     @IsOptional()
-    status?:string 
+    status?:Status
 
     @ApiProperty({
-        description: "To date",
-        example: 1,
+        description: "Review status",
+        example: ReviewStatus.PENDING,
         required: false
     })
-    @IsString()
+    @IsEnum(ReviewStatus)
     @IsOptional()
-    review?:string 
+    review?:ReviewStatus 
 }

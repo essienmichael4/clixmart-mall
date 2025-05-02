@@ -50,7 +50,7 @@ const Header = ({activeCategory, subCategories, subCategoriesChange}:CategoriesC
                         </div>
                         <Link to={"/"} className="flex items-center flex-shrink-0">
                             <img src={logo} alt="logo" className='h-6 w-6 lg:h-10 lg:w-10 mr-2' />
-                            <span className="text-sm lg:text-xl tracking-tight">CLIXMART MALL</span>
+                            <span className="text-sm lg:text-xl tracking-tight">CLIXMART</span>
                         </Link>
                     </div>
                     <div className="hidden w-full rounded-md md:flex justify-center items-center h-10">

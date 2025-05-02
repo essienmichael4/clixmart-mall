@@ -1,0 +1,396 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body {
+          font-family: Helvetica Neue,Helvetica,Arial,sans-serif;
+          background-color: #f9f9f9;
+          margin: 0;
+          padding: 0;
+          color: hsl(0, 0%, 20%);
+        }
+        .container {
+            width: 100%;
+            table-layout: fixed;
+            background-color: #ebebeb;
+            padding-bottom: 60px;
+        }
+        .button {
+            background-color: #171a1b;
+            color: #ebebeb;
+            text-decoration: none;
+            padding: 12px 20px;
+            font-size: 12px;
+        }
+        .inverted {
+            color: #171a1b;
+            background-color: #ebebeb;
+            text-decoration: none;
+            padding: 12px 20px;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <center class="container">
+    <table class="nl-container" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace:0;mso-table-rspace:0; max-width: 600px;">
+        <tbody>
+            <tr>
+                <td>
+                    <table class="row row-1" align="center" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace:0;mso-table-rspace:0;max-width:600px;">
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <table class="row-content stack" align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace:0;mso-table-rspace:0;color:#000;max-width:600px;" width="100%">
+                                        <tbody>
+                                            <tr>
+                                                <td class="column column-1" width="100%" style="mso-table-lspace:0;mso-table-rspace:0;font-weight:400;padding-left: 30px;text-align:left;padding-top:20px;vertical-align:top;border-top:0;border-right:0;border-bottom:0;border-left:0">
+                                                    <table class="image_block block-1" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace:0;mso-table-rspace:0;">
+                                                        <tbody>
+                                                            <tr>
+                                                                <td style="width: 60px; height: 60px;">
+                                                                    <div>
+                                                                        <img src="https://clixmartonline.com/assets/logo-DkekmCp_.png" width="50px" height="50px" alt="Clixmart">
+                                                                    </div>
+                                                                </td>
+                                                                <td >
+                                                                    <div>
+                                                                        <h3>CLIXMART</h3>
+                                                                    </div>
+                                                                </td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                     <table class="row row-2" align="center" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace:0;mso-table-rspace:0; background-color: transparent;max-width:600px;">
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <table class="row-content stack" align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace:0;mso-table-rspace:0;color:#000;max-width: 600px;background-color: #ffffff;margin-top: 20px;" width="100%">
+                                        <tbody>
+                                            <tr>
+                                                <td class="column column-1" width="100%" style="mso-table-lspace:0;mso-table-rspace:0;font-weight:400;text-align:left;padding-bottom:15px;padding-left:20px;padding-right:20px;padding-top:15px;vertical-align:top;border-top:0;border-right:0;border-bottom:0;border-left:0;">
+                                                    <table class="paragraph_block block-1" width="100%" border="0" cellpadding="10" cellspacing="0" role="presentation" style="mso-table-lspace:0;mso-table-rspace:0;word-break:break-word; background-color: transparent;">
+                                                        <tbody>
+                                                            <tr>
+                                                                <td class="pad">
+                                                                    <div style="color:#4b4c4d;font-family:Helvetica Neue,Helvetica,Arial,sans-serif;font-size:28px;line-height:120%;text-align:center;mso-line-height-alt:45.6px">
+                                                                        <p style="margin:0;word-break:break-word">
+                                                                            <strong>
+                                                                                <span>Thanks for your order!</span>
+                                                                            </strong>
+                                                                        </p>
+                                                                    </div>
+                                                                </td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                    <table class="paragraph_block block-2" width="100%" border="0" cellpadding="10" cellspacing="0" role="presentation" style="mso-table-lspace:0;mso-table-rspace:0;word-break:break-word">
+                                                        <tbody>
+                                                            <tr>
+                                                                <td class="pad">
+                                                                    <div style="color:#40507a;font-family:Helvetica Neue,Helvetica,Arial,sans-serif;font-size:12px;line-height:120%;text-align:left;mso-line-height-alt:19.2px">
+                                                                        <p style="margin:0;word-break:break-word">
+                                                                            <span>Hey <span style="text-transform: capitalize;">{{order.user.name}}</span>, </span>
+                                                                        </p>
+                                                                        <p style="word-break:break-word">
+                                                                            <span>This email is to confirm your order has been placed successfully, and will be processed & shipped to you soon. Once everything is confirmed, and ready for pickup, we'll send another email with delivery details and 
+                                                                                any other information about your order.</span>
+                                                                        </p>
+                                                                        <p style="word-break:break-word">
+                                                                            <span>In the meantime, if you have any questions, send us an email at <span style="color: blue;">sell.clixmart@gmail.com</span> and we'll be happy to help.</span>
+                                                                        </p>
+                                                                    </div>
+                                                                </td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                    <table class="button_block block-4" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace:0;mso-table-rspace:0">
+                                                        <tbody>
+                                                            <tr>
+                                                                <td style="padding-bottom:20px;text-align:center">
+                                                                    <table>
+                                                                        <tr>
+                                                                            <td>
+                                                                                <table class="column">
+                                                                                    <tr>
+                                                                                        <td>
+                                                                                            <a href='{{link}}' class="button">View your order &#10141;</a>
+                                                                                        </td>
+                                                                                    </tr>
+                                                                                </table>
+                                                                            </td>
+                                                                            <td>
+                                                                                <table class="column">
+                                                                                    <tr>
+                                                                                        <td>
+                                                                                            <a href='{{link}}' class="inverted">View site</a>
+                                                                                        </td>
+                                                                                    </tr>
+                                                                                </table>
+                                                                            </td>
+                                                                        </tr>
+                                                                    </table>
+                                                                </td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                    <table class="paragraph_block block-2" width="100%" border="0" cellpadding="10" cellspacing="0" role="presentation" style="mso-table-lspace:0;mso-table-rspace:0;word-break:break-word">
+                                                        <tbody>
+                                                            <hr>
+                                                            <tr>
+                                                                <td class="pad">
+                                                                    <div style="color:#4b4c4d;font-family:Helvetica Neue,Helvetica,Arial,sans-serif;font-size:15px;line-height:120%;text-align:left;mso-line-height-alt:19.2px">
+                                                                        <p style="margin:0;word-break:break-word">
+                                                                            <strong>Order {{order.orderId}} Summary</strong>
+                                                                        </p>
+                                                                        <p>{{createdAt}}</p>
+                                                                    </div>
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>
+                                                                    <table width="100%">
+                                                                        <tr>
+                                                                            <td>
+                                                                                {{#each products}}
+                                                                                <table width="100%" style="margin: 0 auto; border-bottom: 1px solid #ebebeb;">
+                                                                                    <tr>
+                                                                                        <td width="60px" height="60px" style="overflow: hidden;">
+                                                                                            <img src='{{this.imageUrl}}' width="50px" height="50px" >
+                                                                                        </td>
+                                                                                        <td>
+                                                                                            <div style="color:#40507a;font-family:Helvetica Neue,Helvetica,Arial,sans-serif;font-size:12px;line-height:120%;text-align:left;mso-line-height-alt:19.2px">
+                                                                                                <span style="font-size: 13px;">{{this.name}}</span>
+                                                                                                <span style="font-size: 13px;">x {{this.quantity}}</span>
+                                                                                            </div>
+                                                                                        </td>
+                                                                                        
+                                                                                        <td style="margin: 0 auto 0 0;text-align: right;">
+                                                                                            <div style="color:#40507a;font-family:Helvetica Neue,Helvetica,Arial,sans-serif;font-size:12px;line-height:120%;text-align:right;mso-line-height-alt:19.2px">
+                                                                                                <span style="font-size: 13px; ">{{this.price}}</span>
+                                                                                            </div>
+                                                                                        </td>
+                                                                                    </tr>
+                                                                                </table>
+                                                                                {{/each}}
+                                                                            </td>
+                                                                        </tr>
+                                                                    </table>
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>
+                                                                    <table width="100%">
+                                                                        <tr>
+                                                                            <td>
+                                                                                <table width="100%" style="margin: 0 15px 0 auto;">
+                                                                                    <tr>
+                                                                                        <td>
+                                                                                            <div style="color:#40507a;font-family:Helvetica Neue,Helvetica,Arial,sans-serif;font-size:12px;line-height:120%;text-align:left;mso-line-height-alt:19.2px">
+                                                                                                <span style="font-size: 13px; ">Discount</span>
+                                                                                            </div>
+                                                                                        </td>
+                                                                                        
+                                                                                        <td style="margin: 0 auto 0 0; text-align: right;">
+                                                                                            <div style="color:#40507a;font-family:Helvetica Neue,Helvetica,Arial,sans-serif;font-size:12px;line-height:120%;text-align:right;mso-line-height-alt:19.2px">
+                                                                                                <span style="font-size: 13px; ">{{order.discount}}</span>
+                                                                                            </div>
+                                                                                        </td>
+                                                                                    </tr>
+                                                                                </table>
+                                                                            </td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td>
+                                                                                <table width="100%" style="margin: 0 15px 0 auto;">
+                                                                                    <tr>
+                                                                                        <td>
+                                                                                            <div style="color:#40507a;font-family:Helvetica Neue,Helvetica,Arial,sans-serif;font-size:12px;line-height:120%;text-align:left;mso-line-height-alt:19.2px">
+                                                                                                <span style="font-size: 13px; ">Subtotal</span>
+                                                                                            </div>
+                                                                                        </td>
+                                                                                        
+                                                                                        <td style="margin: 0 auto 0 0; text-align: right;">
+                                                                                            <div style="color:#40507a;font-family:Helvetica Neue,Helvetica,Arial,sans-serif;font-size:12px;line-height:120%;text-align:right;mso-line-height-alt:19.2px">
+                                                                                                <span style="font-size: 13px; ">{{subTotal}}</span>
+                                                                                            </div>
+                                                                                        </td>
+                                                                                    </tr>
+                                                                                </table>
+                                                                            </td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td>
+                                                                                <table width="100%" style="margin: 0 15px 0 auto; border-bottom: 1px solid #ebebeb;">
+                                                                                    <tr>
+                                                                                        <td>
+                                                                                            <div style="color:#40507a;font-family:Helvetica Neue,Helvetica,Arial,sans-serif;font-size:12px;line-height:120%;text-align:left;mso-line-height-alt:19.2px">
+                                                                                                <span style="font-size: 13px; ">Shipping</span>
+                                                                                            </div>
+                                                                                        </td>
+                                                                                        
+                                                                                        <td style="margin: 0 auto 0 0; text-align: right;">
+                                                                                            <div style="color:#40507a;font-family:Helvetica Neue,Helvetica,Arial,sans-serif;font-size:12px;line-height:120%;text-align:right;mso-line-height-alt:19.2px">
+                                                                                                <span style="font-size: 13px; ">{{order.shippingFee}}</span>
+                                                                                            </div>
+                                                                                        </td>
+                                                                                    </tr>
+                                                                                </table>
+                                                                            </td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td>
+                                                                                <table width="100%" style="margin: 0 15px 0 auto; border-bottom: 1px solid #ebebeb;">
+                                                                                    <tr>
+                                                                                        <td>
+                                                                                            <div style="color:#40507a;font-family:Helvetica Neue,Helvetica,Arial,sans-serif;font-size:12px;line-height:120%;text-align:left;mso-line-height-alt:19.2px">
+                                                                                                <span style="font-size: 13px; ">Total</span>
+                                                                                            </div>
+                                                                                        </td>
+                                                                                        
+                                                                                        <td style="margin: 0 auto 0 0;text-align: right;">
+                                                                                            <div style="color:#40507a;font-family:Helvetica Neue,Helvetica,Arial,sans-serif;font-size:12px;line-height:120%;text-align:right;mso-line-height-alt:19.2px">
+                                                                                                <span style="font-size: 13px; ">{{order.total}}</span>
+                                                                                            </div>
+                                                                                        </td>
+                                                                                    </tr>
+                                                                                </table>
+                                                                            </td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td>
+                                                                                <table width="100%" style="margin: 0 15px 0 auto;">
+                                                                                    <tr>
+                                                                                        <td>
+                                                                                            <div style="color:#40507a;font-family:Helvetica Neue,Helvetica,Arial,sans-serif;font-size:12px;line-height:120%;text-align:left;mso-line-height-alt:19.2px">
+                                                                                                <span style="font-size: 13px;">Payment method</span>
+                                                                                            </div>
+                                                                                        </td>
+                                                                                        
+                                                                                        <td style="margin: 0 auto 0 0; text-align: right;">
+                                                                                            <div style="color:#40507a;font-family:Helvetica Neue,Helvetica,Arial,sans-serif;font-size:12px;line-height:120%;text-align:right;mso-line-height-alt:19.2px">
+                                                                                                <span style="font-size: 13px; ">{{order.paymentMethod}}</span>
+                                                                                            </div>
+                                                                                        </td>
+                                                                                    </tr>
+                                                                                </table>
+                                                                            </td>
+                                                                        </tr>
+                                                                    </table>
+                                                                </td>
+                                                            </tr>
+                                                            
+                                                        </tbody>
+                                                    </table>
+                                                    <table class="paragraph_block block-2" width="100%" border="0" cellpadding="10" cellspacing="0" role="presentation" style="mso-table-lspace:0;mso-table-rspace:0;word-break:break-word">
+                                                        <tbody>
+                                                            <hr>
+                                                            <tr>
+                                                                <td class="pad">
+                                                                    <div style="color:#4b4c4d;font-family:Helvetica Neue,Helvetica,Arial,sans-serif;font-size:15px;line-height:120%;text-align:left;mso-line-height-alt:19.2px">
+                                                                        <p style="margin:0;word-break:break-word">
+                                                                            <strong>Customer information</strong>
+                                                                        </p>
+                                                                        
+                                                                    </div>
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>
+                                                                    <table width="100%">
+                                                                        <tr>
+                                                                            <td>
+                                                                                <table>
+                                                                                    <tr>
+                                                                                        <td>
+                                                                                            <h5>Shipping address</h5>
+                                                                                            <p style="font-size: 13px;">5th Avenue</p>
+                                                                                            <p style="font-size: 13px;">Dr Lumumber Street</p>
+                                                                                            <p style="font-size: 13px;">Tema, Community 2.</p>
+                                                                                        </td>
+                                                                                    </tr>
+                                                                                </table>
+                                                                            </td>
+                                                                            <td>
+                                                                                <table >
+                                                                                    <tr>
+                                                                                        <td>
+                                                                                            <h5>Billing address</h5>
+                                                                                            <p style="font-size: 13px;">5th Avenue</p>
+                                                                                            <p style="font-size: 13px;">Dr Lumumber Street</p>
+                                                                                            <p style="font-size: 13px;">Tema, Community 2.</p>
+                                                                                        </td>
+                                                                                    </tr>
+                                                                                </table>
+                                                                            </td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                        </tr>
+                                                                        
+                                                                    </table>
+                                                                </td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </td>
+                                            </tr>
+                                            
+                                        </tbody>
+                                    </table>
+
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <table class="row row-4" align="center" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace:0;mso-table-rspace:0">
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <table class="row-content stack" align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace:0;mso-table-rspace:0;color:#000;max-width: 600px" width="100%">
+                                        <tbody>
+                                            <tr>
+                                                <td class="column column-1" width="100%" style="mso-table-lspace:0;mso-table-rspace:0;font-weight:400;text-align:left;padding-bottom:20px;padding-left:10px;padding-right:10px;padding-top:10px;vertical-align:top;border-top:0;border-right:0;border-bottom:0;border-left:0">
+                                                    
+                                                    <table class="paragraph_block block-5" width="100%" border="0" cellpadding="10" cellspacing="0" role="presentation" style="mso-table-lspace:0;mso-table-rspace:0;word-break:break-word">
+                                                        <tbody>
+                                                            <tr>
+                                                                <td class="pad">
+                                                                    <div style="color:#4e4e4e;font-family:Helvetica Neue,Helvetica,Arial,sans-serif;font-size:12px;line-height:120%;text-align:center;mso-line-height-alt:14.399999999999999px">
+                                                                        <p style="margin:0;word-break:break-word"><span>Copyright© 2025 Clixmart.</span></p>
+                                                                        <p style="word-break:break-word">
+                                                                            <span>
+                                                                                <a href="http://www.example.com/" target="_blank" title="Terms of Service" style="text-decoration: underline; color: #4e4e4e;" rel="noopener">Terms of Service</a>
+                                                                                &nbsp;|&nbsp;
+                                                                                <a href="http://www.example.com/" target="_blank" title="Privacy Policy" style="text-decoration: underline; color: #4e4e4e;" rel="noopener">Privacy Policy</a>
+                                                                            </span>
+                                                                        </p>
+                                                                    </div>
+                                                                </td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>    
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    </center>
+</body>
+</html>

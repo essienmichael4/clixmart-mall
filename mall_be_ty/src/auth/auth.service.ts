@@ -1,13 +1,14 @@
-import { ConflictException, HttpException, Injectable } from '@nestjs/common';
+import { ConflictException, HttpException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Role, User } from 'src/user/entities/user.entity';
 import { UserService } from 'src/user/user.service';
 import { Repository } from 'typeorm';
-import { ForgottenPasswordDto, UserSignUpDto } from './dto/register.dto';
+import { ForgottenPasswordDto, ResetPasswordDto, UserSignUpDto } from './dto/register.dto';
 import { LoginReponse, UserAuthReponse } from './dto/response.dto';
 import { UserSignInDto } from './dto/signin.dto';
 import { compare } from 'bcryptjs';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 
 interface PayloadParams{
   username: string,
@@ -23,7 +24,8 @@ export class AuthService {
   constructor(@InjectRepository(User) 
     private readonly userRepo:Repository<User>, 
     private userService: UserService,
-    private jwtService:JwtService
+    private jwtService:JwtService,
+    private eventEmitter:EventEmitter2
   ){}
 
   async findUser(email:string){
@@ -78,6 +80,45 @@ export class AuthService {
     try{
       const userExists = await this.findUser(forgottenPasswordDto.email)
       if(!userExists) throw new HttpException("The account does not exist on this platform", 401)
+
+      const user = new UserAuthReponse(userExists)
+
+      const payload = {
+        username: user.email,
+        sub: {
+            id: user.id,
+            name: user.name,
+            role: user.role
+        }
+      }
+
+      const signedId = await this.signResetPasswordPayload(payload, '30m')
+
+      const link = `https://clixmartonline.com/reset-password?id=${signedId}&email=${user.email}`
+      
+      this.eventEmitter.emit("reset.password", {email: user.email, name: user.name, link})
+
+      return ({message: "Password reset request has been submitted successfully. A link has been sent to the email account provided to reset your password."})
+      
+    }catch(err){
+      throw err
+    }
+  }
+
+  async resetPassword(resetPasswordDto:ResetPasswordDto){
+    try{
+      const payload = this.jwtService.verify(resetPasswordDto.id, {
+        secret: process.env.JWT_SECRET_KEY
+      })
+
+      if(resetPasswordDto.email !== payload.user.username) throw new UnauthorizedException("")
+      const userExists = await this.findUser(resetPasswordDto.email)
+      if(userExists) throw new HttpException("The account does not exist on this platform", 401)
+
+      if(resetPasswordDto.password !== resetPasswordDto.confirmPassword) throw new HttpException("Passwords do not match", 401)
+
+      const reset = await this.userService.resetPassword(userExists.id, resetPasswordDto.password)
+      return {message: "Password reset successful. Please login."}
     }catch(err){
       throw err
     }
@@ -102,4 +143,13 @@ export class AuthService {
           secret: process.env.JWT_REFRESH_KEY
       })
   }
+
+  async signResetPasswordPayload(payload:PayloadParams, time: string){
+      return await this.jwtService.sign(payload, {
+          expiresIn: time,
+          secret: process.env.JWT_SECRET_KEY
+      })
+  }
+
+
 }

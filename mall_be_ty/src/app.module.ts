@@ -13,10 +13,12 @@ import { OrderModule } from './order/order.module';
 import { BrandModule } from './brand/brand.module';
 import { UploadModule } from './upload/upload.module';
 import { StatsModule } from './stats/stats.module';
-import { MailerModule } from './mailer/mailer.module';
+import { MailModule } from './mailer/mail.module';
+import { EventEmitterModule } from '@nestjs/event-emitter';
 
 @Module({
   imports: [
+    EventEmitterModule.forRoot(),
     ConfigModule.forRoot({isGlobal: true}),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
@@ -42,7 +44,7 @@ import { MailerModule } from './mailer/mailer.module';
     BrandModule,
     UploadModule,
     StatsModule,
-    MailerModule],
+    MailModule],
   controllers: [AppController],
   providers: [AppService],
 })

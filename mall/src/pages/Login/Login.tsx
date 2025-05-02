@@ -13,7 +13,7 @@ const Login = () => {
                     </div>
                     <div className="md:hidden">
                         <h2 className="text-4xl mb-2">Sign in</h2>
-                        <p className="text-white/70 text-xs">Welcome to CLIXMART MALL - Let's help you sign in...</p>
+                        <p className="text-white/70 text-xs">Welcome to CLIXMART - Let's help you sign in...</p>
                     </div>
                 </div>
             </div>

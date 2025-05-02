@@ -15,6 +15,8 @@ import Product from './pages/Products/Product'
 import EditProduct from './pages/Products/EditProduct'
 import Orders from './pages/Orders/Orders'
 import Order from './pages/Orders/Order'
+import ForgotPassword from './pages/ForgotPassword/ForgotPassword'
+import PasswordReset from './pages/PasswordReset/PasswordReset'
 
 function App() {
 
@@ -22,6 +24,8 @@ function App() {
     <>
       <Routes>
         <Route path='/' element={<Login />} />
+        <Route path='/forgot-password' element={<ForgotPassword />} />
+        <Route path='/reset-password' element={<PasswordReset />} />  
         <Route element={<RequireAuth />}>
           <Route path='wizard' element={<Wizard />} />
           <Route path='create' element={<CreateStore />} />

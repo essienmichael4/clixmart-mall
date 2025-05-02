@@ -67,6 +67,25 @@ export class ForgottenPasswordDto {
 
 export class ResetPasswordDto {
     @ApiProperty({
+        description: "token",
+        example: "xxxxxxxxxxx",
+        required: true
+    })
+    @IsDefined()
+    @IsString()
+    id:string
+
+    @ApiProperty({
+        description: "email",
+        example: "test@example.com",
+        required: true
+    })
+    @IsDefined()
+    @IsString()
+    @IsEmail()
+    email:string
+
+    @ApiProperty({
         description: "Password",
         example: "xxxxxxxxxxx",
         required: true

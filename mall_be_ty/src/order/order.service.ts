@@ -14,6 +14,7 @@ import { YearHistory } from 'src/product/entities/YearHistory.entity';
 import { UserMonthHistory } from 'src/product/entities/UserMonthHistory.entity';
 import { UserYearHistory } from 'src/product/entities/UserYearHistory.entity';
 import { GetDay, GetMonth, GetYear } from 'src/helpers/common';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 
 @Injectable()
 export class OrderService {
@@ -26,7 +27,8 @@ export class OrderService {
     @InjectRepository(YearHistory) private readonly yearHistoryRepo:Repository<YearHistory>,
     @InjectRepository(UserMonthHistory) private readonly userMonthHistoryRepo:Repository<UserMonthHistory>,
     @InjectRepository(UserYearHistory) private readonly userYearHistoryRepo:Repository<UserYearHistory>,
-    private readonly dataSource:DataSource
+    private readonly dataSource:DataSource,
+    private eventEmitter:EventEmitter2
   ){}
 
   async create(createOrderDto: CreateOrderDto, userId:number) {
@@ -87,6 +89,7 @@ export class OrderService {
       await this.upsertUserYearHistoryOrder(user.id, queryRunner)
       await this.upsertUserMonthHistoryOrder(user.id, queryRunner)
       await queryRunner.commitTransaction()
+      this.eventEmitter.emit("order.created", {order})
       return order
     }catch(err){
       await queryRunner.rollbackTransaction()

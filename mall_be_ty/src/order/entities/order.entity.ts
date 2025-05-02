@@ -42,6 +42,12 @@ export class Order {
     
     @Column({type: "decimal", precision: 10, scale: 2, default: 0.00})
     discount: number;
+    
+    @Column({type: "decimal", precision: 10, scale: 2, default: 0.00})
+    shippingFee: number;
+
+    @Column({type: "text", nullable:true, default: "Payment on delivery"})
+    paymentMethod: string
 
     @CreateDateColumn({ type: 'timestamp' })
     createdAt: Date;

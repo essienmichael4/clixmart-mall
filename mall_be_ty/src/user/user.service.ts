@@ -85,9 +85,15 @@ export class UserService {
     return this.userRepo.findOneBy({id});
   }
   
-  // update(id: number, updateUserDto: UpdateUserDto) {
-    //   return `This action updates a #${id} user`;
-    // }
+  async resetPassword(id: number, password:string) {
+    try{
+      return await this.userRepo.update(id, {
+        password: await this.hashPassword(password)
+      })
+    }catch(err){
+      throw err
+    }
+  }
 
   async updateUserPassword(id:number, fields:UpdateUserPasswordRequest){
     try{

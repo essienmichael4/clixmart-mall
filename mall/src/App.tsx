@@ -12,6 +12,8 @@ import Search from './pages/Search/Search'
 import CategoryProducts from './pages/CateogryProducts/CategoryProducts'
 import Cart from './pages/Cart/Cart'
 import Product from './pages/Product/Product'
+import ForgotPassword from './pages/ForgotPassword/ForgotPassword'
+import PasswordReset from './pages/PasswordReset/PasswordReset'
 
 function App() {
 
@@ -32,6 +34,8 @@ function App() {
           </Route>
         </Route>
         <Route path='*' element={<NotFound />} />
+        <Route path='/forgot-password' element={<ForgotPassword />} />
+        <Route path='/reset-password' element={<PasswordReset />} />
       </Routes>
     </>
   )

@@ -4,7 +4,7 @@ import { FileRejection, useDropzone} from 'react-dropzone'
 import { toast } from 'sonner'
 
 interface Props{
-    handleFileChange: ( value:File[] | undefined )=> void
+    handleFileChange: ( value:(File & {preview:string})[] | undefined )=> void,
 }
 
 const ProductSecondaryImages = ({ handleFileChange}:Props) => {
@@ -12,9 +12,10 @@ const ProductSecondaryImages = ({ handleFileChange}:Props) => {
 
     const onDrop = useCallback((acceptedFiles:File[]) => {
       // Do something with the files
-      handleFileChange(acceptedFiles)
-      setFiles(() => {
-        let result
+      
+      setFiles((prevState) => {
+        let result = prevState
+        
         let newFiles = acceptedFiles!.map((file) =>
         Object.assign(file, {
           preview: URL.createObjectURL(file),
@@ -23,16 +24,17 @@ const ProductSecondaryImages = ({ handleFileChange}:Props) => {
         if(result === undefined){
           result = [...newFiles]
         }else{
-          
           result = [...result, ...newFiles]
         }
         
+        handleFileChange(result)
         return result
       })
+      
     }, [handleFileChange])
 
-    const handleRemoveImage = (index:number) => {
-      const filteredFiles = files?.filter((_e, i) => i != index)
+    const handleRemoveImage = (name:string) => {
+      const filteredFiles = files?.filter((_e) => _e.name != name)
       handleFileChange(filteredFiles)
       setFiles(filteredFiles)
     }
@@ -110,9 +112,9 @@ const ProductSecondaryImages = ({ handleFileChange}:Props) => {
                     </p>
                     
                 </div>}
-              {files && files.map((file, i)=> (<div className='aspect-square w-[47%] relative'>
-                <button type='button' className='absolute top-2 right-2 bg-white/80 p-1 rounded-lg' onClick={() => handleRemoveImage(i)}><Trash2 className='text-rose-700 w-4 h-4' /></button>
-                <img className='aspect-square' key={i} src={file.preview} alt={file.name} />
+              {files && files.map((file, i)=> (<div key={i} className='aspect-square w-[47%] relative'>
+                <button type='button' className='absolute top-2 right-2 bg-white/80 p-1 rounded-lg' onClick={() => handleRemoveImage(file.name)}><Trash2 className='text-rose-700 w-4 h-4' /></button>
+                <img className='aspect-square' src={file.preview} alt={file.name} />
                 </div>)
               )}
             </div>}

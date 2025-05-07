@@ -69,7 +69,8 @@ export class ProductService {
       const productEntity = this.productRepo.create()
       const saveEntity = {
         ...productEntity,
-        name: createProductDto.name.toLowerCase(),
+        name: createProductDto.name,
+        searchName: createProductDto.name.toLowerCase(),
         slug: this.generateSlug(createProductDto.name.toLowerCase()),
         productReview: productReview,
         productId: v4(),
@@ -135,6 +136,7 @@ export class ProductService {
 
       if(name){
         product.name = name
+        product.searchName = name.toLowerCase()
       }
       product.category = category
       product.subCategory = subCategory
@@ -521,7 +523,8 @@ export class ProductService {
   update(productId: string, updateProductDto: UpdateProductDto) {
     const {name, price, quantity, discount, model, description} = updateProductDto
     return this.productRepo.update(productId, {
-      ...(name && { name: name.toLowerCase() }),
+      ...(name && { name: name }),
+      ...(name && { searchName: name.toLowerCase() }),
       ...(price && { price: price }),
       ...(quantity && { quantity: quantity }),
       ...(discount && { discount: discount }),
@@ -566,7 +569,8 @@ export class ProductService {
         return 
       })
 
-      product.name = productDetails.name.toLowerCase()
+      product.name = productDetails.name
+      product.searchName = productDetails.name.toLowerCase()
       product.category = category
       product.subCategory = subCategory
       product.brand = brand

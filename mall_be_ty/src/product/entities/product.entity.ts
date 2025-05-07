@@ -36,6 +36,9 @@ export class Product {
     @Column()
     name:string
 
+    @Column({nullable: true})
+    searchName:string
+
     @Column({type: 'float', default: 0.00})
     price: number;
 

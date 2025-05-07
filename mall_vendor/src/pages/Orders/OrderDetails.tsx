@@ -5,17 +5,16 @@ import { FormatCurrency } from "@/lib/helper"
 import { Order } from "@/lib/types"
 import { useQuery } from "@tanstack/react-query"
 import { useNavigate, useParams } from "react-router-dom"
-import OrderStatus from "./OrderStatus"
 import OrderItemStatus from "./OrderItemStatus"
 
 const OrderDetails = () => {
-    const {id} = useParams()
+    const {store, id} = useParams()
     const navigate = useNavigate()
     const axios_instance_token = useAxiosToken()
 
     const orderQuery = useQuery<Order>({
-        queryKey: ["orders", id],
-        queryFn: async() => await axios_instance_token.get(`/orders/${id}`).then(res => {
+        queryKey: ["orders", {store, id}],
+        queryFn: async() => await axios_instance_token.get(`/orders/stores/${store}/${id}`).then(res => {
             console.log(res.data);
             
             return res.data
@@ -41,7 +40,6 @@ const OrderDetails = () => {
                             </BreadcrumbList>
                         </Breadcrumb>
                     </div>
-                    {orderQuery.data && <OrderStatus status={orderQuery.data.status} id={orderQuery.data.orderId as string} />}
                 </div>
             <div className="mt-6 flex items-center gap-4">
                 <div>
@@ -94,11 +92,11 @@ const OrderDetails = () => {
                                             <p className="text-sm text-muted-foreground">{orderItem.product.productId}</p>
                                             <p className="capitalize text-xs text-muted-foreground text-cyan-700">{orderItem.product?.category?.name}/{orderItem.product?.subCategory?.name}</p>
                                             <p className="uppercase text-muted-foreground">{orderItem.product?.brand?.name}</p>
-                                            {orderItem.status && <OrderItemStatus id={orderQuery.data.orderId as string} itemId={orderItem.orderItemId as string} status={orderItem.status} />}
+                                            {orderItem.status && <OrderItemStatus store={store as string} id={orderQuery.data.orderId as string} itemId={orderItem.orderItemId as string} status={orderItem.status} />}
                                         </div>
                                     </div>
                                 </div>
-                                <div className="mt-4 flex flex-wrap gap-8">
+                                {/* <div className="mt-4 flex flex-wrap gap-8">
                                     <div>
                                         <h5 className="text-xs text-gray-300">Owner name</h5>
                                         <p className="capitalize">{orderItem.product.store?.user?.name}</p>
@@ -130,7 +128,7 @@ const OrderDetails = () => {
                                         <p>{orderItem.product.store?.storeAddress?.addressLine}</p>
                                         <p>{orderItem.product.store?.storeAddress?.city} , {orderItem.product.store?.storeAddress?.state} , {orderItem.product.store?.storeAddress?.country}</p>
                                     </div>
-                                </div>
+                                </div> */}
                             </div>
                         )
                     })}

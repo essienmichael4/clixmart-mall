@@ -31,7 +31,8 @@ export class UserService {
         ...createUserDto,
         userId: v4(),
         password: await this.hashPassword(createUserDto.password),
-        name: createUserDto.name.toLowerCase(),
+        name: createUserDto.name,
+        searchName: createUserDto.name.toLowerCase(),
         email: createUserDto.email.toLowerCase()  
       }
 
@@ -65,7 +66,7 @@ export class UserService {
 
     const users = this.userRepo.find({
       where: [
-        {name: Like(`%${name.toLowerCase()}%`)},
+        {searchName: Like(`%${name.toLowerCase()}%`)},
         {email: Like(`%${email.toLowerCase()}%`)}
       ]
     })
@@ -120,7 +121,8 @@ export class UserService {
   async update(id: number, fields:UpdateUserRequest) {
     const {phone, name} = fields
     await this.userRepo.update(id, {
-      ...(name && { name: name.toLowerCase() }),
+      ...(name && { name: name }),
+      ...(name && { searchName: name.toLowerCase() }),
       ...(phone && { phone }),
     })
   

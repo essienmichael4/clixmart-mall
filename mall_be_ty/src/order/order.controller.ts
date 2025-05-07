@@ -1,10 +1,11 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, HttpCode, HttpStatus, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, HttpCode, HttpStatus, UsePipes, ValidationPipe, Query } from '@nestjs/common';
 import { OrderService } from './order.service';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
 import { JwtGuard } from 'src/guards/jwt.guard';
 import { ApiConsumes, ApiCreatedResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { User, UserInfo } from 'src/decorators/user.decorator';
+import { OrderFilterDto } from './dto/request.dto';
 
 @Controller('orders')
 @UsePipes(new ValidationPipe({
@@ -28,18 +29,18 @@ export class OrderController {
 
   @UseGuards(JwtGuard)
   @Get()
-  findAll() {
-    return this.orderService.findAll();
+  findAll(@Query() orderFilterDto:OrderFilterDto) {
+    return this.orderService.findAll(orderFilterDto);
   }
 
   @UseGuards(JwtGuard)
-  @Get("store/:store")
-  findAllStoreOrders(@Param('store') store: string) {
-    return this.orderService.findAllStoreOrders(store);
+  @Get("stores/:store")
+  findAllStoreOrders(@Param('store') store: string, @Query() orderFilterDto:OrderFilterDto) {
+    return this.orderService.findAllStoreOrders(store, orderFilterDto);
   }
 
   @UseGuards(JwtGuard)
-  @Get("store/:store/:orderId")
+  @Get("stores/:store/:orderId")
   findAllStoreOrderItems(@Param('store') store: string, @Param('orderId') orderId: string,) {
     return this.orderService.findStoreOrderItem(store, orderId);
   }

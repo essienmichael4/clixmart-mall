@@ -3,15 +3,15 @@ import { MailService } from './mail.service';
 import { OnEvent } from '@nestjs/event-emitter';
 import { ResetPasswordEventDto } from './dto/resetpassword.dot';
 import { SuccessfulOrderEventDto } from './dto/successOrder.dto';
-import { ProductReponseDto } from 'src/product/dto/response.dto';
+import { UploadService } from 'src/upload/upload.service';
 
 @Controller('mailer')
 export class MailController {
-  constructor(private readonly mailService: MailService) {}
+  constructor(private readonly mailService: MailService, private readonly uploadService: UploadService) {}
 
   @OnEvent("order.created")
   successfulOrderEmail(@Body() payload:SuccessfulOrderEventDto){
-    return this.mailService
+    return this.mailService.sendSuccessfullOrderMail(payload)
   }
 
   confirmOrderEmail(){

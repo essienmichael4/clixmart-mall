@@ -24,6 +24,9 @@ export class Store {
 
     @Column({ unique: true })
     name:string
+    
+    @Column({nullable: true})
+    searchName:string
 
     @Column({ unique: true })
     slug:string

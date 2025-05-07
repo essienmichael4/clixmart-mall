@@ -23,8 +23,8 @@ const CartItem = ({id, quantity}: CartItemsProps) => {
     if(!product) return null
     return (
         <div className='p-2 md:p-4 flex gap-4 border mb-4 rounded-lg'>
-            <div className='w-24 bg-black aspect-square rounded-lg'>
-
+            <div className='w-24 aspect-square rounded-lg overflow-hidden'>
+                <img src={product.data?.imageUrl} alt="" />
             </div>
             <div className='flex-1'>
                 <div className='flex justify-between py-1 md:py-2'>

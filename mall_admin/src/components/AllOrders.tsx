@@ -8,21 +8,30 @@ import useAxiosToken from '@/hooks/useAxiosToken'
 import { Button } from './ui/button'
 
 interface FilterProps{
-    filtering:string
+    filtering:string,
+    status: "PENDING" | "SHIPPING" | "SHIPPED" | "DELIVERED" | "FAILED" | "CANCELLED" | "RETURNED" | undefined
 }
 
 const emptyData: any[]= []
 
-const AllOrders = ({ filtering}:FilterProps) => {
+const AllOrders = ({ filtering, status}:FilterProps) => {
     const axios_instance_token = useAxiosToken()
 
-    const stores = useQuery<Order[]>({
-        queryKey: ["orders"],
-        queryFn: async() => await axios_instance_token.get(`/orders`).then(res => {
-            console.log(res.data);
-            
+    const fetchOrders = async():Promise<Order[]> => {
+        const search = []
+        if(status && status !== undefined && status !== null) search.push(["status", status])
+        const params = new URLSearchParams(search).toString()
+        
+        const orders = await axios_instance_token.get(`/orders?${params}`).then(res => {
             return res.data
         })
+
+        return orders
+    }
+
+    const stores = useQuery<Order[]>({
+        queryKey: ["orders", status],
+        queryFn: async() => fetchOrders()
     })
 
     const columns:ColumnDef<Order>[] =[{
@@ -31,7 +40,7 @@ const AllOrders = ({ filtering}:FilterProps) => {
         cell:({row}) => { 
             const productNames = row.original.orderItems.map(item => item.name)
             return <div>
-            <Link to={`./${row.original.id}`}>
+            <Link to={`./${row.original.orderId}`}>
                 <p>{productNames.toString()}</p>
                 <p><span className='text-gray-400'>#</span>{row.original.id}</p>
             </Link>
@@ -80,9 +89,7 @@ const AllOrders = ({ filtering}:FilterProps) => {
         header:({column})=>(<DataTableColumnHeader column={column} title='Payment Status' />),
         cell:({row}) => {
             return <div>
-                {/* <Link to={`./${row.original.id}`}> */}
                     {row.original.isPaid}
-                {/* </Link> */}
             </div>
         }
     },{
@@ -90,9 +97,7 @@ const AllOrders = ({ filtering}:FilterProps) => {
         header:({column})=>(<DataTableColumnHeader column={column} title='Order Status' />),
         cell:({row}) => {
             return <div className=''>
-                {/* <Link to={`./${row.original.id}`}> */}
-                    {row.original.status}
-                {/* </Link> */}
+                <span className={`inline-block ${row.original.status === "PENDING" && 'bg-gray-100'} ${row.original.status === "DELIVERED" && 'bg-emerald-100 text-emerald-700'} ${row.original.status === "SHIPPING" && 'bg-yellow-100 text-yellow-700'} ${row.original.status === "SHIPPED" && 'bg-orange-100 text-orange-700'} ${row.original.status === "FAILED" && 'bg-red-100 text-red-700'} ${row.original.status === "CANCELLED" && 'bg-rose-100 text-rose-700'} ${row.original.status === "RETURNED" && 'bg-purple-100 text-purple-700'} py-2 px-4 rounded-full text-[.7rem]`}>{row.original.status}</span>
             </div>
         }
     },

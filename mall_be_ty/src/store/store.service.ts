@@ -55,7 +55,8 @@ export class StoreService {
       const storeEntity =  this.storeRepo.create()
       const saveEntity = {
         ...storeEntity,
-        name: createStoreDto.name.toLowerCase(),
+        name: createStoreDto.name,
+        searchName: createStoreDto.name.toLowerCase(),
         storeId: v4(),
         url: this.generateStoreUrl(unspaced),
         slug: unspaced,
@@ -233,7 +234,8 @@ export class StoreService {
     // const user = await this.userService.findUserById(userId)
     try{
       const store = await this.storeRepo.update(id,{
-        name: createStoreDto.name
+        name: createStoreDto.name,
+        searchName: createStoreDto.name.toLowerCase()
       })
 
       return store

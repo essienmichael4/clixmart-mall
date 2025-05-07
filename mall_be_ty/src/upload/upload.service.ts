@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { FileService } from './file.service';
-import { uuid } from 'uuidv4';
+import { v4 } from 'uuid';
 
 @Injectable()
 export class UploadService {
@@ -37,7 +37,7 @@ export class UploadService {
   async addProductImages(files: Array<Express.Multer.File>){
     const fileUploadResults = []
     for(const file of files){
-        const filename = `${uuid()}-${file.originalname}`
+        const filename = `${v4()}-${file.originalname}`
         const uploadFileResponse = await this.addProductImage(file.buffer, filename)
         fileUploadResults.push({...uploadFileResponse, success: true})
     }

@@ -1,4 +1,4 @@
-import useCart from "@/hooks/useCart"
+// import useCart from "@/hooks/useCart"
 import { FormatCurrency } from "@/lib/helper"
 import { Product } from "@/lib/types"
 import React from "react"
@@ -8,8 +8,8 @@ interface ProductProps {
 }
 
 const ProductHRCard = React.forwardRef(({product}: ProductProps,  ) => {
-    const {increaseCartQuanity, cartItems} = useCart()
-    const contains = cartItems.some(item=> item.id ===product.productId)
+    // const { cartItems} = useCart()
+    // const contains = cartItems.some(item=> item.id ===product.productId)
 
     const productBody = (
         <>
@@ -23,7 +23,7 @@ const ProductHRCard = React.forwardRef(({product}: ProductProps,  ) => {
                     <h5 className='w-40 text-sm md:text-xl capitalize font-semibold line-clamp-1 md:line-clamp-2 text-ellipsis overflow-hidden'>{product.name}</h5>
                     <p className='text-xs md:text-sm uppercase text-gray-400'>{product.brand?.name}</p>
                     <p className='font-semibold text-xs md:text-sm'>{FormatCurrency(product.price)}</p>
-                    {contains ? 
+                    {/* {contains ? 
                         <span>Added to cart</span> : 
                         <button 
                           onClick={(e)=>{
@@ -31,7 +31,8 @@ const ProductHRCard = React.forwardRef(({product}: ProductProps,  ) => {
                             e?.preventDefault()
                            increaseCartQuanity(product!.productId)}
                           } 
-                         className="border border-gray-700 absolute bottom-1 py-2 rounded-full font-semibold w-full text-xs uppercase text-gray-700">Shop now</button>}
+                         className="border border-gray-700 absolute bottom-1 py-2 rounded-full font-semibold w-full text-xs uppercase text-gray-700">Shop now</button>
+                         } */}
                 </div>
             </div>
         </>

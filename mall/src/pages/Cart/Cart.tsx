@@ -4,12 +4,16 @@ import { Separator } from "@/components/ui/separator"
 import useAxiosToken from "@/hooks/useAxiosToken"
 import useCart from "@/hooks/useCart"
 import { FormatCurrency } from "@/lib/helper"
+import axios from "axios"
+import { Loader2 } from "lucide-react"
+import { useState } from "react"
 // import { Product } from "@/lib/types"
 // import { useState } from "react"
 import { toast } from "sonner"
 
 const Cart = () => {
     const {cartItems, getTotalCost} = useCart()
+    const [isPending, setIsPending] = useState(false)
     const axios_instance_token = useAxiosToken()
     // const [products, setProducts] = useState<Product[]>([])
 
@@ -20,17 +24,28 @@ const Cart = () => {
     // })    
 
     const handleCreateOrder = async ( )=>{
-        toast.loading("Ordering...", {
-            id: "order"
-        })
-        const response = await axios_instance_token.post("/orders", {
-            items: cartItems
-        })
-
-        console.log(response.data);
-        toast.loading("Done...", {
-            id: "order"
-        })
+        try{
+            setIsPending(true)
+            toast.loading("Ordering...", {
+                id: "order"
+            })
+            const response = await axios_instance_token.post("/orders", {
+                items: cartItems
+            })
+            console.log(response.data);
+            
+            setIsPending(false)
+            toast.success("Order placed successfully...", {
+                id: "order"
+            })
+        }catch(err:any){
+            setIsPending(false)
+            if (axios.isAxiosError(err)){
+                toast.error(err?.response?.data?.message, {
+                    id: "order"
+                })
+            }
+        }
         
     }
     
@@ -96,7 +111,10 @@ const Cart = () => {
                             )}
                             </p>
                         </div>
-                        <button onClick={handleCreateOrder} className="w-full text-xs py-2 bg-blue-700 text-white rounded-full">Checkout</button>
+                        <button onClick={handleCreateOrder} className="w-full text-xs py-2 bg-blue-700 text-white rounded-full">
+                            {!isPending && "Checkout"}
+                            {isPending && <Loader2 className='animate-spin' /> }
+                        </button>
                     </div>
                 </div>
             </div>

@@ -25,33 +25,32 @@ export class MailService {
 
     async sendSuccessfullOrderMail(payload: SuccessfulOrderEventDto){
         const orderItems = payload.order.orderItems
-        let products = []
-        let subTotal = 0
-        
-        orderItems.map(async (item)=>{
-            const product = new ProductReponseDto(item.product)
-            product.imageUrl = await this.uploadService.getPresignedUrl(`products/${product.imageName}`)
-
-            const itemObject = {
+        let subTotal = 0;
+        const products = await Promise.all(
+            orderItems.map(async (item) => {
+              const product = new ProductReponseDto(item.product);
+              product.imageUrl = await this.uploadService.getPresignedUrl(`products/${product.imageName}`);
+              subTotal += item.quantity * item.price
+              return {
                 name: item.name,
                 quantity: item.quantity,
                 price: item.price,
-                imageUrl: product.imageUrl
-            } 
-            products.push(itemObject)
-            subTotal += (item.price * item.quantity)
-        })
-
+                imageUrl: product.imageUrl,
+              };
+            })
+          );
+        
         return await this.mailerService.sendMail({
             to: payload.order.user.email,
             from: process.env.EMAIL_SENDER,
-            subject: "CLIXMART Password Reset",
+            subject: "CLIXMART - Successful Order",
             template: "orderSuccessful",
             context: {
                 order: payload.order,
-                products,
+                products: products,
                 createdAt: new Date(payload.order.createdAt).toDateString(),
-                subTotal
+                subTotal,
+                link: 'https:clixmart.com'
             }
         })
     }

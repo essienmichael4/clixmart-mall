@@ -14,9 +14,10 @@ import CreateProduct from './pages/Products/CreateProduct'
 import Product from './pages/Products/Product'
 import EditProduct from './pages/Products/EditProduct'
 import Orders from './pages/Orders/Orders'
-import Order from './pages/Orders/Order'
+// import Order from './pages/Orders/Order'
 import ForgotPassword from './pages/ForgotPassword/ForgotPassword'
 import PasswordReset from './pages/PasswordReset/PasswordReset'
+import OrderDetails from './pages/Orders/OrderDetails'
 
 function App() {
 
@@ -35,7 +36,7 @@ function App() {
             <Route path='/settings/:store' element={<Store />} />
             <Route path='/products/:store' element={<Products />} />
             <Route path='/orders/:store' element={<Orders />} />
-            <Route path='/orders/:store/:id' element={<Order />} />
+            <Route path='/orders/:store/:id' element={<OrderDetails />} />
             <Route path='/products/:store/:id' element={<Product />} />
             <Route path='/products/:store/:id/edit' element={<EditProduct />} />
             <Route path='/products/:store/:id/product-info' element={<CreateProduct />} />

@@ -11,4 +11,5 @@ export class SuccessfulOrderEventDto {
     @IsDefined()
     @IsString()
     order:Order
+
 }

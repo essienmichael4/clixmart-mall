@@ -11,10 +11,14 @@ export enum Status {
     PENDING = 'PENDING',
     SHIPPING = 'SHIPPING',
     SHIPPED = 'SHIPPED',
-    DELIVERED = 'DELIVERED'
+    DELIVERED = 'DELIVERED',
+    FAILED = 'FAILED',
+    CANCELLED = 'CANCELLED',
+    RETURNED = 'RETURNED'
 }
 
 export enum PaymentStatus {
+    PENDING = 'PENDING',
     PAID = 'PAID',
     UNPAID = 'UNPAID',
     CANCELLED = 'CANCELLED'

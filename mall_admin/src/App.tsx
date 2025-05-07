@@ -15,6 +15,7 @@ import Brand from './pages/Brand/Brand'
 import Products from './pages/Product/Products'
 import ProductDetails from './pages/Product/Product'
 import Orders from './pages/Order/Orders'
+import OrderDetails from './pages/Order/OrderDetails'
 
 function App() {
 
@@ -33,7 +34,7 @@ function App() {
             <Route path='/vendors' element={<Vendors />} />
             <Route path='/vendors/:id' element={<Vendor />} />
             <Route path='/orders' element={<Orders />} />
-            <Route path='/orders/:id' element={<Vendor />} />
+            <Route path='/orders/:id' element={<OrderDetails />} />
             <Route path='/users' element={<Users />} />
             <Route path='/users/:id' element={<UserProfile />} />
           </Route>

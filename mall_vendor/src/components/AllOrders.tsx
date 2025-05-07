@@ -9,19 +9,30 @@ import { Button } from './ui/button'
 
 interface FilterProps{
     filtering:string,
-    store?: string | undefined
+    store?: string | undefined,
+    status: "PENDING" | "SHIPPING" | "SHIPPED" | "DELIVERED" | "FAILED" | "CANCELLED" | "RETURNED" | undefined
 }
 
 const emptyData: any[]= []
 
-const AllOrders = ({ filtering, store }:FilterProps) => {
+const AllOrders = ({ filtering, store, status }:FilterProps) => {
     const axios_instance_token = useAxiosToken()
 
-    const stores = useQuery<Order[]>({
-        queryKey: ["orders"],
-        queryFn: async() => await axios_instance_token.get(`/orders/${store}`).then(res => {
+    const fetchOrders = async():Promise<Order[]> => {
+        const search = []
+        if(status && status !== undefined && status !== null) search.push(["status", status])
+        const params = new URLSearchParams(search).toString()
+        
+        const orders = await axios_instance_token.get(`/orders/stores/${store}?${params}`).then(res => {
             return res.data
         })
+
+        return orders
+    }
+
+    const stores = useQuery<Order[]>({
+        queryKey: ["orders", store, status],
+        queryFn: async() => fetchOrders()
     })
 
     const columns:ColumnDef<Order>[] =[{
@@ -30,8 +41,8 @@ const AllOrders = ({ filtering, store }:FilterProps) => {
         cell:({row}) => { 
             const productNames = row.original.orderItems.map(item => item.name)
             return <div>
-            <Link to={`./${row.original.id}`}>
-                <p>{productNames.toString()}</p>
+            <Link to={`./${row.original.orderId}`}>
+                <p className='capitalize'>{productNames.toString()}</p>
                 <p><span className='text-gray-400'>#</span>{row.original.id}</p>
             </Link>
         </div>}

@@ -2,9 +2,11 @@ import { useEffect } from 'react'
 import useAuth from './useAuth'
 import useRefreshToken from './useRefreshToken'
 import { axios_instance_token } from '@/api/axios'
+import { useNavigate } from 'react-router-dom'
 
 const useAxiosToken = () => {
     const {auth} =useAuth()
+    const navigate = useNavigate()
     const refresh = useRefreshToken()
 
     useEffect(()=>{
@@ -28,6 +30,9 @@ const useAxiosToken = () => {
                     const newAccessToken = await refresh()
                     previousRequest.headers['Authorization'] = `Bearer ${newAccessToken}`
                     return axios_instance_token(previousRequest)
+                }
+                if(error?.response?.status === 401 && previousRequest?.sent){
+                    navigate("../login")
                 }
                 return Promise.reject(error)
             }

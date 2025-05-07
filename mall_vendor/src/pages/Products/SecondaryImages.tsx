@@ -19,12 +19,8 @@ const SecondaryImages = ({ id, trigger}:Props) => {
     const axios_instance_token = useAxiosToken()
     const queryClient = useQueryClient()
 
-    const handleFilesChange = useCallback((value:File[] | undefined)=>{
-        let allFiles = images
-        value?.map(_e => {
-            allFiles?.push(_e)
-        })
-        setImages(allFiles)
+    const handleFilesChange = useCallback((value:(File & {preview:string})[] | undefined)=>{
+        setImages(value)
     }, [])
 
 

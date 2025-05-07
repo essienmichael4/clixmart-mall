@@ -29,6 +29,9 @@ export class User {
     @Column()
     name:string
 
+    @Column({nullable: true})
+    searchName:string
+    
     @Column({
         unique: true
     })

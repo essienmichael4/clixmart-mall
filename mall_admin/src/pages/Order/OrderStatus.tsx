@@ -4,17 +4,17 @@ import { useMutation, useQueryClient } from "@tanstack/react-query"
 import axios from "axios"
 import { toast } from "sonner"
 
-interface ProductApprovalProps{
-    approval:string,
+interface OrderStatusProps{
+    status:string,
     id: string
 }
 
-const ProductApproval = ({approval, id}:ProductApprovalProps) => {
+const OrderStatus = ({status, id}:OrderStatusProps) => {
     const queryClient = useQueryClient()
     const axios_instance_token = useAxiosToken()
 
     const editProductReviewStatus = async (data:string)=>{
-        const response = await axios_instance_token.patch(`/products/${id}/approval`, {
+        const response = await axios_instance_token.patch(`/orders/${id}/status`, {
             status: data
         },)
 
@@ -28,7 +28,7 @@ const ProductApproval = ({approval, id}:ProductApprovalProps) => {
                 id: "edit-status"
             })
 
-            queryClient.invalidateQueries({queryKey: ["product", id]})
+            queryClient.invalidateQueries({queryKey: ["orders", id]})
 
         },onError: (err:any) => {
             if (axios.isAxiosError(err)){
@@ -43,7 +43,7 @@ const ProductApproval = ({approval, id}:ProductApprovalProps) => {
         }
     })
 
-    const handleApprovalStatusChange = (data:string)=>{
+    const handleStatusChange = (data:string)=>{
         console.log(data);
         
         toast.loading("Editing status...", {
@@ -54,19 +54,24 @@ const ProductApproval = ({approval, id}:ProductApprovalProps) => {
 
     return (
         <div className="absolute right-4 top-2">
-            <p className="text-xs mb-1">Product Approval</p>
-            <Select onValueChange={(value)=>handleApprovalStatusChange(value)} disabled={isPending}>
+            <p className="text-xs mb-1">Order Status</p>
+            <Select onValueChange={(value)=>handleStatusChange(value)} disabled={isPending}>
                 <SelectTrigger className="w-[110px] text-sm">
-                    <SelectValue placeholder={approval} />
+                    <SelectValue placeholder={status} />
                 </SelectTrigger>
                 <SelectContent>
                     <SelectItem value="PENDING">PENDING</SelectItem>
-                    <SelectItem value="APPROVED">APPROVED</SelectItem>
-                    <SelectItem value="REJECTED">REJECTED</SelectItem>
+                    {/* <SelectItem value="APPROVED">APPROVED</SelectItem> */}
+                    <SelectItem value="DELIVERED">DELIVERED</SelectItem>
+                    <SelectItem value="SHIPPING">SHIPPING</SelectItem>
+                    <SelectItem value="SHIPPED">SHIPPED</SelectItem>
+                    <SelectItem value="RETURNED">RETURNED</SelectItem>
+                    <SelectItem value="FAILED">FAILED</SelectItem>
+                    <SelectItem value="CANCELLED">CANCELLED</SelectItem>
                 </SelectContent>
             </Select>
         </div>
     )
 }
 
-export default ProductApproval
+export default OrderStatus

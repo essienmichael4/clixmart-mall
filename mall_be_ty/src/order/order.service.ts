@@ -15,6 +15,10 @@ import { UserMonthHistory } from 'src/product/entities/UserMonthHistory.entity';
 import { UserYearHistory } from 'src/product/entities/UserYearHistory.entity';
 import { GetDay, GetMonth, GetYear } from 'src/helpers/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
+import { OrderReponseDto } from './dto/response.dto';
+import { UploadService } from 'src/upload/upload.service';
+import { OrderFilterDto } from './dto/request.dto';
+import { ProductReponseDto } from 'src/product/dto/response.dto';
 
 @Injectable()
 export class OrderService {
@@ -28,6 +32,7 @@ export class OrderService {
     @InjectRepository(UserMonthHistory) private readonly userMonthHistoryRepo:Repository<UserMonthHistory>,
     @InjectRepository(UserYearHistory) private readonly userYearHistoryRepo:Repository<UserYearHistory>,
     private readonly dataSource:DataSource,
+    private readonly uploadService: UploadService,
     private eventEmitter:EventEmitter2
   ){}
 
@@ -89,7 +94,24 @@ export class OrderService {
       await this.upsertUserYearHistoryOrder(user.id, queryRunner)
       await this.upsertUserMonthHistoryOrder(user.id, queryRunner)
       await queryRunner.commitTransaction()
-      this.eventEmitter.emit("order.created", {order})
+      const items = order.orderItems
+        let products = []
+        items.map(async (item)=>{
+            const product = new ProductReponseDto(item.product)
+            product.imageUrl = await this.uploadService.getPresignedUrl(`products/${product.imageName}`)
+
+            const itemObject = {
+                name: item.name,
+                quantity: item.quantity,
+                price: item.price,
+                imageUrl: product.imageUrl
+            }
+          
+          products = [...products, itemObject]
+      })
+
+
+      this.eventEmitter.emit("order.created", {order, products})
       return order
     }catch(err){
       await queryRunner.rollbackTransaction()
@@ -105,23 +127,30 @@ export class OrderService {
     })
   }
 
-  findAll() {
+  findAll(orderFilterDto:OrderFilterDto) {
+    const {status} = orderFilterDto
     return this.orderRepo.find({
       relations: {
           orderItems: true
+      },
+      where: {
+        ...(status && { status:  status}),
       }
     })
   }
 
-  findAllStoreOrders(store: string) {
+  findAllStoreOrders(store: string, orderFilterDto:OrderFilterDto) {
+    const {status} = orderFilterDto
     return this.orderRepo.find({
       relations: {
-          orderItems: {
-            product: {
-              store: true
-            }
+        user: true,
+        orderItems: {
+          product: {
+            store: true
           }
+        }
       }, where: {
+        ...(status && { status:  status}),
         orderItems: {
           product: {
             store: {
@@ -136,11 +165,15 @@ export class OrderService {
   findStoreOrderItem(store: string, orderId:string) {
     return this.orderRepo.findOne({
       relations: {
-          orderItems: {
-            product: {
-              store: true
-            }
+        user: true,
+        orderItems: {
+          product: {
+            store: true,
+            category: true,
+            subCategory: true,
+            brand: true
           }
+        }
       }, where: {
         orderId,
         orderItems: {
@@ -154,14 +187,17 @@ export class OrderService {
     })
   }
 
-  findOne(id: string) {
-    return this.orderRepo.findOne({
+  async findOne(id: string) {
+     const order = await this.orderRepo.findOne({
       where: {
         orderId: id
       },
       relations:{
         orderItems: {
           product: {
+            category: true,
+            brand: true,
+            subCategory: true,
             store: {
               user: true,
               storeAddress: true,
@@ -173,6 +209,17 @@ export class OrderService {
         user: true
       }
     });
+
+    const orderResponse = new OrderReponseDto(order)
+    
+    orderResponse.orderItems.map(async(item)=> {
+      if(item.product.imageName){
+        item.product.imageUrl = await this.uploadService.getPresignedUrl(`products/${item.product.imageName}`)
+      }
+      return item
+    })
+
+    return orderResponse
   }
 
   update(id: number, updateOrderDto: UpdateOrderDto) {

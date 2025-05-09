@@ -1,6 +1,7 @@
 import shopping from "../../assets/pexels-n-voitkevich-6214476.jpg"
 import logo from "../../assets/logo.png"
 import RegisterForm from "@/components/RegisterForm"
+import { Link } from "react-router-dom"
 
 const Register = () => {
   return (
@@ -9,7 +10,7 @@ const Register = () => {
             <div className="bg-blue-700 py-8 w-full mb-8 flex justify-center items-start text-white md:hidden">
                 <div className="px-4 w-full sm:w-3/4">
                     <div className="w-16 h-16 mb-6  md:hidden">
-                        <img src={logo} alt="logo" />
+                        <Link to={'../'}><img src={logo} alt="logo" /></Link>
                     </div>
                     <div className="md:hidden">
                         <h2 className="text-4xl mb-2">Sign up</h2>

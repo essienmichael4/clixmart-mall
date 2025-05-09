@@ -1,6 +1,7 @@
 import shopping from "../../assets/pexels-kindelmedia-7007188.jpg"
 import LoginForm from "@/components/LoginForm"
 import logo from "../../assets/logo.png"
+import { Link } from "react-router-dom"
 
 const Login = () => {
   return (
@@ -20,7 +21,7 @@ const Login = () => {
             <div className="flex justify-center items-start w-full lg:w-[50%]">
                 <div className="px-4 w-full sm:w-3/4">
                     <div className="w-16 h-16 mb-6 hidden md:block">
-                        <img src={logo} alt="logo" />
+                        <Link to={'../'}><img src={logo} alt="logo" /></Link>
                     </div>
                     <div className="hidden md:block">
                         <h2 className="font-bold text-4xl mb-2">Sign in</h2>

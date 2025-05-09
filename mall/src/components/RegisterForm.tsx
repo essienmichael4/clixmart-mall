@@ -17,7 +17,7 @@ const RegisterForm = () => {
     const [isPending, setIsPending] = useState(false)
     const navigate = useNavigate()
     const location = useLocation()
-    const from = location.state?.from?.pathname || '/'
+    const from = location.state?.from?.pathname || '/wizard'
     
     const form = useForm<RegisterSchemaType>({
         resolver: zodResolver(RegisterSchema),
@@ -32,7 +32,7 @@ const RegisterForm = () => {
     const onSubmit = async (data:RegisterSchemaType) =>{
         try{
             setIsPending(true)
-            toast.loading("Logging in...", {
+            toast.loading("Signing Up...", {
                 id: "login"
             })
 

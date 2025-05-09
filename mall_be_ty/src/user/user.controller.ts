@@ -1,6 +1,6 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, UsePipes, ValidationPipe, HttpCode, HttpStatus, ParseIntPipe, UnauthorizedException, UseGuards } from '@nestjs/common';
 import { UserService } from './user.service';
-import { CreateUserDto, FindUsersDto } from './dto/create-user.dto';
+import { AddressDto, CreateUserDto, FindUsersDto } from './dto/create-user.dto';
 import { UpdateUserDto, UpdateUserPasswordRequest, UpdateUserRequest } from './dto/update-user.dto';
 import { ApiConsumes, ApiCreatedResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { UserResponseDto } from './dto/userResponse.dto';
@@ -27,6 +27,17 @@ export class UserController {
     return this.userService.create(createUserDto);
   }
 
+  @UseGuards(JwtGuard)
+  @HttpCode(HttpStatus.OK)
+  @ApiCreatedResponse({type: UserResponseDto, description: "User address updated successfully"})
+  @ApiOkResponse({type: UserResponseDto, description: "User address updated successfully"})
+  @ApiOperation({description: "Add user address api"})
+  @ApiConsumes("application/json")
+  @Post(":id/address")
+  addAddress(@Body() addressDto: AddressDto, @User() user:UserInfo) {
+    return this.userService.addAddress(user.sub.id, addressDto);
+  }
+
   @Get()
   findAll() {
     return this.userService.findAll();
@@ -37,7 +48,7 @@ export class UserController {
   @ApiOkResponse({type: UserResponseDto, description: ""})
   @ApiOperation({description: "Find users based on props"})
   @ApiConsumes("application/json")
-  @Post()
+  @Get()
   findUsers(@Body() filters: FindUsersDto) {
     return this.userService.findUsersByFilters(filters);
   }
@@ -51,8 +62,9 @@ export class UserController {
     return this.userService.findOne(+id);
   }
 
+  @UseGuards(JwtGuard)
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserRequest) {
+  update(@Param('id', ParseIntPipe) id: number, @Body() updateUserDto: UpdateUserRequest, @User() user:UserInfo) {
     return this.userService.update(+id, updateUserDto);
   }
 

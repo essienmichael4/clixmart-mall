@@ -1,4 +1,4 @@
-import { Column, Entity, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import { User } from "./user.entity";
 
 @Entity({name: "address"})
@@ -19,7 +19,10 @@ export class Address {
     city:string
 
     @Column()
-    addressLine:string
+    addressLineOne:string
+
+    @Column({nullable:true})
+    addressLineTwo:string
 
     @Column()
     zip:string
@@ -27,6 +30,7 @@ export class Address {
     @Column({nullable:true})
     landmark:string
 
-    @OneToOne(()=> User, (user)=> user.address)
+    @ManyToOne(()=> User, (user)=> user.address)
+    @JoinColumn({ name: 'user' })
     user: User
 }

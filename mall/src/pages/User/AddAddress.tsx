@@ -1,164 +1,269 @@
-import { Dialog, DialogTitle, DialogClose, DialogContent, DialogFooter, DialogHeader, DialogTrigger } from '@/components/ui/dialog'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
-import { Form, FormControl, FormField, FormItem, FormLabel } from '@/components/ui/form'
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
-import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { useMutation } from '@tanstack/react-query'
 import { toast } from 'sonner'
 import axios from 'axios'
 import { Loader2 } from 'lucide-react'
 import useAxiosToken from '@/hooks/useAxiosToken'
-import { useState } from 'react'
-import { Textarea } from '@/components/ui/textarea'
-import { AddAddressSchemaType , AddAddressSchema} from '@/schema/address'
+import { useEffect, useState } from 'react'
+import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card'
+import CityPicker from '@/components/CityPicker'
+import CountryPicker from '@/components/CountryPicker'
+import StatePicker from '@/components/StatePicker'
+import {City, Country, ICity, ICountry, IState, State} from "country-state-city"
+import { AddressSchema, AddressSchemaType } from '@/schema/user'
 
-interface Props{
-    trigger?: React.ReactNode,
+interface Props {
+    id: number| undefined,
+    formStep:number,
+    setFormStep: (value:number)=> void
 }
 
-const AddAddress = ({trigger}:Props) => {
-    const [open, setOpen] = useState(false)
+const AddAddress = ({id, formStep, setFormStep}:Props) => {
     const axios_instance_token = useAxiosToken()
-    const queryClient = useQueryClient()
+    const countryData = Country.getAllCountries()
+    const [stateData, setStateData] = useState<IState[]>()
+    const [addressLineTwo, setAddressLineTwo] = useState("")
+    const [citiesData, setCitiesData] = useState<ICity[]>()
 
-    const form = useForm<AddAddressSchemaType>({
-        resolver:zodResolver(AddAddressSchema),
+    const [country, setCountry] = useState(countryData[0])
+    const [state, setState] = useState<IState | undefined>()
+    const [city, setCity] = useState<ICity>()
+
+    useEffect(()=>{
+        setState(undefined)
+        setCity(undefined)
+        form.setValue("state", "")
+        form.setValue("city", "")
+        country && setStateData(State.getStatesOfCountry(country?.isoCode))
+    }, [country])
+
+    useEffect(()=>{
+        setCity(undefined)
+        form.setValue("city", "")
+        state ? setCitiesData(City.getCitiesOfState(country?.isoCode, state!.isoCode)) : setCitiesData(City.getCitiesOfCountry(country?.isoCode))
+    }, [state])
+
+    useEffect(()=>{
+        stateData && setState(stateData[0])
+    }, [stateData])
+
+    useEffect(()=>{
+        citiesData && setCity(citiesData[0])
+    }, [citiesData])
+
+    const form = useForm({
+        resolver: zodResolver(AddressSchema),
         defaultValues:{
-            name: "",
-            contact: "",
-            mobile: "",
-            address: "",
+            country: "",
+            state: "",
+            city: "",
+            addressLineOne: "",
+            // addressLineTwo: "",
+            landmark: "",
+            zip: ""
         }
     })
 
-    const addAddress = async (data:AddAddressSchemaType)=>{
-        const response = await axios_instance_token.post(`/address`, {
-            ...data
+    const handleCountryChange = (value:ICountry)=>{
+        setCountry(value)
+        form.setValue("country", value.name)
+    }
+
+    const handleStateChange = (value:IState)=>{
+        setState(value)
+        form.setValue("state", value.name)
+    }
+
+    const handleCityChange = (value:ICity)=>{
+        setCity(value)
+        form.setValue("city", value.name)
+    }
+
+    const addStoreAddress = async (data:AddressSchemaType)=>{
+        const response = await axios_instance_token.post(`/users/${id}/address`, {
+            ...data,
+            addressLineTwo
         },)
 
         return response.data
     }
 
     const {mutate, isPending} = useMutation({
-        mutationFn: addAddress,
-        onSuccess: ()=>{
-            toast.success("Address added successfully", {
-                id: "add-address"
+        mutationFn: addStoreAddress,
+        onSuccess: (data)=>{
+            toast.success("Store address added successfully", {
+                id: "create-store"
             })
-
-            queryClient.invalidateQueries({queryKey: ["address"]})
 
             form.reset({
-                name: "",
-                contact: "",
-                mobile: "",
-                address: "",
+                country: data.country,
+                state: data.state,
+                landmark: data.landmark,
+                addressLineOne: data.addressLineOne,
+                // addressLineTwo: data.addressLineTwo,
+                city: data.city,
+                zip: data.zip
             })
 
-            setOpen(prev => !prev)
+            setFormStep(formStep+1)
         },onError: (err:any) => {
             if (axios.isAxiosError(err)){
                 toast.error(err?.response?.data?.message, {
-                    id: "add-address"
+                    id: "create-store"
                 })
             }else{
                 toast.error(`Something went wrong`, {
-                    id: "add-address"
+                    id: "create-store"
                 })
             }
         }
     })
-
-    const onSubmit = (data:AddAddressSchemaType)=>{
-        toast.loading("Adding address...", {
-            id: "add-address"
+    
+    const onSubmit = async (data:AddressSchemaType) =>{
+        toast.loading("Updating store address...", {
+            id: "create-store"
         })
         mutate(data)
     }
 
     return (
-        <Dialog open={open} onOpenChange={setOpen}>
-            <DialogTrigger asChild>{trigger}</DialogTrigger>
-            <DialogContent className='w-[90%] mx-auto rounded-2xl'>
-                <DialogHeader className='items-start'>
-                    <DialogTitle>
-                        Add Address
-                    </DialogTitle>
-                </DialogHeader>
-                <Form {...form}>
-                    <form className='space-y-2'>
-                        <FormField
+        <Card className='w-full md:w-[80%]'>
+            <CardHeader >
+                <CardTitle className='text-2xl'>Address</CardTitle>
+                <CardDescription>Set your default address for shipping and billing.</CardDescription>
+            </CardHeader>
+            <CardContent  className='w-full'>
+            <Form {...form}>
+                <form className='md:w-full' onSubmit={form.handleSubmit(onSubmit)}>
+                    <div className="flex gap-2 flex-wrap flex-col sm:flex-row">
+                        <FormField 
                             control={form.control}
-                            name="name"
-                            render={({field}) =>(
-                                <FormItem className='flex-1'>
-                                    <FormLabel className='text-xs'>Warehouse Name</FormLabel>
+                            name="country"
+                            render={({}) =>(
+                                <FormItem className='flex flex-1 flex-col mb-2 gap-1'>
+                                    <FormLabel className='text-xs lg:text-sm font-semibold'>Country</FormLabel>
                                     <FormControl>
-                                        <Input {...field} />
+                                        <CountryPicker data={countryData} selected={country} onChange={handleCountryChange}/>
                                     </FormControl>
+                                    {/* <FormDescription>National ID card number for identification.</FormDescription> */}
                                 </FormItem>
-                            )} 
-                        />
-
-                        <FormField
-                            control={form.control}
-                            name="contact"
-                            render={({field}) =>(
-                                <FormItem className='flex-1'>
-                                    <FormLabel className='text-xs'>Warehouse Contact</FormLabel>
-                                    <FormControl>
-                                        <Input {...field} />
-                                    </FormControl>
-                                </FormItem>
-                            )} 
-                        />
-                        <FormField
-                            control={form.control}
-                            name="mobile"
-                            render={({field}) =>(
-                                <FormItem className='flex-1'>
-                                    <FormLabel className='text-xs'>Warehouse Mobile</FormLabel>
-                                    <FormControl>
-                                        <Input {...field} />
-                                    </FormControl>
-                                </FormItem>
-                            )} 
+                            )}
                         />
 
                         <FormField 
                             control={form.control}
-                            name="address"
-                            render={({field}) =>(
-                                <FormItem>
-                                    <FormLabel className='text-xs'>Address</FormLabel>
+                            name="state"
+                            render={({}) =>(
+                                <FormItem className='flex flex-1 flex-col mb-2 gap-1'>
+                                    <FormLabel className='text-xs lg:text-sm font-semibold'>State/Region</FormLabel>
                                     <FormControl>
-                                        <Textarea {...field} />
+                                        <StatePicker data={stateData} selected={state} onChange={handleStateChange}/>
                                     </FormControl>
+                                    {/* <FormDescription>National ID card number for identification.</FormDescription> */}
                                 </FormItem>
+                            )}
+                        />
+                    </div>
+
+                    <div className="flex gap-2 flex-wrap flex-col sm:flex-row">
+                        <FormField 
+                            control={form.control}
+                            name="city"
+                            render={({}) =>(
+                                <FormItem className='flex flex-1 flex-col mb-2 gap-1'>
+                                    <FormLabel className='text-xs lg:text-sm font-semibold'>City</FormLabel>
+                                    <FormControl>
+                                        <CityPicker data={citiesData} selected={city} onChange={handleCityChange} />
+                                    </FormControl>
+                                    {/* <FormDescription>National ID card number for identification.</FormDescription> */}
+                                </FormItem>
+                            )}
+                        />
+
+                        <FormField 
+                            control={form.control}
+                            name="addressLineOne"
+                            render={({field}) =>(
+                                <FormItem className='flex flex-1 flex-col mb-2 gap-1'>
+                                <FormLabel className='text-xs lg:text-sm font-semibold'>Address Line One</FormLabel>
+                                <FormControl>
+                                <Input 
+                                    className='px-2 py-3 text-sm rounded border border-gray-200 w-full' 
+                                    placeholder='Please enter your street address' {...field} />
+                                </FormControl>
+                                <FormDescription>Address line or street address of location</FormDescription>
+                            </FormItem>
                             )} 
                         />
-                    </form>
-                </Form>
-                <DialogFooter >
-                    <DialogClose asChild>
-                        <Button 
-                            type='button'
-                            variant={"secondary"}
-                            onClick={()=>{
-                                form.reset()
-                            }} >
-                                Cancel
-                        </Button>
-                    </DialogClose>
-                    <Button onClick={form.handleSubmit(onSubmit)} disabled={isPending} className='bg-gradient-to-r from-blue-500 to-blue-800 text-white py-2'
+                    </div>
+                    <div className="flex gap-2 flex-wrap flex-col sm:flex-row">
+                        <FormField 
+                            // control={form.control}
+                            name="addressLineTwo"
+                            render={({}) =>(
+                                <FormItem className='flex flex-1 flex-col mb-2 gap-1'>
+                                <FormLabel className='text-xs lg:text-sm font-semibold'>Address Line Two</FormLabel>
+                                {/* <FormControl> */}
+                                <Input 
+                                    className='px-2 py-3 text-sm rounded border border-gray-200 w-full' 
+                                    placeholder='Please enter your street address' onChange={e=> setAddressLineTwo(e.target.value)}/>
+                                {/* </FormControl> */}
+                                <FormDescription>Address line or street address of location</FormDescription>
+                            </FormItem>
+                            )} 
+                        />
+                        <FormField 
+                            control={form.control}
+                            name="landmark"
+                            render={({field}) =>(
+                                <FormItem className='flex flex-1 flex-col mb-2 gap-1'>
+                                    <FormLabel className='text-xs lg:text-sm font-semibold'>Landmark</FormLabel>
+                                    <FormControl>
+                                        <Input 
+                                            className='px-2 py-3 text-sm rounded border border-gray-200 w-full' 
+                                            placeholder='Please enter the nearest landmark to your location' {...field} />
+                                    </FormControl>
+                                    <FormDescription>Nearest landmark.</FormDescription>
+                                </FormItem>
+                            )}
+                        />
+
+                    </div>
+                    <FormField 
+                        control={form.control}
+                        name="zip"
+                        render={({field}) =>(
+                            <FormItem className='flex flex-1 flex-col mb-2 gap-1'>
+                                <FormLabel className='text-xs lg:text-sm font-semibold'>Zip code</FormLabel>
+                                <FormControl>
+                                    <Input 
+                                        className='px-2 py-3 text-sm rounded border border-gray-200 w-full' 
+                                        placeholder='Zip code' {...field} />
+                                </FormControl>
+                                <FormDescription>Enter 0000 if you're unsure of your zip code.</FormDescription>
+                            </FormItem>
+                        )}
+                    />
+                        
+                </form>
+            </Form> 
+            <div className="mt-4 flex gap-4">
+                <Button onClick={()=>setFormStep(formStep - 1)} disabled={isPending} className='bg-black/80 text-white'
                     >
-                        {!isPending && "Add Address"}
-                        {isPending && <Loader2 className='animate-spin' /> }
-                    </Button>
-                </DialogFooter>
-            </DialogContent>
-        </Dialog>
+                    Back
+                </Button>
+                <Button onClick={form.handleSubmit(onSubmit)} disabled={isPending} className='bg-gradient-to-r from-blue-500 to-blue-800 text-white'
+                >
+                    {!isPending && "I'm done! Browse products"}
+                    {isPending && <Loader2 className='animate-spin' /> }
+                </Button>
+            </div>
+            </CardContent>
+        </Card>
     )
 }
 

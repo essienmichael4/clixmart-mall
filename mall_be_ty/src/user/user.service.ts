@@ -1,5 +1,5 @@
 import { HttpException, Injectable } from '@nestjs/common';
-import { CreateUserDto, FindUsersDto } from './dto/create-user.dto';
+import { AddressDto, CreateUserDto, FindUsersDto } from './dto/create-user.dto';
 import { UpdateUserDto, UpdateUserPasswordRequest, UpdateUserRequest } from './dto/update-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
@@ -9,11 +9,13 @@ import { v4 } from 'uuid';
 import { GetDay, GetMonth, GetYear } from 'src/helpers/common';
 import { MonthHistory } from 'src/product/entities/MonthHistory.entity';
 import { YearHistory } from 'src/product/entities/YearHistory.entity';
+import { Address } from './entities/address.entity';
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectRepository(User) private readonly userRepo:Repository<User>,
+    @InjectRepository(Address) private readonly addressRepo:Repository<Address>,
     @InjectRepository(MonthHistory) private readonly monthHistoryRepo:Repository<MonthHistory>,
     @InjectRepository(YearHistory) private readonly yearHistoryRepo:Repository<YearHistory>,
     private readonly dataSource:DataSource
@@ -54,6 +56,37 @@ export class UserService {
     return await queryRunner.manager.save(User, {
       ...payload
     })
+  }
+
+  async addAddress(id:number, addressDto:AddressDto){
+    try{
+      const user = await this.userRepo.findOne({
+        where: {
+         id
+        }
+      })
+      const addressEntity = this.addressRepo.create()
+
+      const saveEntity = {
+        ...addressEntity,
+        addressId: v4(),
+        country: addressDto.country,
+        state: addressDto.state,
+        city: addressDto.city,
+        zip: addressDto.zip,
+        addressLineOne: addressDto.addressLineOne,
+        addressLineTwo: addressDto.addressLineTwo,
+        landmark: addressDto.landmark,
+        user
+      }
+      console.log(saveEntity)
+
+      const address = await this.addressRepo.save(saveEntity) 
+
+      return address
+    }catch(err){
+      throw err
+    }
   }
 
   findAll() {

@@ -17,8 +17,8 @@ export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @HttpCode(HttpStatus.CREATED)
-  @ApiCreatedResponse({type: UserAuthReponse, description: "User created successfully"})
-  @ApiOkResponse({type: UserAuthReponse, description: "User created successfully"})
+  @ApiCreatedResponse({type: LoginReponse, description: "User created successfully"})
+  @ApiOkResponse({type: LoginReponse, description: "User created successfully"})
   @ApiOperation({description: "Register user api"})
   @ApiConsumes("application/json")
   @Post("signup")

@@ -16,7 +16,7 @@ const ProductCard = React.forwardRef(({product, ref }: ProductProps,  ) => {
     
     const productBody = (
         <>
-            <Link to={`products/${product.productId}`} className='border p-2 block overflow-hidden rounded-md'>
+            <Link to={`../products/${product.productId}`} className='border p-2 block overflow-hidden rounded-md'>
                 <div className='relative'>
                     <div className='aspect-square relative rounded-md overflow-hidden border'>
                         <img src={product.imageUrl} alt="" />

@@ -104,7 +104,7 @@ const LoginForm = () => {
                     <div className='flex gap-2 mb-3 mt-2'>
                         <p className='text-gray-400 text-xs 2xl:text-sm'>Don't have an account?</p>
                         
-                        <Link to={"../register"} className='text-xs 2xl:text-sm text-blue-700'>Register</Link>
+                        <Link to={"../register"} state={from} className='text-xs 2xl:text-sm text-blue-700'>Register</Link>
                     </div>
                 </form>
             </Form>

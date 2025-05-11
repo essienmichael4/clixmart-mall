@@ -12,7 +12,7 @@ import { useState } from "react"
 import { toast } from "sonner"
 
 const Cart = () => {
-    const {cartItems, getTotalCost} = useCart()
+    const {cartItems, getTotalCost, emptyCart} = useCart()
     const [isPending, setIsPending] = useState(false)
     const axios_instance_token = useAxiosToken()
     // const [products, setProducts] = useState<Product[]>([])
@@ -35,6 +35,7 @@ const Cart = () => {
             console.log(response.data);
             
             setIsPending(false)
+            emptyCart()
             toast.success("Order placed successfully...", {
                 id: "order"
             })

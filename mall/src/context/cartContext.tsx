@@ -15,6 +15,7 @@ type ShoppingCartContextType = {
     decreaseCartQuantity: (id:string) => void,
     removeFromCart: (id:string) => void,
     getTotalCost: ()=> number,
+    emptyCart: () => void,
     cartQuantity: number,
     cartItemsCount: number,
     cartItems: CartItem[]
@@ -87,8 +88,12 @@ export const ShoppingCartProvider = ({children}: {children: React.ReactNode}) =>
         })
     }
 
+    function emptyCart(){
+        setCartItems([])
+    }
+
     return <ShoppingCartContext.Provider value={{
-        getItemQuantity, increaseCartQuanity, decreaseCartQuantity, removeFromCart, getTotalCost, cartItems, cartQuantity, cartItemsCount
+        getItemQuantity, increaseCartQuanity, decreaseCartQuantity, removeFromCart, getTotalCost, emptyCart, cartItems, cartQuantity, cartItemsCount
     }}>
         {children}
     </ShoppingCartContext.Provider>

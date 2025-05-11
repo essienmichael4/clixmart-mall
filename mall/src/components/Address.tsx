@@ -1,7 +1,6 @@
 import { useForm } from "react-hook-form"
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel  } from "./ui/form"
 import { Input } from "./ui/input"
-import { StoreAddressSchema, StoreAddressSchemaType } from "@/schema/store"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Button } from "./ui/button"
 import { toast } from "sonner"
@@ -10,14 +9,14 @@ import { useMutation } from "@tanstack/react-query"
 import useAxiosToken from "@/hooks/useAxiosToken"
 import { Loader2 } from "lucide-react"
 import { useEffect, useState } from "react"
-import PhoneInput from 'react-phone-input-2'
 import "react-phone-input-2/lib/style.css"
 import {City, Country, ICity, ICountry, IState, State} from "country-state-city"
 import CountryPicker from "./CountryPicker"
-import StatePicker from "./StatePicker"
 import CityPicker from "./CityPicker"
 import { Separator } from "./ui/separator"
 import { Store } from "@/lib/types"
+import StatePicker from "./StatePicker"
+import { AddressSchema, AddressSchemaType } from "@/schema/user"
 
 interface Props {
     store:Store | undefined,
@@ -25,13 +24,12 @@ interface Props {
     setFormStep: (value:number)=> void
 }
 
-const StoreAddress = ({store, formStep, setFormStep}:Props) => {
+const Address = ({store, formStep, setFormStep}:Props) => {
     const axios_instance_token = useAxiosToken()
     const countryData = Country.getAllCountries()
     const [stateData, setStateData] = useState<IState[]>()
     const [citiesData, setCitiesData] = useState<ICity[]>()
 
-    const [phone, setPhone] = useState("")
     const [country, setCountry] = useState(countryData[0])
     const [state, setState] = useState<IState | undefined>()
     const [city, setCity] = useState<ICity>()
@@ -59,18 +57,20 @@ const StoreAddress = ({store, formStep, setFormStep}:Props) => {
     }, [citiesData])
 
     const form = useForm({
-        resolver: zodResolver(StoreAddressSchema),
+        resolver: zodResolver(AddressSchema),
         defaultValues:{
-            fullname: "",
-            phone: "",
             country: "",
             state: "",
             city: "",
-            addressLine: "",
+            addressLineOne: "",
             landmark: "",
             zip: ""
         }
     })
+
+    // const handleInputChange = (value:number)=>{
+    //     form.setValue("zip", value)
+    // }
 
     const handleCountryChange = (value:ICountry)=>{
         setCountry(value)
@@ -87,13 +87,15 @@ const StoreAddress = ({store, formStep, setFormStep}:Props) => {
         form.setValue("city", value.name)
     }
 
-    const addStoreAddress = async (data:StoreAddressSchemaType)=>{
-        const response = await axios_instance_token.post(`/stores/${store?.id}/store-address`, {
-            ...data
-        },)
 
-        return response.data
-    }
+
+    const addStoreAddress = async (data:AddressSchemaType)=>{
+            const response = await axios_instance_token.post(`/stores/${store?.id}/store-address`, {
+                ...data
+            },)
+    
+            return response.data
+        }
 
     const {mutate, isPending} = useMutation({
         mutationFn: addStoreAddress,
@@ -105,10 +107,8 @@ const StoreAddress = ({store, formStep, setFormStep}:Props) => {
             form.reset({
                 country: data.country,
                 state: data.state,
-                fullname: data.name,
-                phone: data.phone,
                 landmark: data.landmark,
-                addressLine: data.addressLine,
+                addressLineOne: data.addressLineOne,
                 city: data.city,
                 zip: data.zip
             })
@@ -127,7 +127,7 @@ const StoreAddress = ({store, formStep, setFormStep}:Props) => {
         }
     })
     
-    const onSubmit = async (data:StoreAddressSchemaType) =>{
+    const onSubmit = async (data:AddressSchemaType) =>{
         toast.loading("Updating store address...", {
             id: "create-store"
         })
@@ -140,7 +140,7 @@ const StoreAddress = ({store, formStep, setFormStep}:Props) => {
             <Separator />
             <Form {...form}>
                 <form className='md:w-full  mt-4' onSubmit={form.handleSubmit(onSubmit)}>
-                    <div className="flex gap-2 flex-wrap flex-col sm:flex-row">
+                    {/* <div className="flex gap-2 flex-wrap flex-col sm:flex-row">
                         <FormField 
                             control={form.control}
                             name="fullname"
@@ -152,7 +152,6 @@ const StoreAddress = ({store, formStep, setFormStep}:Props) => {
                                             className='px-2 py-3 text-sm rounded border border-gray-200 w-full' 
                                             placeholder='Please enter your name' {...field} />
                                     </FormControl>
-                                    {/* <FormDescription>National ID card number for identification.</FormDescription> */}
                                 </FormItem>
                             )}
                         />
@@ -180,7 +179,7 @@ const StoreAddress = ({store, formStep, setFormStep}:Props) => {
                             )}
                         />
 
-                    </div>
+                    </div> */}
 
                     <div className="flex gap-2 flex-wrap flex-col sm:flex-row">
                         <FormField 
@@ -229,7 +228,7 @@ const StoreAddress = ({store, formStep, setFormStep}:Props) => {
 
                         <FormField 
                             control={form.control}
-                            name="addressLine"
+                            name="addressLineOne"
                             render={({field}) =>(
                                 <FormItem className='flex flex-1 flex-col mb-4 gap-1'>
                                 <FormLabel className='text-xs lg:text-sm font-semibold'>Street Address</FormLabel>
@@ -294,4 +293,4 @@ const StoreAddress = ({store, formStep, setFormStep}:Props) => {
     )
 }
 
-export default StoreAddress
+export default Address

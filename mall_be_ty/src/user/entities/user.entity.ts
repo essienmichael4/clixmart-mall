@@ -61,9 +61,9 @@ export class User {
     @JoinColumn()
     profileImage: ProfileImage
     
-    @OneToOne(()=> Address, (address)=> address.user, {cascade: true})
-    @JoinColumn()
-    address: Address
+    @OneToMany(()=> Address, (address)=> address.user, {cascade: true})
+    // @JoinColumn()
+    address: Address[]
 
     @OneToMany(() => Store, (storeEntity) => storeEntity.user, {cascade: true})
     stores: Store[];

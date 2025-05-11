@@ -42,8 +42,36 @@ export const UserPasswordUpdateSchema = z.object({
     }
   });
 
+  export const AddressSchema = z.object({
+    country: z.string({
+        message: "Must be a valid country."
+    }),
+    state: z.string({
+        message: "Must be a valid state."
+    }).optional().or(z.literal('')),
+    city: z.string({
+        message: "Must be a valid city."
+    }).optional().or(z.literal('')),
+    addressLineOne: z.string({
+        message: "Must be a valid street address."
+    }),
+    landmark: z.string({
+        message: "Must be a valid landmark."
+    }),
+    zip: z.string({
+        message: "Must be a valid zip code."
+    }).optional().or(z.literal('')),
+})
+
+
+export const ContactSchema = z.object({
+    phone: z.string({
+        message: "Must be a valid phone number."
+    }),
+})
+
 export type UserUpdateSchemaType = z.infer<typeof UserUpdateSchema>
 export type UserPasswordUpdateSchemaType = z.infer<typeof UserPasswordUpdateSchema>
-
-
 export type RegisterUserSchemaType = z.infer<typeof RegisterUserSchema>
+export type AddressSchemaType = z.infer<typeof AddressSchema>
+export type ContactSchemaType = z.infer<typeof ContactSchema>

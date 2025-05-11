@@ -11,7 +11,7 @@ export class UpdateUserRequest {
     @IsOptional()
     name:string 
 
-    @IsEmail()
+    @IsString()
     @IsOptional()
     phone:string
 }

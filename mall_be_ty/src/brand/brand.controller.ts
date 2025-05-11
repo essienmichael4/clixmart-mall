@@ -48,6 +48,7 @@ export class BrandController {
     if( brand.url ){
       await this.uploadService.deleteBrandImage(brand.url)
     }
+    
     const buffer = file.buffer
     const filename = `${uuid()}-${file.originalname.replace(/\s+/g,'')}`
     const upload = await this.uploadService.addBrandImage(buffer, filename) 

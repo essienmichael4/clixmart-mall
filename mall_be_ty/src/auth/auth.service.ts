@@ -40,7 +40,22 @@ export class AuthService {
       const newUser = await this.userService.create(userSignUpDto)
       const user = new UserAuthReponse(newUser)
 
-      return user
+      const payload = {
+        username: user.email,
+        sub: {
+            id: user.id,
+            name: user.name,
+            role: user.role
+        }
+      }
+
+      return new LoginReponse({
+        ...user, 
+        backendTokens: {
+          accessToken: await this.signAuthPayload(payload), 
+          refreshToken: await this.signRefreshPayload(payload)
+        }
+      })
     }catch(err){
       throw err
     }

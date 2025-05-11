@@ -8,17 +8,19 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import axios from 'axios'
-import { Loader2 } from 'lucide-react'
+import { CircleOff, Loader2 } from 'lucide-react'
 import { EditCategorySchema, EditCategorySchemaType } from '@/schema/category'
 import { Input } from '@/components/ui/input'
+import CategoryImageDialog from './CategoryImageDialog'
 
 interface Props{
     trigger?: React.ReactNode,
     id:number,
-    name:string
+    name:string,
+    imageUrl?: string
 }
 
-const EditCategory = ({id, name, trigger}:Props) => {
+const EditCategory = ({id, name, trigger, imageUrl}:Props) => {
     const [open, setOpen] = useState(false)
     const axios_instance_token = useAxiosToken()
     const queryClient = useQueryClient()
@@ -86,7 +88,7 @@ const EditCategory = ({id, name, trigger}:Props) => {
                             control={form.control}
                             name="name"
                             render={({field}) =>(
-                                <FormItem className='flex-1 px-2 space-y-2'>
+                                <FormItem className='flex-1 space-y-2'>
                                     <FormLabel className='text-xs'>Category name</FormLabel>
                                     <FormControl>
                                         <Input className='capitalize' {...field} />
@@ -94,6 +96,35 @@ const EditCategory = ({id, name, trigger}:Props) => {
                                     <FormDescription>Category name for product groupings.</FormDescription>
                                 </FormItem>
                             )} 
+                        />
+
+                        <FormField
+                            name='Image'
+                            render={()=>(
+                                <FormItem>
+                                    <FormLabel className='text-xs'>Category image</FormLabel>
+                                    <FormControl>
+                                        <CategoryImageDialog id={id} trigger={
+
+                                            <Button variant={'outline'} className='h-[100px] w-full'>
+                                                {imageUrl ? 
+                                                    <div className='flex flex-col items-center gap-2'>
+                                                        <img src={imageUrl} role='image'  className='w-20 h-20'/>
+                                                        <p className='text-xs text-muted-foreground'>Click to change</p>
+                                                    </div>
+                                                    : 
+                                                    <div className='flex flex-col items-center gap-2'>
+                                                        <CircleOff  className='w-20 h-20'/>
+                                                        <p className='text-xs text-muted-foreground'>Click to add</p>
+                                                    </div>
+                                                }
+                                            </Button>
+                                            }
+                                        />
+                                            
+                                    </FormControl>
+                                </FormItem>
+                            )}
                         />
                     </form>
                 </Form>

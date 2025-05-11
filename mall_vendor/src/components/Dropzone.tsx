@@ -47,7 +47,7 @@ const Dropzone = ({handleFileChange}:Props) => {
 
       return (
         <div className="flex w-[100%] flex-col mt-4 gap-2">
-            <p className='text-xs 2xl:text-sm font-bold'>Product image</p>
+            <p className='text-xs 2xl:text-sm font-bold'>Product Image</p>
             
             {!file && <div
                 {...getRootProps({

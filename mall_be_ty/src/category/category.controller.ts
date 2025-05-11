@@ -48,6 +48,7 @@ export class CategoryController {
     if( category.url ){
       await this.uploadService.deleteCategoryImage(category.url)
     }
+    
     const buffer = file.buffer
     const filename = `${uuid()}-${file.originalname.replace(/\s+/g,'')}`
     const upload = await this.uploadService.addCategoryImage(buffer, filename) 

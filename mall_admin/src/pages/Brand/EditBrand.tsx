@@ -8,10 +8,11 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import axios from 'axios'
-import { Loader2 } from 'lucide-react'
+import { CircleOff, Loader2 } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import { EditBrandSchema, EditBrandSchemaType } from '@/schema/brand'
 import { Brand } from '@/lib/types'
+import BrandImageDialog from './BrandImageDialog'
 
 interface Props{
     trigger?: React.ReactNode,
@@ -94,6 +95,35 @@ const EditBrand = ({item, trigger}:Props) => {
                                     <FormDescription>Brand for product groupings.</FormDescription>
                                 </FormItem>
                             )} 
+                        />
+
+                        <FormField
+                            name='Image'
+                            render={()=>(
+                                <FormItem>
+                                    <FormLabel className='text-xs'>Brand image</FormLabel>
+                                    <FormControl>
+                                        <BrandImageDialog id={item.id} trigger={
+
+                                            <Button variant={'outline'} className='h-[100px] w-full'>
+                                                {item.imageUrl ? 
+                                                    <div className='flex flex-col items-center gap-2'>
+                                                        <img src={item.imageUrl} role='image'  className='w-20 h-20'/>
+                                                        <p className='text-xs text-muted-foreground'>Click to change</p>
+                                                    </div>
+                                                    : 
+                                                    <div className='flex flex-col items-center gap-2'>
+                                                        <CircleOff  className='w-20 h-20'/>
+                                                        <p className='text-xs text-muted-foreground'>Click to add</p>
+                                                    </div>
+                                                }
+                                            </Button>
+                                            }
+                                        />
+                                            
+                                    </FormControl>
+                                </FormItem>
+                            )}
                         />
                     </form>
                 </Form>

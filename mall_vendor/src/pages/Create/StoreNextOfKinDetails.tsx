@@ -1,19 +1,20 @@
 import { useForm } from "react-hook-form"
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel  } from "./ui/form"
-import { Input } from "./ui/input"
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel  } from "../../components/ui/form"
+import { Input } from "../../components/ui/input"
 import { NextOfKinInfoSchema, NextOfKinInfoSchemaType } from "@/schema/store"
 import useAxiosToken from "@/hooks/useAxiosToken"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { toast } from "sonner"
 import axios from "axios"
-import { Button } from "./ui/button"
+import { Button } from "../../components/ui/button"
 import { Loader2 } from "lucide-react"
 import PhoneInput from "react-phone-input-2"
 import "react-phone-input-2/lib/style.css"
 import { useState } from "react"
-import { Separator } from "./ui/separator"
+import { Separator } from "../../components/ui/separator"
 import { Store } from "@/lib/types"
+import { useNavigate } from "react-router-dom"
 
 interface Props {
     store:Store | undefined,
@@ -24,6 +25,7 @@ interface Props {
 const StoreNextOfKinDetails = ({store, formStep, setFormStep}:Props) => {
     const [phone, setPhone] = useState("")
     const axios_instance_token = useAxiosToken()
+    const navigate = useNavigate()
     const queryClient = useQueryClient()
     const form = useForm<NextOfKinInfoSchemaType>({
         resolver: zodResolver(NextOfKinInfoSchema),
@@ -56,7 +58,7 @@ const StoreNextOfKinDetails = ({store, formStep, setFormStep}:Props) => {
             queryClient.invalidateQueries({queryKey: ["stores"]})
 
             setFormStep(1)
-            // setOpen(prev => !prev)
+            navigate("../wizard", {replace:true})
         },onError: (err:any) => {
             if (axios.isAxiosError(err)){
                 toast.error(err?.response?.data?.message, {

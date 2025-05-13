@@ -19,6 +19,6 @@ export class StoreImage {
     @UpdateDateColumn({ type: 'timestamp' })
     updatedAt: Date;
 
-    @OneToOne(()=> Store, (store)=> store.storeImage)
-    store: Store
+    // @OneToOne(()=> Store, (store)=> store.storeImage)
+    // store: Store
 }

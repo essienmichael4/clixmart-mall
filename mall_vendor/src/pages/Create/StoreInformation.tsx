@@ -1,15 +1,15 @@
 import { useForm } from "react-hook-form"
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel  } from "./ui/form"
-import { Input } from "./ui/input"
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel  } from "../../components/ui/form"
+import { Input } from "../../components/ui/input"
 import { StoreSchema, StoreSchemaType } from "@/schema/store"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { toast } from "sonner"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import useAxiosToken from "@/hooks/useAxiosToken"
 import axios from "axios"
-import { Button } from "./ui/button"
+import { Button } from "../../components/ui/button"
 import { Loader2 } from "lucide-react"
-import { Separator } from "./ui/separator"
+import { Separator } from "../../components/ui/separator"
 import { Store } from "@/lib/types"
 
 interface Props {
@@ -84,6 +84,7 @@ const StoreInformation = ({store, setStore, setFormStep}:Props) => {
             <Separator />
             <Form {...form}>
                 <form className='md:w-full mt-4' onSubmit={form.handleSubmit(onSubmit)}>
+                    
                     <FormField 
                         control={form.control}
                         name="name"

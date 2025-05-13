@@ -15,13 +15,15 @@ import { User } from 'src/user/entities/user.entity';
 import { NextOfKin } from './entities/nextOfKin.entity';
 import { MonthHistory } from 'src/product/entities/MonthHistory.entity';
 import { YearHistory } from 'src/product/entities/YearHistory.entity';
+import { UploadModule } from 'src/upload/upload.module';
+import { UploadService } from 'src/upload/upload.service';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([Store, Follow, StoreImage, StoreReview, PaymentDetail, StoreDetail, StoreAddress, NextOfKin, User, MonthHistory, YearHistory]),
-    UserModule
+    UserModule, UploadModule
   ],
   controllers: [StoreController],
-  providers: [StoreService, JwtService],
+  providers: [StoreService, JwtService, UploadService],
 })
 export class StoreModule {}

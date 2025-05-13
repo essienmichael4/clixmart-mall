@@ -18,7 +18,7 @@ import { EventEmitter2 } from '@nestjs/event-emitter';
 import { OrderReponseDto } from './dto/response.dto';
 import { UploadService } from 'src/upload/upload.service';
 import { OrderFilterDto } from './dto/request.dto';
-import { ProductReponseDto } from 'src/product/dto/response.dto';
+import { ProductResponseDto } from 'src/product/dto/response.dto';
 
 @Injectable()
 export class OrderService {
@@ -97,7 +97,7 @@ export class OrderService {
       const items = order.orderItems
         let products = []
         items.map(async (item)=>{
-            const product = new ProductReponseDto(item.product)
+            const product = new ProductResponseDto(item.product)
             product.imageUrl = await this.uploadService.getPresignedUrl(`products/${product.imageName}`)
 
             const itemObject = {

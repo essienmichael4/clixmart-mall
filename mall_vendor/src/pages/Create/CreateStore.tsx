@@ -1,10 +1,10 @@
 import { useState } from "react"
 import logo from '@/assets/logo.png'
-import StoreDetails from "@/components/StoreDetails"
-import StoreInformation from "@/components/StoreInformation"
-import StoreAddress from "@/components/StoreAddress"
-import StorePaymentInfo from "@/components/StorePaymentInfo"
-import StoreNextOfKinDetails from "@/components/StoreNextOfKinDetails"
+import StoreDetails from "@/pages/Create/StoreDetails"
+import StoreInformation from "@/pages/Create/StoreInformation"
+import StoreAddress from "@/pages/Create/StoreAddress"
+import StorePaymentInfo from "@/pages/Create/StorePaymentInfo"
+import StoreNextOfKinDetails from "@/pages/Create/StoreNextOfKinDetails"
 import { Store } from "@/lib/types"
 
 const CreateStore = () => {

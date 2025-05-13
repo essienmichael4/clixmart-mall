@@ -42,7 +42,7 @@ class ProductImageResponseDto {
     public imageUrl?:string 
 }
 
-export class ProductReponseDto{
+export class ProductResponseDto{
     @ApiResponseProperty({
         example: 1
     })
@@ -86,7 +86,7 @@ export class ProductReponseDto{
     @ApiResponseProperty({
         example: "galaxy"
     })
-    public imageUrl:string 
+    public imageUrl?:string 
 
     @ApiResponseProperty({
         example: "IN_STOCK"
@@ -96,7 +96,7 @@ export class ProductReponseDto{
     @ApiResponseProperty({
         example: "FALSE"
     })
-    public isDisounted:string 
+    public isDisounted?:string 
 
     @ApiResponseProperty({
         example: "DRAFT"
@@ -134,14 +134,14 @@ export class ProductReponseDto{
     @ApiResponseProperty({
         type: ProductReviewResponseDto
     })
-    review: ProductReviewResponseDto
+    review?: ProductReviewResponseDto
 
     @ApiResponseProperty({
         type: [ProductImageResponseDto]
     })
     productImages?: ProductImageResponseDto[]
 
-    constructor(partial:Partial<ProductReponseDto>){
+    constructor(partial:Partial<ProductResponseDto>){
         Object.assign(this, partial)
     }
 }

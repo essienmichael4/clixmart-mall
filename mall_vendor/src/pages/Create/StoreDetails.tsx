@@ -1,17 +1,19 @@
 import { useForm } from "react-hook-form"
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel  } from "./ui/form"
-import { Input } from "./ui/input"
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel  } from "../../components/ui/form"
+import { Input } from "../../components/ui/input"
 import useAxiosToken from "@/hooks/useAxiosToken"
 import { useMutation } from "@tanstack/react-query"
 import { StoreDetailSchema, StoreDetailSchemaType } from "@/schema/store"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { toast } from "sonner"
 import axios from "axios"
-import StatusPicker from "./StatusPicker"
-import { Button } from "./ui/button"
-import { Loader2 } from "lucide-react"
-import { Separator } from "./ui/separator"
+import StatusPicker from "../../components/StatusPicker"
+import { Button } from "../../components/ui/button"
+import { CircleOff, Loader2 } from "lucide-react"
+import { Separator } from "../../components/ui/separator"
 import { Store } from "@/lib/types"
+import StoreImageDialog from "./StoreImageDialog"
+import { useCallback, useState } from "react"
 
 interface Props {
     store:Store | undefined,
@@ -21,7 +23,7 @@ interface Props {
 
 const StoreDetails = ({store, formStep, setFormStep}:Props) => {
     const axios_instance_token = useAxiosToken()
-    // const queryClient = useQueryClient()
+    const [imageUrl, setImageUrl] = useState(store?.imageUrl)
     const form = useForm<StoreDetailSchemaType>({
         resolver: zodResolver(StoreDetailSchema),
         defaultValues:{
@@ -29,6 +31,10 @@ const StoreDetails = ({store, formStep, setFormStep}:Props) => {
             isRegistered: "FALSE"
         }
     })
+
+    const handleImageChange = useCallback((value:string | undefined)=>{
+        setImageUrl(value)
+    }, [])
 
     const handleStatusChange = (value:"TRUE" | "FALSE")=>{
         form.setValue("isRegistered", value)        
@@ -84,12 +90,43 @@ const StoreDetails = ({store, formStep, setFormStep}:Props) => {
             <Separator />
             <Form {...form}>
                 <form className='md:w-full  mt-4' onSubmit={form.handleSubmit(onSubmit)}>
+                    <FormField
+                        name='Image'
+                        render={()=>(
+                            <FormItem className="flex flex-col mb-4 gap-1">
+                                <FormLabel className='text-xs font-semibold'>Store image</FormLabel>
+                                <div className="w-[100px] mx-auto aspect-square">
+                                    <FormControl >
+                                        <StoreImageDialog id={store?.id} setImageUrl={handleImageChange} trigger={
+
+                                            <Button variant={'outline'} className='h-[100px] '>
+                                                {imageUrl ? 
+                                                    <div className='flex flex-col items-center gap-2'>
+                                                        <img src={imageUrl} role='image'  className='w-[50px] h-[50px]'/>
+                                                        <p className='text-xs text-muted-foreground'>Click to change</p>
+                                                    </div>
+                                                    : 
+                                                    <div className='flex flex-col items-center gap-2'>
+                                                        <CircleOff  className='w-40 h-40'/>
+                                                        <p className='text-xs text-muted-foreground'>Click to add</p>
+                                                    </div>
+                                                }
+                                            </Button>
+                                            }
+                                        />
+                                            
+                                    </FormControl>
+                                </div>
+                            </FormItem>
+                        )}
+                    />
+
                     <FormField 
                         control={form.control}
                         name="nationalId"
                         render={({field}) =>(
                             <FormItem className='flex flex-col mb-4 gap-1'>
-                                <FormLabel className='text-xs lg:text-sm font-semibold'>National ID</FormLabel>
+                                <FormLabel className='text-xs font-semibold'>National ID</FormLabel>
                                 <FormControl>
                                     <Input 
                                         className='px-2 py-3 text-sm rounded border border-gray-200 w-full' 
@@ -105,7 +142,7 @@ const StoreDetails = ({store, formStep, setFormStep}:Props) => {
                         name="isRegistered"
                         render={({}) =>(
                             <FormItem className='flex flex-col'>
-                            <FormLabel className='my-1 text-xs'>Registration Status</FormLabel>
+                            <FormLabel className='my-1 text-xs font-semibold'>Registration Status</FormLabel>
                             <FormControl>
                                 <StatusPicker onChange={handleStatusChange}/>
                             </FormControl>

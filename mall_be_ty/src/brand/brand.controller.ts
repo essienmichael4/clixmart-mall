@@ -7,7 +7,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { ImageFileFilter } from 'src/helpers/file-helper';
 import { UploadService } from 'src/upload/upload.service';
 import { UploadFile } from 'src/decorators/file.decorator';
-import { uuid } from 'uuidv4';
+import { v4 } from 'uuid';
 import { BrandReponse } from './dto/response.dto';
 
 const MAX_IMAGE_SIZE_IN_BYTE = 2 * 1024 * 1024
@@ -45,12 +45,12 @@ export class BrandController {
     const brand = await this.brandService.findOne(id)
     if(!brand) return new NotFoundException("Brand not found")
 
-    if( brand.url ){
-      await this.uploadService.deleteBrandImage(brand.url)
-    }
-    
+    // if( brand.url ){
+    //   await this.uploadService.deleteBrandImage(brand.url)
+    // }
+
     const buffer = file.buffer
-    const filename = `${uuid()}-${file.originalname.replace(/\s+/g,'')}`
+    const filename = `${v4()}-${file.originalname.replace(/\s+/g,'')}`
     const upload = await this.uploadService.addBrandImage(buffer, filename) 
     
     return this.brandService.updateBrandImage(id, filename) 

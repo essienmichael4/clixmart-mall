@@ -15,6 +15,8 @@ import { MonthHistory } from 'src/product/entities/MonthHistory.entity';
 import { YearHistory } from 'src/product/entities/YearHistory.entity';
 import { v4 } from 'uuid';
 import { GetDay, GetMonth, GetYear } from 'src/helpers/common';
+import { StoreReponseDto } from './dto/response.dto';
+import { UploadService } from 'src/upload/upload.service';
 
 @Injectable()
 export class StoreService {
@@ -29,6 +31,7 @@ export class StoreService {
     @InjectRepository(YearHistory) private readonly yearHistoryRepo:Repository<YearHistory>,
     @InjectRepository(User) private readonly userRepo:Repository<User>,
     private userService: UserService,
+    private readonly uploadService:UploadService,
     private readonly dataSource:DataSource
   ){}
 
@@ -165,51 +168,79 @@ export class StoreService {
     }
   }
   
-  addImage() {
-    return `This action returns all store`;
+  async createStore(payload:Store, queryRunner: QueryRunner){
+    return await queryRunner.manager.save(Store, {
+      ...payload
+    })
   }
 
-  
-    async createStore(payload:Store, queryRunner: QueryRunner){
-      return await queryRunner.manager.save(Store, {
-        ...payload
-      })
-    }
-  
-    async createStoreReview(payload:StoreReview, queryRunner: QueryRunner){
-      return await queryRunner.manager.save(StoreReview, {
-        ...payload
-      })
-    }
+  async createStoreReview(payload:StoreReview, queryRunner: QueryRunner){
+    return await queryRunner.manager.save(StoreReview, {
+      ...payload
+    })
+  }
 
-  findAll() {
-    return this.storeRepo.find({
+  async findAll() {
+    const stores = await this.storeRepo.find({
       relations: {
         user: true,
         storeDetail: true,
         storeReview: true
       }
     })
+
+    
+    const storesResponse = await Promise.all(
+      stores.map(async (store) => {
+        const storeResponse = new StoreReponseDto(store);
+    
+        if (storeResponse.imageName) {
+          storeResponse.imageUrl = await this.uploadService.getPresignedUrl(
+            `stores/${storeResponse.imageName}`
+          );
+        }
+    
+        return storeResponse;
+      })
+    );
+    
+    return storesResponse;
   }
 
   async findAllUserStores(userId:number){
     const user = await this.userService.findUserById(userId)
-    return await this.storeRepo.find({
+    const stores = await this.storeRepo.find({
       relations: {
         user: true,
         storeReview: true
       },
       where:{
         user: {
-          id: userId
+          id: user.id
         }
       }
     })
+
+    const storesResponse = await Promise.all(
+      stores.map(async (store) => {
+        const storeResponse = new StoreReponseDto(store);
+    
+        if (storeResponse.imageName) {
+          storeResponse.imageUrl = await this.uploadService.getPresignedUrl(
+            `stores/${storeResponse.imageName}`
+          );
+        }
+    
+        return storeResponse;
+      })
+    );
+    
+    return storesResponse;
   }
 
-  findOne(id: number) {
+  async findOne(id: number) {
     try{
-      return this.storeRepo.findOne({
+      const store = await this.storeRepo.findOne({
         where: {id},
         relations: {
           storeReview: {
@@ -218,9 +249,18 @@ export class StoreService {
           user: true,
           storeDetail: true,
           storeAddress: true,
-          paymentDetail: true
+          paymentDetail: true,
+          nextOfKin: true
         }
       })
+ 
+      const storeResponse = new StoreReponseDto(store)
+
+      if(storeResponse.imageName){
+        storeResponse.imageUrl = await this.uploadService.getPresignedUrl(`stores/${storeResponse.imageName}`)
+      }
+
+      return storeResponse
     }catch(err){
       throw err
     }
@@ -230,8 +270,112 @@ export class StoreService {
     return `This action updates a #${id} store`;
   }
 
+  async updateStoreInfo(id:number, createStoreDto: CreateStoreDto){
+    try{
+      const store = await this.storeRepo.findOne({
+        where: {id},
+        relations: {
+          storeReview: true
+        }
+      })
+      const unspaced = this.generateUspacedName(createStoreDto.name.toLowerCase())
+      store.name = createStoreDto.name
+      store.searchName = createStoreDto.name.toLowerCase()
+      store.url = this.generateStoreUrl(unspaced)
+      store.slug = unspaced
+      store.storeReview.status = Status.PENDING
+
+      return await this.storeRepo.save(store)
+    }catch(err){
+      throw err
+    }
+  }
+
+  async updateStoreDetails(id:number, storeDetailsDto:StoreDetailsDto){
+    try{
+      const store = await this.storeRepo.findOne({
+        where: {id}, 
+        relations: {
+          storeDetail: true,
+          storeReview: true
+        }
+      })
+      store.storeDetail.nationalId = storeDetailsDto.nationalId
+      store.storeDetail.isRegistered = storeDetailsDto.isRegistered
+      
+      store.storeReview.status = Status.PENDING
+      return this.storeRepo.save(store)
+    }catch(err){
+      throw err
+    }
+  }
+
+  async updateStoreAddress(id:number, storeAddressDto:StoreAddressDto){
+    try{
+      const store = await this.storeRepo.findOne({
+        where: {id}, 
+        relations: {
+          storeAddress: true,
+          storeReview: true
+        }
+      })
+      store.storeAddress.country = storeAddressDto.country
+      store.storeAddress.state = storeAddressDto.state
+      store.storeAddress.city = storeAddressDto.city
+      store.storeAddress.zip = storeAddressDto.zip
+      store.storeAddress.addressLine = storeAddressDto.addressLine
+      store.storeAddress.fullname = storeAddressDto.fullname
+      store.storeAddress.phone = storeAddressDto.phone
+      store.storeAddress.landmark = storeAddressDto.landmark
+      store.storeReview.status = Status.PENDING
+      
+      return await this.storeRepo.save(store)
+    }catch(err){
+      throw err
+    }
+  }
+  
+  async updateStorePaymentDetails(id:number, storePaymentDetailsDto:StorePaymentDetailsDto){
+    try{
+      const store = await this.storeRepo.findOne({
+        where: {id}, 
+        relations: {
+          paymentDetail: true,
+          storeReview: true
+        }
+      })
+      store.paymentDetail.paymentMode = storePaymentDetailsDto.paymentMode
+      store.paymentDetail.accountName = storePaymentDetailsDto.accountName
+      store.paymentDetail.accountNumber = storePaymentDetailsDto.accountNumber
+      store.paymentDetail.provider = storePaymentDetailsDto.provider
+      store.storeReview.status = Status.PENDING
+     
+      return await this.storeRepo.save(store)
+    }catch(err){
+      throw err
+    }
+  }
+
+  async updateNextOfKin(id:number, nextOfKinDto:NextOfKinDto){
+    try{
+      const store = await this.storeRepo.findOne({
+        where: {id}, 
+        relations: {
+          nextOfKin: true,
+          storeReview: true
+        }
+      })
+      store.nextOfKin.name = nextOfKinDto.name
+      store.nextOfKin.phone = nextOfKinDto.phone
+      store.storeReview.status = Status.PENDING
+      
+      return await this.storeRepo.save(store)
+    }catch(err){
+      throw err
+    }
+  }
+
   async updateStoreName(id:number, createStoreDto: CreateStoreDto, userId:number) {
-    // const user = await this.userService.findUserById(userId)
     try{
       const store = await this.storeRepo.update(id,{
         name: createStoreDto.name,
@@ -272,6 +416,26 @@ export class StoreService {
     }catch(err){
       throw err
     };
+  }
+
+  async updateStoreImage(id:number, filename:string){
+    await this.storeRepo.update(id, {
+      imageName: filename
+    })
+
+    const store = await this.storeRepo.findOne({
+      where: {
+        id
+      }
+    })
+
+    const storeResponse = new StoreReponseDto(store)
+
+    if(storeResponse.imageName){
+      storeResponse.imageUrl = await this.uploadService.getPresignedUrl(`stores/${storeResponse.imageName}`)
+    }
+
+    return storeResponse
   }
 
   async upsertMonthHistoryStores(queryRunner: QueryRunner){

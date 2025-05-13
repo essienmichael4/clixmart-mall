@@ -32,7 +32,7 @@ const useAxiosToken = () => {
                     return axios_instance_token(previousRequest)
                 }
                 if(error?.response?.status === 401 && previousRequest?.sent){
-                    navigate("../login")
+                    navigate("../")
                 }
                 return Promise.reject(error)
             }

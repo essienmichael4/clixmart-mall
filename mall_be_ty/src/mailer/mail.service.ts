@@ -3,7 +3,7 @@ import { ResetPasswordEventDto } from './dto/resetpassword.dot';
 import { MailerService } from '@nestjs-modules/mailer';
 import { SuccessfulOrderEventDto } from './dto/successOrder.dto';
 import { UploadService } from 'src/upload/upload.service';
-import { ProductReponseDto } from 'src/product/dto/response.dto';
+import { ProductResponseDto } from 'src/product/dto/response.dto';
 
 @Injectable()
 export class MailService {
@@ -28,7 +28,7 @@ export class MailService {
         let subTotal = 0;
         const products = await Promise.all(
             orderItems.map(async (item) => {
-              const product = new ProductReponseDto(item.product);
+              const product = new ProductResponseDto(item.product);
               product.imageUrl = await this.uploadService.getPresignedUrl(`products/${product.imageName}`);
               subTotal += item.quantity * item.price
               return {

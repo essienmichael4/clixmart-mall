@@ -50,6 +50,7 @@ export type CategoriesContextType = {
 export type Category = {
     id:number,
     name:string,
+    imageUrl?:string,
     slug:string,
     createdAt:string,
     updatedAt:string,

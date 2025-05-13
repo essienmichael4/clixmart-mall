@@ -42,13 +42,18 @@ const Wizard = () => {
                         </Link>
                         {stores.data?.map(store => (
                             <div key={store.id} className='w-full sm:w-1/2 lg:w-1/3 p-4'>
-                                <div className={`${store.storeReview?.status === "APPROVED" && 'border-emerald-500'} ${store.storeReview?.status === "REJECTED" && 'border-rose-500'} border p-4 rounded-md hover:bg-gray-100`}>
-                                    <h4 className='text-xs font-semibold'>Store name</h4>
-                                    <p className='capitalize'>{store.name}</p>
+                                <div className={`${store.storeReview?.status === "APPROVED" && 'border-emerald-500'} ${store.storeReview?.status === "REJECTED" && 'border-rose-500'} border p-4 rounded-md flex gap-2 hover:bg-gray-100`}>
+                                    {store.imageUrl && <div className='aspect-square w-20 rounded-lg overflow-hidden'>
+                                        <img src={store.imageUrl} alt="" />
+                                    </div>}
+                                    <div>
+                                        <h4 className='text-xs font-semibold'>Store name</h4>
+                                        <p className='capitalize'>{store.name}</p>
 
-                                    <div className='flex gap-2'>
-                                        {store.storeReview?.status === "APPROVED" && <Link to={`/dashboard/${store.slug}`} className='text-xs text-blue-700'>Manage</Link>}
-                                        <button className='text-xs text-emerald-700'>Edit</button>
+                                        <div className='flex gap-2 mt-2'>
+                                            {store.storeReview?.status === "APPROVED" && <Link to={`/dashboard/${store.slug}`} className='text-xs text-blue-700'>Manage</Link>}
+                                            <Link to={`/edit/${store.slug}/${store.id}`} className='text-xs text-emerald-700'>Edit</Link>
+                                        </div>
                                     </div>
                                 </div>
                             </div>

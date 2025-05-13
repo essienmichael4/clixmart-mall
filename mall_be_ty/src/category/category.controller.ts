@@ -45,9 +45,9 @@ export class CategoryController {
     const category = await this.categoryService.findOne(id)
     if(!category) return new NotFoundException("Category not found")
 
-    if( category.url ){
-      await this.uploadService.deleteCategoryImage(category.url)
-    }
+    // if( category.url ){
+    //   await this.uploadService.deleteCategoryImage(category.url)
+    // }
     
     const buffer = file.buffer
     const filename = `${uuid()}-${file.originalname.replace(/\s+/g,'')}`

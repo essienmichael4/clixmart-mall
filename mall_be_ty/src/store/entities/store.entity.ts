@@ -34,6 +34,9 @@ export class Store {
     @Column({ unique: true })
     url:string
 
+    @Column({ nullable: true })
+    imageName:string
+
     @CreateDateColumn({ type: 'timestamp' })
     createdAt: Date;
 
@@ -57,9 +60,9 @@ export class Store {
     @JoinColumn()
     storeReview: StoreReview
 
-    @OneToOne(() => StoreImage, (storeImage) => storeImage.store, {cascade: true})
-    @JoinColumn()
-    storeImage: StoreImage;
+    // @OneToOne(() => StoreImage, (storeImage) => storeImage.store, {cascade: true})
+    // @JoinColumn()
+    // storeImage: StoreImage;
 
     @OneToOne(() => StoreAddress, (storeAddress) => storeAddress.store, {cascade: true})
     @JoinColumn()
@@ -73,7 +76,7 @@ export class Store {
     @JoinColumn()
     paymentDetail: PaymentDetail;
 
-    @OneToMany(() => NextOfKin, (nextOfKin) => nextOfKin.store, {cascade: true})
+    @OneToOne(() => NextOfKin, (nextOfKin) => nextOfKin.store, {cascade: true})
     @JoinColumn()
     nextOfKin: NextOfKin;
 }

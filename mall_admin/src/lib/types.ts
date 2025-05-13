@@ -71,6 +71,12 @@ export type LoadingType = {
     status: "IN_TRANSIT" | "ARRIVED" | "DELIVERED"
 }
 
+export type NextOfKin = {
+    id: number,
+    name: string,
+    phone: string
+}
+
 export type Order = {
     id: number,
     orderId?: string,
@@ -179,7 +185,8 @@ export type Store = {
     storeDetail?: StoreDetail,
     storeReview?: StoreReview,
     storeAddress?: StoreAddress,
-    paymentDetail: PaymentDetail
+    paymentDetail: PaymentDetail,
+    nextOfKin: NextOfKin
 } 
 
 export type StoreDetail = {

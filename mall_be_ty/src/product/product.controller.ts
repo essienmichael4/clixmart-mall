@@ -12,7 +12,7 @@ import { UploadService } from 'src/upload/upload.service';
 import { uuid } from 'uuidv4';
 import { PageOptionsDto } from 'src/common/dto/pageOptions.dto';
 import { ApiPaginatedResponse } from 'src/decorators/pagination.decorator';
-import { ProductReponseDto } from './dto/response.dto';
+import { ProductResponseDto } from './dto/response.dto';
 import { ProductFilterDto } from './dto/request.dto';
 
 const MAX_IMAGE_SIZE_IN_BYTE = 2 * 1024 * 1024
@@ -117,7 +117,7 @@ export class ProductController {
   
   @Get()
   @HttpCode(HttpStatus.OK)
-  @ApiPaginatedResponse(ProductReponseDto)
+  @ApiPaginatedResponse(ProductResponseDto)
   @ApiConsumes("application/json")
   findProducts(@Query() pageOptionsDto:PageOptionsDto, @Query("q") q?:string, @Query("category") category?:string, @Query("subCategory") subCategory?:string) {
     return this.productService.findProducts(pageOptionsDto, q, category, subCategory);
@@ -125,7 +125,7 @@ export class ProductController {
   
   @Get('categories/:category')
   @HttpCode(HttpStatus.OK)
-  @ApiPaginatedResponse(ProductReponseDto)
+  @ApiPaginatedResponse(ProductResponseDto)
   @ApiConsumes("application/json")
   findProductsByCategory(@Query() pageOptionsDto:PageOptionsDto, @Param("category") category?:string, @Query("subCategories") subCategories?:string) {
     const allSubCategories = subCategories.split(",")
@@ -139,7 +139,7 @@ export class ProductController {
     
   @Get('categories/:category/home')
   @HttpCode(HttpStatus.OK)
-  @ApiPaginatedResponse(ProductReponseDto)
+  @ApiPaginatedResponse(ProductResponseDto)
   @ApiConsumes("application/json")
   findProductsByCategoryHome(@Query() pageOptionsDto:PageOptionsDto, @Param("category") category?:string,) {
     return this.productService.findProductsByCategory(pageOptionsDto, category);
@@ -147,7 +147,7 @@ export class ProductController {
     
   @Get('sub-categories/:subCategory/home')
   @HttpCode(HttpStatus.OK)
-  @ApiPaginatedResponse(ProductReponseDto)
+  @ApiPaginatedResponse(ProductResponseDto)
   @ApiConsumes("application/json")
   findProductsBySubCategoryHome(@Query() pageOptionsDto:PageOptionsDto, @Query("subCategory") subCategory?:string,) {
     return this.productService.findProductsByCategory(pageOptionsDto, subCategory);

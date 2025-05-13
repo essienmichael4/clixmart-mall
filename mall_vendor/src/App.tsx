@@ -18,6 +18,7 @@ import Orders from './pages/Orders/Orders'
 import ForgotPassword from './pages/ForgotPassword/ForgotPassword'
 import PasswordReset from './pages/PasswordReset/PasswordReset'
 import OrderDetails from './pages/Orders/OrderDetails'
+import EditStore from './pages/Create/EditStore'
 
 function App() {
 
@@ -30,6 +31,7 @@ function App() {
         <Route element={<RequireAuth />}>
           <Route path='wizard' element={<Wizard />} />
           <Route path='create' element={<CreateStore />} />
+          <Route path='edit/:store/:id' element={<EditStore />} />
           <Route element={<Layout />}>
             <Route path='/dashboard/:store' element={<Dashboard />} />
             <Route path='/profile/:id' element={<UserProfile />} />

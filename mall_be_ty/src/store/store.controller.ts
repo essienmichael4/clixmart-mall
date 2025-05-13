@@ -1,10 +1,16 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, ParseIntPipe, ValidationPipe, UsePipes, HttpStatus, HttpCode} from '@nestjs/common';
+import { Controller, Get, Body, Patch, Param, Delete, UseGuards, ParseIntPipe, ValidationPipe, UsePipes, HttpStatus, HttpCode, Post, BadRequestException, NotFoundException, ParseFilePipeBuilder, Req, UploadedFile, UseInterceptors} from '@nestjs/common';
 import { StoreService } from './store.service';
 import { CreateStoreDto, NextOfKinDto, StoreAddressDto, StoreDetailsDto, StorePaymentDetailsDto } from './dto/create-store.dto';
 import { UpdateStoreDto, UpdateStoreReviewDto } from './dto/update-store.dto';
 import { User, UserInfo } from 'src/decorators/user.decorator';
 import { JwtGuard } from 'src/guards/jwt.guard';
-import { ApiConsumes, ApiCreatedResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiConsumes, ApiCreatedResponse, ApiForbiddenResponse, ApiInternalServerErrorResponse, ApiOkResponse, ApiOperation, ApiTags, ApiUnprocessableEntityResponse } from '@nestjs/swagger';
+import { UploadService } from 'src/upload/upload.service';
+import { UploadFile } from 'src/decorators/file.decorator';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { ImageFileFilter } from 'src/helpers/file-helper';
+import { v4 } from 'uuid';
+const MAX_IMAGE_SIZE_IN_BYTE = 2 * 1024 * 1024
 
 @Controller('stores')
 @UsePipes(new ValidationPipe({
@@ -13,7 +19,42 @@ import { ApiConsumes, ApiCreatedResponse, ApiOkResponse, ApiOperation, ApiTags }
 }))
 @ApiTags("stores")
 export class StoreController {
-  constructor(private readonly storeService: StoreService) {}
+  constructor(private readonly storeService: StoreService, private readonly uploadService:UploadService) {}
+
+  @Post(':id/upload')
+  @UploadFile('file')
+  @ApiForbiddenResponse({description: 'UNAUTHORIZED_REQUEST'})
+  @ApiUnprocessableEntityResponse({description: 'BAD_REQUEST'})
+  @ApiInternalServerErrorResponse({description: 'INTERNAL_SERVER_ERROR'})
+  @ApiConsumes("multipart/form-data")
+  @UseInterceptors(
+    FileInterceptor("file", {
+      fileFilter: ImageFileFilter
+    })
+  )
+  public async uploadFile(@Param('id', ParseIntPipe) id: number, @Req() req:any,
+    @UploadedFile(
+      new ParseFilePipeBuilder()
+      .addMaxSizeValidator({maxSize: MAX_IMAGE_SIZE_IN_BYTE})
+      .build({errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY})
+  ) file: Express.Multer.File){
+    if(!file || req.fileValidationError){
+      throw new BadRequestException("Invalid file provided, [Image files allowed]")
+    }
+
+    const store = await this.storeService.findOne(id)
+    if(!store) return new NotFoundException("Store not found")
+
+    // if( store.imageName ){
+    //   await this.uploadService.deleteStoreImage(store.imageName)
+    // }
+    
+    const buffer = file.buffer
+    const filename = `${v4()}-${file.originalname.replace(/\s+/g,'')}`
+    const upload = await this.uploadService.addBrandImage(buffer, filename) 
+    
+    return this.storeService.updateStoreImage(id, filename) 
+  }
 
   @UseGuards(JwtGuard)
   @Post()
@@ -82,11 +123,70 @@ export class StoreController {
     return this.storeService.findAll();
   }
 
+  // @Get(':id')
+  // findStoreBy(@Param('id') id: string) {
+  //   return this.storeService.findOne(+id);
+  // }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.storeService.findOne(+id);
   }
 
+  @UseGuards(JwtGuard)
+  @Patch(":id/store-info")
+  @HttpCode(HttpStatus.CREATED)
+  @ApiCreatedResponse({type: "", description: "Store info created successfully"})
+  @ApiOkResponse({type: "", description: "Store info created successfully"})
+  @ApiOperation({description: "Update Store info api"})
+  @ApiConsumes("application/json")
+  updateStoreInfo(@Param('id', ParseIntPipe) id: number, @Body() createStoreDto: CreateStoreDto) {
+    return this.storeService.updateStoreInfo(id, createStoreDto);
+  }
+  
+  @UseGuards(JwtGuard)
+  @Patch(":id/store-details")
+  @HttpCode(HttpStatus.CREATED)
+  @ApiCreatedResponse({type: "", description: "Store details updated successfully"})
+  @ApiOkResponse({type: "", description: "Store details updated successfully"})
+  @ApiOperation({description: "Update store details api"})
+  @ApiConsumes("application/json")
+  updateStoreDetail(@Param('id', ParseIntPipe) id: number, @Body() storeDetailsDto: StoreDetailsDto) {
+    return this.storeService.updateStoreDetails(id, storeDetailsDto);
+  }
+
+  @UseGuards(JwtGuard)
+  @Patch(":id/store-address")
+  @HttpCode(HttpStatus.CREATED)
+  @ApiCreatedResponse({type: "", description: "Store address added successfully"})
+  @ApiOkResponse({type: "", description: "Store address added successfully"})
+  @ApiOperation({description: "Create Store address api"})
+  @ApiConsumes("application/json")
+  updateStoreAddress(@Param('id', ParseIntPipe) id: number, @Body() storeAddressDto:StoreAddressDto) {
+    return this.storeService.updateStoreAddress(id, storeAddressDto);
+  }
+
+  @UseGuards(JwtGuard)
+  @Patch(":id/payment-details")
+  @HttpCode(HttpStatus.CREATED)
+  @ApiCreatedResponse({type: "", description: "Store payment updated successfully"})
+  @ApiOkResponse({type: "", description: "Store payment updated successfully"})
+  @ApiOperation({description: "Update Store payment api"})
+  @ApiConsumes("application/json")
+  updateStorePaymentDetails(@Param('id', ParseIntPipe) id: number, @Body() storePaymentDetailsDto: StorePaymentDetailsDto) {
+    return this.storeService.updateStorePaymentDetails(id, storePaymentDetailsDto);
+  }
+
+  @UseGuards(JwtGuard)
+  @Patch(":id/next-of-kin")
+  @HttpCode(HttpStatus.CREATED)
+  @ApiCreatedResponse({type: "", description: "Store next of kin details added successfully"})
+  @ApiOkResponse({type: "", description: "Store next of kin details added successfully"})
+  @ApiOperation({description: "Create Store next of kin api"})
+  @ApiConsumes("application/json")
+  updateNextOfKinDetails(@Param('id', ParseIntPipe) id: number, @Body() nextOfKinDto: NextOfKinDto) {
+    return this.storeService.updateNextOfKin(id, nextOfKinDto);
+  }
   
   @UseGuards(JwtGuard)
   @Patch(':id/store')

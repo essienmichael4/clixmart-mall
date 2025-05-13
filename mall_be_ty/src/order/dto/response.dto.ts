@@ -1,6 +1,6 @@
 import { ApiResponseProperty } from "@nestjs/swagger"
 import { Exclude } from "class-transformer"
-import { ProductReponseDto } from "src/product/dto/response.dto"
+import { ProductResponseDto } from "src/product/dto/response.dto"
 import { UserResponseDto } from "src/user/dto/userResponse.dto"
 
 class OrderItemDto {
@@ -46,9 +46,9 @@ class OrderItemDto {
     public status:string 
 
     @ApiResponseProperty({
-        type: ProductReponseDto
+        type: ProductResponseDto
     })
-    product: ProductReponseDto
+    product: ProductResponseDto
 }
 
 export class OrderReponseDto{
@@ -135,7 +135,7 @@ export class OrderReponseDto{
     })
     user: UserResponseDto
 
-    constructor(partial:Partial<ProductReponseDto>){
+    constructor(partial:Partial<ProductResponseDto>){
         Object.assign(this, partial)
     }
 }

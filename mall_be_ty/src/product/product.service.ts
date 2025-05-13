@@ -16,7 +16,7 @@ import { PageOptionsDto } from 'src/common/dto/pageOptions.dto';
 import { PageMetaDto } from 'src/common/dto/pageMeta.dto';
 import { PageDto } from 'src/common/dto/page.dto';
 import { v4 } from 'uuid';
-import { ProductReponseDto } from './dto/response.dto';
+import { ProductResponseDto } from './dto/response.dto';
 import { UploadService } from 'src/upload/upload.service';
 import { MonthHistory } from './entities/MonthHistory.entity';
 import { UserMonthHistory } from './entities/UserMonthHistory.entity';
@@ -202,7 +202,7 @@ export class ProductService {
       take: pageOptionsDto.take
     })
 
-    const productsResponse = products.map(product=> new ProductReponseDto(product))
+    const productsResponse = products.map(product=> new ProductResponseDto(product))
 
     productsResponse.map(async (product) => {
       product.imageUrl = await this.uploadService.getPresignedUrl(`products/${product.imageName}`)
@@ -241,7 +241,7 @@ export class ProductService {
       take: pageOptionsDto.take
     })
 
-    const productsResponse = products.map(product=> new ProductReponseDto(product))
+    const productsResponse = products.map(product=> new ProductResponseDto(product))
 
     productsResponse.map(async (product) => {
       product.imageUrl = await this.uploadService.getPresignedUrl(`products/${product.imageName}`)
@@ -284,7 +284,7 @@ export class ProductService {
       take: pageOptionsDto.take
     })
 
-    const productsResponse = products.map(product=> new ProductReponseDto(product))
+    const productsResponse = products.map(product=> new ProductResponseDto(product))
 
     productsResponse.map(async (product) => {
       product.imageUrl = await this.uploadService.getPresignedUrl(`products/${product.imageName}`)
@@ -316,7 +316,7 @@ export class ProductService {
       },
     });
 
-    const productsResponse = products.map(product=> new ProductReponseDto(product))
+    const productsResponse = products.map(product=> new ProductResponseDto(product))
 
     productsResponse.map(async (product) => {
       product.imageUrl = await this.uploadService.getPresignedUrl(`products/${product.imageName}`)
@@ -352,7 +352,7 @@ export class ProductService {
       }
     });
 
-    const productsResponse = products.map(product=> new ProductReponseDto(product))
+    const productsResponse = products.map(product=> new ProductResponseDto(product))
 
     productsResponse.map(async (product) => {
       product.imageUrl = await this.uploadService.getPresignedUrl(`products/${product.imageName}`)
@@ -383,7 +383,7 @@ export class ProductService {
       },
     });
 
-    const productResponse = new ProductReponseDto(product)
+    const productResponse = new ProductResponseDto(product)
 
     if(productResponse.imageName){
       productResponse.imageUrl = await this.uploadService.getPresignedUrl(`products/${product.imageName}`)
@@ -414,7 +414,7 @@ export class ProductService {
       },
     });
 
-    const productResponse = new ProductReponseDto(product)
+    const productResponse = new ProductResponseDto(product)
 
     if(productResponse.imageName){
       productResponse.imageUrl = await this.uploadService.getPresignedUrl(`products/${product.imageName}`)
@@ -437,7 +437,7 @@ export class ProductService {
       }
     })
 
-    const productsResponse = cartProducts.map(product=> new ProductReponseDto(product))
+    const productsResponse = cartProducts.map(product=> new ProductResponseDto(product))
 
     productsResponse.map(async (product) => {
       product.imageUrl = await this.uploadService.getPresignedUrl(`products/${product.imageName}`)
@@ -471,7 +471,7 @@ export class ProductService {
       }
     })
     
-    const productResponse = new ProductReponseDto(product)
+    const productResponse = new ProductResponseDto(product)
 
     productResponse.imageUrl = await this.uploadService.getPresignedUrl(`products/${product.imageName}`)
 
@@ -506,7 +506,7 @@ export class ProductService {
       }
     })
 
-    const productsResponse = products.map(product=> new ProductReponseDto(product))
+    const productsResponse = products.map(product=> new ProductResponseDto(product))
 
     productsResponse.map(async (product) => {
       product.imageUrl = await this.uploadService.getPresignedUrl(`products/${product.imageName}`)

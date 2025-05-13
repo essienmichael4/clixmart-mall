@@ -34,6 +34,10 @@ const Categories = () => {
                             <Toggle onClick={()=>handleToggleActive(category.id)} className={`p-1 rounded-full hover:bg-gray-100 `}>
                             {active == category.id ? <ChevronDown className="w-4 h-4"/>: <ChevronRight className="w-4 h-4"/> } 
                             </Toggle>
+                            {category.imageUrl && <div className="w-6 h-6 overflow-hidden">
+                                    <img src={category.imageUrl} className="w-full h-full" alt="" />
+                                </div>
+                            }
                             <Link to={`/categories/${category.slug}`} className="text-sm ">{category.name}</Link> 
                         </div>
                         <div className={`${active==category.id ? 'block' : 'hidden'} pl-10 bg-slate-50`}>

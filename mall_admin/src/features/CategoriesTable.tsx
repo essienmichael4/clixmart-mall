@@ -19,13 +19,7 @@ interface FilterProps{
 const emptyData: any[]= []
 
 const CategoriesTable = ({categories, filtering}:FilterProps) => {
-    // const axios_instance_token = useAxiosToken()
     const [expanded, setExpanded] = React.useState<ExpandedState>({})
-    
-    // const orders = useQuery<Categories[]>({
-    //     queryKey: ["categories"],
-    //     queryFn: async() => await axios_instance_token.get(`/categories`).then(res => res.data)
-    // })
 
     const columns:ColumnDef<Category>[] =[{
         accessorKey: "id",
@@ -86,7 +80,7 @@ const CategoriesTable = ({categories, filtering}:FilterProps) => {
                 </span> 
                 : 
                 <span className="flex gap-2 items-center"  >
-                    <EditCategory id={row.original.id} name={row.original.name} trigger={<button><Edit className="w-4 h-4 text-emerald-400"/></button>} />
+                    <EditCategory id={row.original.id} name={row.original.name} imageUrl={row.original.imageUrl} trigger={<button><Edit className="w-4 h-4 text-emerald-400"/></button>} />
                     <DeleteCategory name={row.original.name} id={Number(row.original.id)} trigger={<button><Trash2 className="w-4 h-4 text-rose-400" /></button>} /> 
                 </span>
             }
@@ -162,21 +156,11 @@ const CategoriesTable = ({categories, filtering}:FilterProps) => {
                 </Table>
             </div>
             <div className="flex items-center justify-end space-x-2 py-4">
-                <Button
-                variant="outline"
-                size="sm"
-                onClick={() => table.previousPage()}
-                disabled={!table.getCanPreviousPage()}
-                >
-                Previous
+                <Button variant="outline" size="sm" onClick={() => table.previousPage()} disabled={!table.getCanPreviousPage()} >
+                    Previous
                 </Button>
-                <Button
-                variant="outline"
-                size="sm"
-                onClick={() => table.nextPage()}
-                disabled={!table.getCanNextPage()}
-                >
-                Next
+                <Button variant="outline" size="sm" onClick={() => table.nextPage()} disabled={!table.getCanNextPage()}>
+                    Next
                 </Button>
             </div>
         </div>

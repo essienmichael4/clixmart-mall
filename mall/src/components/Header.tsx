@@ -1,10 +1,10 @@
 import { useState } from 'react'
 import logo from '@/assets/logo.png'
-import { Bell, LogOut, Menu, Search, ShoppingCart, User, X } from 'lucide-react'
+import { Bell, LogOut, Menu, Search, ShoppingBag, ShoppingCart, User, X } from 'lucide-react'
 import { Link, useLocation, useNavigate, useResolvedPath } from 'react-router-dom'
 import { ScrollArea } from './ui/scroll-area'
 import useAuth from '@/hooks/useAuth'
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuShortcut, DropdownMenuTrigger } from './ui/dropdown-menu'
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from './ui/dropdown-menu'
 import { Button } from './ui/button'
 import useCart from '@/hooks/useCart'
 import MobileCategoriesCheck from './MobileCategoriesCheck'
@@ -19,6 +19,8 @@ interface CategoriesCheckParams {
 const Header = ({activeCategory, subCategories, subCategoriesChange}:CategoriesCheckParams) => {
     const [mobileDrawerOpen, setMobileDrawerOpen] = useState(false)
     const {auth, dispatch} = useAuth()
+    console.log(auth);
+    
     const location = useLocation()
     const urlParams = new URLSearchParams(location.search)
     const [search, setSearch] = useState(urlParams.get("q"))
@@ -59,7 +61,7 @@ const Header = ({activeCategory, subCategories, subCategoriesChange}:CategoriesC
                             <input type="text" onChange={(e)=>setSearch(e.target.value)}
                                 value={search as string} placeholder="Search products, categories & brands" className="outline-none w-full bg-transparent"/>
                         </div>
-                        <button className="text-white bg-blue-700 h-full px-6 rounded-e-md hover:bg-blue-500" onClick={handleSearch}>Search</button>
+                        <button className="text-white bg-cyan-700 h-full px-6 rounded-e-md hover:bg-cyan-500" onClick={handleSearch}>Search</button>
                     </div>
                     <div className="flex justify-center items-center space-x-1">
                         <Link to={"../cart"} className='p-2 relative bg-gray-100 hover:bg-gray-200 rounded-full'>
@@ -78,17 +80,22 @@ const Header = ({activeCategory, subCategories, subCategoriesChange}:CategoriesC
                                 <DropdownMenuContent className="w-56">
                                     <DropdownMenuLabel>My Account</DropdownMenuLabel>
                                     <DropdownMenuSeparator />
-                                    <DropdownMenuItem onClick={()=>{navigate(`../users/${auth!.id}`)}}>
+                                    <DropdownMenuItem onClick={()=>{navigate(`../profile/${auth!.id}`)}}>
                                         <User className="mr-2 h-4 w-4" />
                                         <span>Profile</span>
-                                    <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
+                                    {/* <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut> */}
+                                    </DropdownMenuItem>
+                                    <DropdownMenuItem onClick={()=>{navigate(`../orders/${auth!.id}`)}}>
+                                        <ShoppingBag className="mr-2 h-4 w-4" />
+                                        <span>Orders</span>
+                                    {/* <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut> */}
                                     </DropdownMenuItem>
                                     <DropdownMenuItem onClick={()=>{
                                         dispatch({type: "REMOVE_AUTH", payload: undefined})
                                     }}>
                                         <LogOut className="mr-2 h-4 w-4" />
                                         <span>Log out</span>
-                                        <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
+                                        {/* <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut> */}
                                     </DropdownMenuItem>
                                 </DropdownMenuContent>
                                 </DropdownMenu>

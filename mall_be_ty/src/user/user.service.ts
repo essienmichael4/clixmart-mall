@@ -112,11 +112,21 @@ export class UserService {
   }
 
   async findUserById(id:number){
-    return await this.userRepo.findOneBy({id})
+    return await this.userRepo.findOne({
+      relations: {
+        addresses: true
+      },
+      where: {id}
+    })
   }
   
   findOne(id: number) {
-    return this.userRepo.findOneBy({id});
+    return this.userRepo.findOne({
+      relations: {
+        addresses: true
+      },
+      where: {id}
+    })
   }
   
   async resetPassword(id: number, password:string) {

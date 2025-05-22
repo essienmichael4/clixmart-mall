@@ -62,7 +62,6 @@ const AddAddress = ({id, formStep, setFormStep}:Props) => {
             state: "",
             city: "",
             addressLineOne: "",
-            // addressLineTwo: "",
             landmark: "",
             zip: ""
         }
@@ -83,7 +82,7 @@ const AddAddress = ({id, formStep, setFormStep}:Props) => {
         form.setValue("city", value.name)
     }
 
-    const addStoreAddress = async (data:AddressSchemaType)=>{
+    const addAddress = async (data:AddressSchemaType)=>{
         const response = await axios_instance_token.post(`/users/${id}/address`, {
             ...data,
             addressLineTwo
@@ -93,10 +92,10 @@ const AddAddress = ({id, formStep, setFormStep}:Props) => {
     }
 
     const {mutate, isPending} = useMutation({
-        mutationFn: addStoreAddress,
+        mutationFn: addAddress,
         onSuccess: (data)=>{
-            toast.success("Store address added successfully", {
-                id: "create-store"
+            toast.success("Address added successfully", {
+                id: "add-address"
             })
 
             form.reset({
@@ -104,7 +103,6 @@ const AddAddress = ({id, formStep, setFormStep}:Props) => {
                 state: data.state,
                 landmark: data.landmark,
                 addressLineOne: data.addressLineOne,
-                // addressLineTwo: data.addressLineTwo,
                 city: data.city,
                 zip: data.zip
             })
@@ -113,11 +111,11 @@ const AddAddress = ({id, formStep, setFormStep}:Props) => {
         },onError: (err:any) => {
             if (axios.isAxiosError(err)){
                 toast.error(err?.response?.data?.message, {
-                    id: "create-store"
+                    id: "add-address"
                 })
             }else{
                 toast.error(`Something went wrong`, {
-                    id: "create-store"
+                    id: "add-address"
                 })
             }
         }
@@ -125,7 +123,7 @@ const AddAddress = ({id, formStep, setFormStep}:Props) => {
     
     const onSubmit = async (data:AddressSchemaType) =>{
         toast.loading("Updating store address...", {
-            id: "create-store"
+            id: "add-address"
         })
         mutate(data)
     }

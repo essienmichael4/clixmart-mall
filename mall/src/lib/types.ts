@@ -13,6 +13,18 @@ export type AddressType = {
     address: string
 }
 
+export type Address = {
+    id:number,
+    addressId?: string
+    country?: string,
+    city?: string,
+    state?: string,
+    zip?: string,
+    addressLineOne:string,
+    addressLineTwo?:string,
+    landmark?:string
+}
+
 export type AnnouncementType = {
     title?:string,
     body:string,
@@ -204,9 +216,9 @@ export type User = {
     role?: string,
     createdAt?: string,
     updatedAt?:string,
+    phone?:string,
+    addresses?:Address[]
 }
-
-
 
 export type LoadingType = {
     id: number,

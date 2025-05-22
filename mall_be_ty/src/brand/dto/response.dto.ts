@@ -19,7 +19,12 @@ export class BrandReponse{
     public url:string
 
     @ApiResponseProperty({
-        example: "https://something.jgp"
+        example: "something.png"
+    })
+    public imageName?:string
+
+    @ApiResponseProperty({
+        example: "https://something.png"
     })
     public imageUrl?:string 
 

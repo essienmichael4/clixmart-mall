@@ -15,6 +15,8 @@ import Product from './pages/Product/Product'
 import ForgotPassword from './pages/ForgotPassword/ForgotPassword'
 import PasswordReset from './pages/PasswordReset/PasswordReset'
 import Wizard from './pages/Wizard/Wizard'
+import Orders from './pages/Orders/Orders'
+import Order from './pages/Orders/Order'
 
 function App() {
 
@@ -32,6 +34,8 @@ function App() {
             <Route path='/dashboard' element={<Dashboard />} />
             <Route path='/cart' element={<Cart />} />
             <Route path='/profile/:id' element={<UserProfile />} />
+            <Route path='/orders' element={<Orders />} />
+            <Route path='/orders/:id' element={<Order />} />
             <Route path='/wizard' element={<Wizard />} />
           </Route>
         </Route>

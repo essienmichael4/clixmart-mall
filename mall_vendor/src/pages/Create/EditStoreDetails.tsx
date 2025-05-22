@@ -13,7 +13,7 @@ import { CircleOff, Loader2 } from "lucide-react"
 import { Separator } from "../../components/ui/separator"
 import { Store } from "@/lib/types"
 import StoreImageDialog from "./StoreImageDialog"
-import { useCallback, useState } from "react"
+import { useState } from "react"
 
 interface Props {
     store:Store | undefined,
@@ -34,13 +34,15 @@ const StoreDetails = ({store, id, formStep, setFormStep}:Props) => {
         }
     })
 
-    const handleImageChange = useCallback((value:string | undefined)=>{
-        setImageUrl(value)
-    }, [])
+    // const handleImageChange = useCallback((value:string | undefined)=>{
+    //     setImageUrl(value)
+    // }, [])
 
     const handleStatusChange = (value:"TRUE" | "FALSE")=>{
         form.setValue("isRegistered", value)        
     }
+
+    console.log(imageUrl)
 
     const addStoreDetails = async (data:StoreDetailSchemaType)=>{
         const response = await axios_instance_token.patch(`/stores/${id}/store-details`, {
@@ -94,7 +96,7 @@ const StoreDetails = ({store, id, formStep, setFormStep}:Props) => {
                                 <FormLabel className='text-xs font-semibold'>Store image</FormLabel>
                                 <div className="w-[100px] mx-auto aspect-square">
                                     <FormControl >
-                                        <StoreImageDialog id={store?.id} setImageUrl={handleImageChange} trigger={
+                                        <StoreImageDialog id={store?.id} setImageUrl={setImageUrl} trigger={
 
                                             <Button variant={'outline'} className='h-[100px] '>
                                                 {imageUrl ? 

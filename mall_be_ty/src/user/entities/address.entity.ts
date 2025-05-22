@@ -30,7 +30,7 @@ export class Address {
     @Column({nullable:true})
     landmark:string
 
-    @ManyToOne(()=> User, (user)=> user.address)
+    @ManyToOne(()=> User, (user)=> user.addresses)
     @JoinColumn({ name: 'user' })
     user: User
 }

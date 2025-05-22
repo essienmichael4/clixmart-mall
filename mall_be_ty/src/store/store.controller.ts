@@ -51,7 +51,7 @@ export class StoreController {
     
     const buffer = file.buffer
     const filename = `${v4()}-${file.originalname.replace(/\s+/g,'')}`
-    const upload = await this.uploadService.addBrandImage(buffer, filename) 
+    const upload = await this.uploadService.addStoreImage(buffer, filename) 
     
     return this.storeService.updateStoreImage(id, filename) 
   }

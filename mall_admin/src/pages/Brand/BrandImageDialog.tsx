@@ -52,7 +52,7 @@ const BrandImageDialog = ({id, trigger}:Props) => {
                 id: "add-image"
             })
 
-            queryClient.invalidateQueries({queryKey: ["categories", id]})
+            queryClient.invalidateQueries({queryKey: ["brands"]})
             
             setOpen(prev => !prev)
         },onError: (err:any) => {

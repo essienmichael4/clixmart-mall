@@ -34,7 +34,9 @@ const StoreAddress = ({store, id, formStep, setFormStep}:Props) => {
     const [citiesData, setCitiesData] = useState<ICity[]>()
 
     const [phone, setPhone] = useState(store?.storeAddress?.phone || "")
-    const [country, setCountry] = useState(countryData[0])
+    const [country, setCountry] = useState(countryData.find(country=>{
+        if(country.name === store?.storeAddress?.country) return country
+    }) ||countryData[0])
     const [state, setState] = useState<IState | undefined>()
     const [city, setCity] = useState<ICity>()
 
@@ -53,11 +55,15 @@ const StoreAddress = ({store, id, formStep, setFormStep}:Props) => {
     }, [state])
 
     useEffect(()=>{
-        stateData && setState(stateData[0])
+        stateData && setState(stateData.find(state=>{
+            if(state.name === store?.storeAddress?.state) return state
+        }) || stateData[0])
     }, [stateData])
 
     useEffect(()=>{
-        citiesData && setCity(citiesData[0])
+        citiesData && setCity(citiesData.find(city=>{
+            if(city.name === store?.storeAddress?.city) return city
+        }) || citiesData[0])
     }, [citiesData])
 
     const form = useForm({

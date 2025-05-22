@@ -28,7 +28,7 @@ export class Category {
     slug:string
 
     @Column({nullable: true})
-    url:string
+    imageName:string
 
     @CreateDateColumn({ type: 'timestamp' })
     createdAt: Date;

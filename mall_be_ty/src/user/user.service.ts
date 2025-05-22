@@ -172,6 +172,32 @@ export class UserService {
     return await this.userRepo.findOneBy({id});
   }
 
+  async updateAddress(addressId:number, addressDto:AddressDto){
+    try{
+      const address = await this.addressRepo.findOne({
+        where: {
+          id: addressId
+        }
+      })
+
+      address.country = addressDto.country
+      address.state = addressDto.state
+      address.city = addressDto.city
+      address.zip = addressDto.zip
+      address.addressLineOne = addressDto.addressLineOne
+      address.landmark = addressDto.landmark
+      if(addressDto.addressLineTwo){
+        address.addressLineTwo = addressDto.addressLineTwo
+      }
+
+      await this.addressRepo.update(address.id, address)
+
+      return address
+    }catch(err){
+      throw err
+    }
+  }
+
   async upsertMonthHistoryUsers(queryRunner: QueryRunner){
     const day = GetDay()
     const month = GetMonth()

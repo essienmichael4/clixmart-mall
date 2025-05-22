@@ -69,6 +69,17 @@ export class UserController {
   }
 
   @UseGuards(JwtGuard)
+  @Patch(':id/address/:addressId')
+  updateAddress(@Param('id', ParseIntPipe) id: number, @Param('addressId', ParseIntPipe) addressId: number, @Body() addressDto: AddressDto, @User() user:UserInfo) {
+    try{
+      if(id !== user.sub.id) throw new UnauthorizedException()
+      return this.userService.updateAddress(addressId, addressDto)
+    }catch(err){
+      throw err
+    }
+  }
+
+  @UseGuards(JwtGuard)
   @Patch('password/:id')
   async updatePassword(@Param('id', ParseIntPipe) id: number, @Body() updateUserPasswordRequest: UpdateUserPasswordRequest, @User() user:UserInfo) {
     try{

@@ -109,6 +109,7 @@ const AddNewAddress = ({userId, trigger}:Props) => {
                 zip: data.zip
             })
 
+            setOpen(prev => !prev)
         },onError: (err:any) => {
             if (axios.isAxiosError(err)){
                 toast.error(err?.response?.data?.message, {

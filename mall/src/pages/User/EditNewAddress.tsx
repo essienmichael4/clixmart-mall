@@ -42,14 +42,14 @@ const AddNewAddress = ({id, addressId, trigger, address}:Props) => {
     useEffect(()=>{
         setState(undefined)
         setCity(undefined)
-        form.setValue("state", "")
-        form.setValue("city", "")
+        form.setValue("state", address?.state || "")
+        form.setValue("city", address?.city || "")
         country && setStateData(State.getStatesOfCountry(country?.isoCode))
     }, [country])
 
     useEffect(()=>{
         setCity(undefined)
-        form.setValue("city", "")
+        form.setValue("city", address?.city || "")
         state ? setCitiesData(City.getCitiesOfState(country?.isoCode, state!.isoCode)) : setCitiesData(City.getCitiesOfCountry(country?.isoCode))
     }, [state])
 
@@ -109,15 +109,7 @@ const AddNewAddress = ({id, addressId, trigger, address}:Props) => {
             })
 
             queryClient.invalidateQueries({queryKey: ["user"]})
-            form.reset({
-                country: address?.country || "",
-                state: address?.state || "",
-                city: address?.city || "",
-                addressLineOne: address?.addressLineOne || "",
-                landmark: address?.landmark || "",
-                zip: address?.zip || ""
-            })
-
+            setOpen(prev => !prev)
         },onError: (err:any) => {
             if (axios.isAxiosError(err)){
                 toast.error(err?.response?.data?.message, {

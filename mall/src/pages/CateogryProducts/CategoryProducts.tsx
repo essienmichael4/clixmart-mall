@@ -2,34 +2,22 @@ import Header from "@/components/Header"
 import ProductCard from "@/components/Cards/ProductCard"
 import useCategoriesProducts from "@/hooks/useCategoriesProducts"
 import { useCallback, useRef, useState } from "react"
-import { useLocation, useNavigate, useParams } from "react-router-dom"
+import { useParams } from "react-router-dom"
 import CategoriesCheck from "@/components/CategoriesCheck"
+import { useSubCategoryFilters } from "@/hooks/useProductFilters"
 
 const CategoryProducts = () => {
     const {category} = useParams()
-    const location = useLocation()
-    const navigate = useNavigate()
-    const urlParams = new URLSearchParams(location.search)
-    const subCategoriesParams = urlParams.getAll("sub-categories")
-    const [subCategories, setSubCategories] = useState(subCategoriesParams)
+    const {values, addValue, removeValue } = useSubCategoryFilters("sub-categories")
     const [page, setPage] = useState(1)
-    const {products, isLoading, hasNextPage} = useCategoriesProducts({page, category:category, subCategories: subCategories})
-    
-    const handleSubCategoriesChange = (subCategoryId: string) => {
-        if(subCategories.includes(subCategoryId)){
-            const sub = subCategories.filter(el=> el !== subCategoryId)
-            setSubCategories(sub)
-        }else{
-            setSubCategories([...subCategories, subCategoryId])
-        }
-        const urlFormat = subCategories.map((sub, idx)=>{
-            if((subCategories.length - 1) == idx){
-                return `sub-categories=${sub}`
-            }
+    const {products, isLoading, hasNextPage} = useCategoriesProducts({page, category:category, subCategories: values})
 
-            return `sub-categories=${sub}&`
-        })
-        navigate(`../categories/${category}?${urlFormat.join("")}`)
+    const handleSubCategoriesChange = (subCategoryId: string) => {
+        if(values.includes(subCategoryId)){
+            removeValue(subCategoryId)
+        }else{
+            addValue(subCategoryId)
+        }
     }
 
     const intObserver = useRef<IntersectionObserver>()
@@ -47,10 +35,10 @@ const CategoryProducts = () => {
 
     return (
         <>
-            <Header subCategoriesChange={handleSubCategoriesChange} subCategories={subCategories} activeCategory={category as string}/>
+            <Header subCategoriesChange={handleSubCategoriesChange} subCategories={values} activeCategory={category as string}/>
             <div className='container space-y-2 px-4 mx-auto mt-8'>
                 <div className="flex">
-                    <CategoriesCheck subCategoriesChange={handleSubCategoriesChange} subCategories={subCategories} activeCategory={category as string} />
+                    <CategoriesCheck subCategoriesChange={handleSubCategoriesChange} subCategories={values} activeCategory={category as string} />
                     {isLoading && "loading..."}
                     <div className='w-full flex flex-wrap'>
                         {products?.map((product, i)=>{

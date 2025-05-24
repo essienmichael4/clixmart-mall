@@ -108,7 +108,9 @@ const EditBrand = ({item, trigger}:Props) => {
                                             <Button variant={'outline'} className='h-[100px] w-full'>
                                                 {item.imageUrl ? 
                                                     <div className='flex flex-col items-center gap-2'>
-                                                        <img src={item.imageUrl} role='image'  className='w-20 h-20'/>
+                                                        <div className='w-[50px] h-[50px] overflow-hidden rounded-lg'>
+                                                            <img src={item.imageUrl} role='image'  className='w-full h-full'/>
+                                                        </div>
                                                         <p className='text-xs text-muted-foreground'>Click to change</p>
                                                     </div>
                                                     : 

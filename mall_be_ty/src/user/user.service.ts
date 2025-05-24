@@ -112,11 +112,21 @@ export class UserService {
   }
 
   async findUserById(id:number){
-    return await this.userRepo.findOneBy({id})
+    return await this.userRepo.findOne({
+      relations: {
+        addresses: true
+      },
+      where: {id}
+    })
   }
   
   findOne(id: number) {
-    return this.userRepo.findOneBy({id});
+    return this.userRepo.findOne({
+      relations: {
+        addresses: true
+      },
+      where: {id}
+    })
   }
   
   async resetPassword(id: number, password:string) {
@@ -160,6 +170,32 @@ export class UserService {
     })
   
     return await this.userRepo.findOneBy({id});
+  }
+
+  async updateAddress(addressId:number, addressDto:AddressDto){
+    try{
+      const address = await this.addressRepo.findOne({
+        where: {
+          id: addressId
+        }
+      })
+
+      address.country = addressDto.country
+      address.state = addressDto.state
+      address.city = addressDto.city
+      address.zip = addressDto.zip
+      address.addressLineOne = addressDto.addressLineOne
+      address.landmark = addressDto.landmark
+      if(addressDto.addressLineTwo){
+        address.addressLineTwo = addressDto.addressLineTwo
+      }
+
+      await this.addressRepo.update(address.id, address)
+
+      return address
+    }catch(err){
+      throw err
+    }
   }
 
   async upsertMonthHistoryUsers(queryRunner: QueryRunner){

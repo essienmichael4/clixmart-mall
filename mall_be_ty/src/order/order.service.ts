@@ -19,12 +19,17 @@ import { OrderReponseDto } from './dto/response.dto';
 import { UploadService } from 'src/upload/upload.service';
 import { OrderFilterDto } from './dto/request.dto';
 import { ProductResponseDto } from 'src/product/dto/response.dto';
+import { PageOptionsDto } from 'src/common/dto/pageOptions.dto';
+import { PageMetaDto } from 'src/common/dto/pageMeta.dto';
+import { PageDto } from 'src/common/dto/page.dto';
+import { Address } from 'src/user/entities/address.entity';
 
 @Injectable()
 export class OrderService {
   constructor(
     @InjectRepository(Product) private readonly productRepo:Repository<Product>,
     @InjectRepository(User) private readonly userRepo:Repository<User>,
+    @InjectRepository(Address) private readonly addressRepo:Repository<Address>,
     @InjectRepository(OrderItem) private readonly orderItemRepo:Repository<OrderItem>,
     @InjectRepository(Order) private readonly orderRepo:Repository<Order>,
     @InjectRepository(MonthHistory) private readonly monthHistoryRepo:Repository<MonthHistory>,
@@ -43,6 +48,11 @@ export class OrderService {
       await queryRunner.startTransaction()
       const user = await this.userRepo.findOne({where: {
           id:userId
+        }
+      })
+
+      const userAddress = await this.addressRepo.findOne({where: {
+          addressId:createOrderDto.addressId
         }
       })
 
@@ -85,7 +95,8 @@ export class OrderService {
         shownOrderId: this.generateAmazonStyleOrderId(),
         total: total,
         orderItems: orderItems,
-        user: user
+        user: user,
+        ...(userAddress && {address: userAddress})
       }
 
       const order = await this.createUserOrder(saveEntity, queryRunner)
@@ -137,6 +148,96 @@ export class OrderService {
         ...(status && { status:  status}),
       }
     })
+  }
+
+  async findUsersOrder(userId:number, orderId:string) {
+    try{
+      const user = await this.userRepo.findOne({where: {
+        id:userId
+        }
+      })
+      if(!user) throw new Error("User does not exist")
+
+      const order = await this.orderRepo.findOne({
+        relations: {
+          orderItems: {
+            product: true
+          },
+          user: true
+        },
+        where: {
+          orderId,
+          user: { id: user.id }
+        }
+      })
+
+      if (!order) throw new Error("Order not found")
+
+      const orderResponse = new OrderReponseDto(order)
+
+      await Promise.all(orderResponse.orderItems.map(async item => {
+          if (item.product?.imageName) {
+            item.product.imageUrl = await this.uploadService.getPresignedUrl(`products/${item.product.imageName}`)
+          }
+        })
+      )
+      
+      return orderResponse
+    }catch (err) {
+      // this.logger.error(`Failed to find order ${orderId} for user ${userId}`, err)
+      throw err
+    }
+  }
+
+  async findUsersOrders(pageOptionsDto:PageOptionsDto, userId:number, orderFilterDto:OrderFilterDto) {
+    try{
+      const user = await this.userRepo.findOne({where: {
+        id:userId
+        }
+      })
+      if(!user) throw new Error("User does not exist")
+
+      const {status} = orderFilterDto
+
+      const [orders, ordersCount] = await Promise.all([
+      this.orderRepo.find({
+        relations: {
+          orderItems: {
+            product: true
+          },
+          user: true
+        },
+        where: {
+          ...(status && { status }),
+          user: { id: user.id }
+        },
+        skip: pageOptionsDto.skip,
+        take: pageOptionsDto.take
+      }),
+
+      this.orderRepo.count({
+        where: {
+          ...(status && { status }),
+          user: { id: user.id }
+        }
+      })
+    ])
+
+      const orderResponse = orders.map(order => new OrderReponseDto(order))
+
+      await Promise.all(orderResponse.flatMap(order =>
+        order.orderItems.map(async item => {
+          if (item.product?.imageName) {
+            item.product.imageUrl = await this.uploadService.getPresignedUrl(`products/${item.product.imageName}`)
+          }
+        })
+      ))
+
+      const pageMetaDto = new PageMetaDto({itemCount: ordersCount, pageOptionsDto})
+      return new PageDto(orders, pageMetaDto)
+    }catch(err){
+      throw err
+    }
   }
 
   findAllStoreOrders(store: string, orderFilterDto:OrderFilterDto) {

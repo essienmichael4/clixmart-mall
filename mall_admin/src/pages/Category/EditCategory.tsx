@@ -109,7 +109,9 @@ const EditCategory = ({id, name, trigger, imageUrl}:Props) => {
                                             <Button variant={'outline'} className='h-[100px] w-full'>
                                                 {imageUrl ? 
                                                     <div className='flex flex-col items-center gap-2'>
-                                                        <img src={imageUrl} role='image'  className='w-20 h-20'/>
+                                                        <div className='w-[50px] h-[50px] overflow-hidden rounded-lg'>
+                                                            <img src={imageUrl} role='image'  className='w-full h-full'/>
+                                                        </div>
                                                         <p className='text-xs text-muted-foreground'>Click to change</p>
                                                     </div>
                                                     : 

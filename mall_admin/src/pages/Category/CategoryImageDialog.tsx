@@ -28,7 +28,7 @@ const CategoryImageDialog = ({id, trigger}:Props) => {
 
     const addCategoryImage = async ()=>{
         if(!image){
-            toast.error("Please hoose an image to upload", {
+            toast.error("Please choose an image to upload", {
                 id: "create-order"
             })
             return
@@ -52,7 +52,7 @@ const CategoryImageDialog = ({id, trigger}:Props) => {
                 id: "add-image"
             })
 
-            queryClient.invalidateQueries({queryKey: ["categories", id]})
+            queryClient.invalidateQueries({queryKey: ["categories"]})
             
             setOpen(prev => !prev)
         },onError: (err:any) => {

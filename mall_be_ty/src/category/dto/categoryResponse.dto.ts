@@ -32,6 +32,21 @@ export class CategoryResponseDto {
         example: 1
     })
     public id:number 
+    
+    @ApiResponseProperty({
+        example: "xxxxxxxxx-xxxxxxxxxx-xxxxxxxxx"
+    })
+    public categoryId:string 
+    
+    @ApiResponseProperty({
+        example: "https://image.png"
+    })
+    public imageName?:string 
+    
+    @ApiResponseProperty({
+        example: "https://image.png"
+    })
+    public imageUrl?:string 
 
     @ApiResponseProperty({
         example: "phone"
@@ -57,6 +72,10 @@ export class CategoryResponseDto {
         type: [SubCategoryResponseDto]
     })
     subCategories: SubCategoryResponseDto[]
+
+    constructor(partial:Partial<CategoryResponseDto>){
+        Object.assign(this, partial)
+    }
 }
 
 

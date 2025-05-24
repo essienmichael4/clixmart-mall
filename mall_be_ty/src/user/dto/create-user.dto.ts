@@ -63,7 +63,6 @@ export class FindUsersDto {
     email?:string
 }
 
-
 export class AddressDto {
     @ApiProperty({
         description: "Country name",
@@ -122,27 +121,6 @@ export class AddressDto {
     })
     @IsString()
     zip:string
-    
-    @ApiProperty({
-        description: "Street Address",
-        example: "12 Oakland Street",
-        required: true
-    })
-    @IsDefined()
-    @IsString()
-    @IsNotEmpty()
-    fullname:string 
-
-    
-    @ApiProperty({
-        description: "Street Address",
-        example: "0200000000",
-        required: true
-    })
-    @IsDefined()
-    @IsString()
-    @IsNotEmpty()
-    phone:string 
 
     @ApiProperty({
         description: "Nearest Landmark",

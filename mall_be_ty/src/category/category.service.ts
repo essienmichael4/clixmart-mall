@@ -1,18 +1,21 @@
 import { HttpException, Injectable } from '@nestjs/common';
 import { CreateCategoryDto, EditCategoryDto } from './dto/create-category.dto';
-import { UpdateCategoryDto } from './dto/update-category.dto';
+// import { UpdateCategoryDto } from './dto/update-category.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Category } from './entities/category.entity';
 import { Repository } from 'typeorm';
 import { SubCategory } from './entities/subcategory.entity';
 import { CreateSubCategoryDto, EditSubCategoryDto } from './dto/create-sub-category.dto';
 import { v4 } from 'uuid';
+import { CategoryResponseDto } from './dto/categoryResponse.dto';
+import { UploadService } from 'src/upload/upload.service';
 
 @Injectable()
 export class CategoryService {
   constructor(
     @InjectRepository(Category) private readonly categoryRepo:Repository<Category>,
     @InjectRepository(SubCategory) private readonly subCategoryRepo:Repository<SubCategory>,
+    private readonly uploadService:UploadService,
   ){}
 
   create(createCategoryDto: CreateCategoryDto) {
@@ -56,7 +59,21 @@ export class CategoryService {
       relations:["subCategories"]
     });
     
-    return categories    
+    const categoriesResponse = await Promise.all(
+      categories.map(async (category) => {
+        const categoryResponse = new CategoryResponseDto(category);
+    
+        if (categoryResponse.imageName) {
+          categoryResponse.imageUrl = await this.uploadService.getPresignedUrl(
+            `category/${categoryResponse.imageName}`
+          );
+        }
+    
+        return categoryResponse;
+      })
+    );
+
+    return categoriesResponse
   }
 
   findAllSubCategories() {
@@ -78,8 +95,16 @@ export class CategoryService {
     return subCategories
   }
 
-  findOne(id: number) {
-    return this.categoryRepo.findOneBy({id});
+  async findOne(id: number) {
+    const category = await this.categoryRepo.findOneBy({id});
+    const categoryResponse = new CategoryResponseDto(category)
+    if (categoryResponse.imageName) {
+      categoryResponse.imageUrl = await this.uploadService.getPresignedUrl(
+        `category/${categoryResponse.imageName}`
+      );
+    }
+
+    return categoryResponse
   }
 
   updateCategory(id: number, editCategoryDto: EditCategoryDto) {
@@ -96,7 +121,7 @@ export class CategoryService {
 
   updateCategoryImage(id:number, filename:string){
     return this.categoryRepo.update(id, {
-      url: filename
+      imageName: filename
     })
   }
 

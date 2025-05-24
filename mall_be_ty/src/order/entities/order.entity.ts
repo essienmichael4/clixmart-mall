@@ -1,6 +1,7 @@
 import { User } from "src/user/entities/user.entity";
 import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { OrderItem } from "./orderItem.entity";
+import { Address } from "src/user/entities/address.entity";
 
 export enum Deleted {
     TRUE = 'TRUE',
@@ -71,4 +72,7 @@ export class Order {
     @ManyToOne(() => User, (user) => user.products)
     @JoinColumn({ name: 'orderedBy' })
     user: User;
+
+    @ManyToOne(() => Address, address => address.orders, { eager: true })
+    address: Address;
 }

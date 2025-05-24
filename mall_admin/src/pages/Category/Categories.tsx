@@ -13,7 +13,11 @@ const Categories = () => {
 
   const categories = useQuery<Category[]>({
     queryKey: ["categories"],
-    queryFn: async() => await axios_instance_token.get(`/categories`).then(res => res.data)
+    queryFn: async() => await axios_instance_token.get(`/categories`).then(res => {
+      console.log(res.data);
+      
+      return res.data
+    })
   })
 
   return (

@@ -35,6 +35,10 @@ const MobileCategories = () => {
                             <Toggle onClick={()=>handleToggleActive(category.id)} className={`p-1 rounded-full hover:bg-gray-100 `}>
                             {active == category.id ? <ChevronDown className="w-4 h-4"/>: <ChevronRight className="w-4 h-4"/> } 
                             </Toggle>
+                            {category.imageUrl && <div className="w-5 h-5 rounded-sm overflow-hidden">
+                                    <img src={category.imageUrl} className="w-full h-full" alt="" />
+                                </div>
+                            }
                             <Link to={`/categories/${category.slug}`} className="text-sm ">{category.name}</Link> 
                         </div>
                         <div className={`${active==category.id ? 'block' : 'hidden'} pl-10 bg-slate-50`}>
@@ -47,6 +51,10 @@ const MobileCategories = () => {
                     </div>
                 })
             }
+            <Separator className="my-2 md:hidden lg:block xl:hidden"/>
+            <div className="md:hidden lg:block xl:hidden">
+                <a className="text-sm" target='_blank' href='https://vendor.clixmartonline.com'>Sell on Clixmart</a>
+            </div>
         </div>
   )
 }

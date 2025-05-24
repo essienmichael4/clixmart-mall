@@ -27,6 +27,8 @@ export type Brand = {
 export type Category = {
     id:number,
     name:string,
+    imageName?:string,
+    imageUrl?:string,
     createdAt:string,
     updatedAt:string,
     subCategories?: Category[]

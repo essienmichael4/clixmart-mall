@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, HttpCode, HttpStatus, UsePipes, ValidationPipe, Query } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, HttpCode, HttpStatus, UsePipes, ValidationPipe, Query, ParseIntPipe, UnauthorizedException } from '@nestjs/common';
 import { OrderService } from './order.service';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
@@ -6,6 +6,7 @@ import { JwtGuard } from 'src/guards/jwt.guard';
 import { ApiConsumes, ApiCreatedResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { User, UserInfo } from 'src/decorators/user.decorator';
 import { OrderFilterDto } from './dto/request.dto';
+import { PageOptionsDto } from 'src/common/dto/pageOptions.dto';
 
 @Controller('orders')
 @UsePipes(new ValidationPipe({
@@ -31,6 +32,28 @@ export class OrderController {
   @Get()
   findAll(@Query() orderFilterDto:OrderFilterDto) {
     return this.orderService.findAll(orderFilterDto);
+  }
+  
+  @UseGuards(JwtGuard)
+  @Get("users/:id")
+  findUsersOrders(@Query() pageOptionsDto:PageOptionsDto, @Param('id', ParseIntPipe) id: number, @Query() orderFilterDto:OrderFilterDto , @User() user:UserInfo) {
+    try{
+      if(id !== user.sub.id) throw new UnauthorizedException()
+      return this.orderService.findUsersOrders(pageOptionsDto, user.sub.id, orderFilterDto);
+    }catch(err){
+      throw err
+    }
+  }
+  
+  @UseGuards(JwtGuard)
+  @Get("users/:id/:orderId")
+  findUsersOrder(@Param('orderId') orderId: string, @Param('id', ParseIntPipe) id: number, @User() user:UserInfo) {
+    try{
+      if(id !== user.sub.id) throw new UnauthorizedException()
+      return this.orderService.findUsersOrder(user.sub.id, orderId);
+    }catch(err){
+      throw err
+    }
   }
 
   @UseGuards(JwtGuard)

@@ -9,6 +9,7 @@ import { GenerateSlug } from 'src/helpers/common';
 import { SubCategory } from 'src/category/entities/subcategory.entity';
 import { UploadService } from 'src/upload/upload.service';
 import { v4 } from 'uuid';
+import { BrandReponse } from './dto/response.dto';
 
 @Injectable()
 export class BrandService {
@@ -99,8 +100,8 @@ export class BrandService {
     });
   }
 
-  findOneByNameAndCategory(name: string, category: string) {
-    return this.brandRepo.findOne({
+  async findOneByNameAndCategory(name: string, category: string) {
+    const brand = await this.brandRepo.findOne({
       relations: {
         categories: true,
         products: true
@@ -111,6 +112,13 @@ export class BrandService {
         name: category.toLowerCase()
       }},
     });
+
+    const brandResponse = new BrandReponse(brand)
+    if (brandResponse.imageName) {
+      brandResponse.imageUrl = await this.uploadService.getPresignedUrl(
+        `brands/${brandResponse.imageName}`
+      );
+    }
   }
 
   findByCategories(category: string[]) {

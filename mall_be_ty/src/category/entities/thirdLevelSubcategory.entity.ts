@@ -1,16 +1,17 @@
-import { Column, CreateDateColumn, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { Category } from "./category.entity";
 import { Product } from "src/product/entities/product.entity";
 import { Brand } from "src/brand/entities/brand.entity";
 import { SecondLevelSubCategory } from "./secondLevelSubCategory.entity";
+// import { SecondLevelSubcategory } from "./secondLevelSubCategory.entity";
 
 export enum Deleted {
     TRUE = 'TRUE',
     FALSE = 'FALSE',
 }
 
-@Entity({name: "subCategory"})
-export class SubCategory {
+@Entity({name: "thirdLevelSubCategory"})
+export class ThirdLevelSubCategory {
     @PrimaryGeneratedColumn()
     id: number
 
@@ -36,17 +37,10 @@ export class SubCategory {
     @Column({ default: Deleted.FALSE })
     isDeleted: Deleted;
 
-    @ManyToOne(() => Category, (category) => category.subCategories, { onDelete: 'CASCADE' })
-    @JoinColumn({ name: 'categorySub' })
-    category: Category;
-
     @OneToMany(() => Product, (Product) => Product.subCategory)
     products: Product[];
 
-    @ManyToMany(() => Brand, (brand) => brand.subCategories)
-    @JoinTable()
-    brands: Brand[];
-
-    @OneToMany(() => SecondLevelSubCategory, (secondLevelSub) => secondLevelSub.subCategory, { cascade: true })
-    secondLevelSubCategories: SecondLevelSubCategory[];
+    @ManyToOne(() => SecondLevelSubCategory, (subsub) => subsub.thirdLevelSubCategories, { onDelete: 'CASCADE' })
+    @JoinColumn({ name: 'subSubCategory' })
+    secondLevelSubCategory: SecondLevelSubCategory;
 }

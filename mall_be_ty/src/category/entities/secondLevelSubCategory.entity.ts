@@ -2,29 +2,26 @@ import { Column, CreateDateColumn, Entity, JoinColumn, JoinTable, ManyToMany, Ma
 import { Category } from "./category.entity";
 import { Product } from "src/product/entities/product.entity";
 import { Brand } from "src/brand/entities/brand.entity";
-import { SecondLevelSubCategory } from "./secondLevelSubCategory.entity";
+import { SubCategory } from "./subcategory.entity";
+import { ThirdLevelSubCategory } from "./thirdLevelSubcategory.entity";
 
 export enum Deleted {
     TRUE = 'TRUE',
     FALSE = 'FALSE',
 }
 
-@Entity({name: "subCategory"})
-export class SubCategory {
+@Entity({name: "secondLevelSubCategory"})
+export class SecondLevelSubCategory {
     @PrimaryGeneratedColumn()
     id: number
 
     @Column({type: "uuid", unique:true})
-    subCategoryId: string
+    secondLevelSubCategory: string
 
-    @Column({
-        unique: true
-    })
+    @Column({ unique: true })
     name:string
 
-    @Column({
-        unique: true
-    })
+    @Column({ unique: true })
     slug:string
 
     @CreateDateColumn({ type: 'timestamp' })
@@ -36,17 +33,13 @@ export class SubCategory {
     @Column({ default: Deleted.FALSE })
     isDeleted: Deleted;
 
-    @ManyToOne(() => Category, (category) => category.subCategories, { onDelete: 'CASCADE' })
-    @JoinColumn({ name: 'categorySub' })
-    category: Category;
-
     @OneToMany(() => Product, (Product) => Product.subCategory)
     products: Product[];
 
-    @ManyToMany(() => Brand, (brand) => brand.subCategories)
-    @JoinTable()
-    brands: Brand[];
+    @ManyToOne(() => SubCategory, (sub) => sub.secondLevelSubCategories, { onDelete: 'CASCADE' })
+    @JoinColumn({ name: 'subCategory' })
+    subCategory: SubCategory;
 
-    @OneToMany(() => SecondLevelSubCategory, (secondLevelSub) => secondLevelSub.subCategory, { cascade: true })
-    secondLevelSubCategories: SecondLevelSubCategory[];
+    @OneToMany(() => ThirdLevelSubCategory, (sss) => sss.secondLevelSubCategory, { cascade: true })
+    thirdLevelSubCategories: ThirdLevelSubCategory[];
 }

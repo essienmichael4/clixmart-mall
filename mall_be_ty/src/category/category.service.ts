@@ -5,16 +5,20 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Category } from './entities/category.entity';
 import { Repository } from 'typeorm';
 import { SubCategory } from './entities/subcategory.entity';
-import { CreateSubCategoryDto, EditSubCategoryDto } from './dto/create-sub-category.dto';
+import { CreateSubCategoryDto, CreateSubLevelSubCategoryDto, EditSubCategoryDto } from './dto/create-sub-category.dto';
 import { v4 } from 'uuid';
 import { CategoryResponseDto } from './dto/categoryResponse.dto';
 import { UploadService } from 'src/upload/upload.service';
+import { SecondLevelSubCategory } from './entities/secondLevelSubCategory.entity';
+import { ThirdLevelSubCategory } from './entities/thirdLevelSubcategory.entity';
 
 @Injectable()
 export class CategoryService {
   constructor(
     @InjectRepository(Category) private readonly categoryRepo:Repository<Category>,
     @InjectRepository(SubCategory) private readonly subCategoryRepo:Repository<SubCategory>,
+    @InjectRepository(SecondLevelSubCategory) private readonly secondLevelSubCategoryRepo:Repository<SecondLevelSubCategory>,
+    @InjectRepository(ThirdLevelSubCategory) private readonly thirdLevelSubCategoryRepo:Repository<ThirdLevelSubCategory>,
     private readonly uploadService:UploadService,
   ){}
 
@@ -49,6 +53,48 @@ export class CategoryService {
       }
 
       return this.subCategoryRepo.save(saveEntity)
+    }catch(err){
+      throw err
+    }
+  }
+
+  async createSecondLevelSubCategory(createSubLevelSubCategoryDto: CreateSubLevelSubCategoryDto) {
+    try{      
+      const subCategory = await this.subCategoryRepo.findOneBy({name: createSubLevelSubCategoryDto.subCategory.toLowerCase()})
+      
+      if(!subCategory) throw new HttpException("Sub Category does not exist", 400)
+
+      const secondLevelSubCategoryEntity =  this.secondLevelSubCategoryRepo.create()
+      const saveEntity = {
+        ...secondLevelSubCategoryEntity,
+        name: createSubLevelSubCategoryDto.name.toLowerCase(),
+        subCategoryId: v4(),
+        slug: this.generateSlug(createSubLevelSubCategoryDto.name.toLowerCase()),
+        subCategory
+      }
+
+      return this.secondLevelSubCategoryRepo.save(saveEntity)
+    }catch(err){
+      throw err
+    }
+  }
+
+  async createThirdLevelSubCategory(createSubLevelSubCategoryDto: CreateSubLevelSubCategoryDto) {
+    try{      
+      const secondLevelSubCategory = await this.secondLevelSubCategoryRepo.findOneBy({name: createSubLevelSubCategoryDto.subCategory.toLowerCase()})
+      
+      if(!secondLevelSubCategory) throw new HttpException("Sub Category does not exist", 400)
+
+      const thirdLevelSubCategoryEntity =  this.thirdLevelSubCategoryRepo.create()
+      const saveEntity = {
+        ...thirdLevelSubCategoryEntity,
+        name: createSubLevelSubCategoryDto.name.toLowerCase(),
+        subCategoryId: v4(),
+        slug: this.generateSlug(createSubLevelSubCategoryDto.name.toLowerCase()),
+        secondLevelSubCategory
+      }
+
+      return this.thirdLevelSubCategoryRepo.save(saveEntity)
     }catch(err){
       throw err
     }

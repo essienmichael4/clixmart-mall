@@ -39,7 +39,7 @@ export class Category {
     @Column({ default: Deleted.FALSE })
     isDeleted: Deleted;
 
-    @OneToMany(() => SubCategory, (subCategory) => subCategory.category)
+    @OneToMany(() => SubCategory, (subCategory) => subCategory.category, { cascade: true })
     subCategories: SubCategory[];
 
     @OneToMany(() => Product, (product) => product.category)

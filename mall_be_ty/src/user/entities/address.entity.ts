@@ -1,5 +1,11 @@
-import { Column, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import { User } from "./user.entity";
+import { Order } from "src/order/entities/order.entity";
+
+export enum AddressType {
+    HOME = 'HOME',
+    OFFICE = 'OFFICE',
+}
 
 @Entity({name: "address"})
 export class Address {
@@ -8,6 +14,9 @@ export class Address {
 
     @Column({type: "uuid", unique:true})
     addressId: string
+
+    @Column({default: AddressType.HOME})
+    addressType:AddressType
 
     @Column()
     country:string
@@ -33,4 +42,7 @@ export class Address {
     @ManyToOne(()=> User, (user)=> user.addresses)
     @JoinColumn({ name: 'user' })
     user: User
+
+    @OneToMany(() => Order, order => order.address)
+    orders: Order[];
 }

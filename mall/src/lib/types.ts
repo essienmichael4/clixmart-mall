@@ -20,6 +20,7 @@ export type Address = {
     city?: string,
     state?: string,
     zip?: string,
+    addressType: string,
     addressLineOne:string,
     addressLineTwo?:string,
     landmark?:string
@@ -69,14 +70,32 @@ export type Category = {
     subCategories?: SubCategory[]
 }
 
-// export type SubCategory = {
-//     id:number,
-//     name:string,
-//     slug:string,
-//     createdAt:string,
-//     updatedAt:string,
-//     subCategories?: Category[]
-// }
+export type Order = {
+    id: number,
+    orderId?: string,
+    status: string,
+    total: number,
+    tax: number,
+    discount: number,
+    createdAt: string,
+    updatedAt: string,
+    isPaid: string,
+    orderItems: OrderItem[],
+    user?: User
+}
+
+export type OrderItem = {
+    id: number,
+    orderItemId?: string,
+    name: string,
+    price: number,
+    subTotal: number,
+    quantity: number,
+    status: string,
+    createdAt: string,
+    updatedAt: string,
+    product: Product
+}
 
 export type Package = {
     id:number,

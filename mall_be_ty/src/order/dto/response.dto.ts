@@ -135,7 +135,7 @@ export class OrderReponseDto{
     })
     user: UserResponseDto
 
-    constructor(partial:Partial<ProductResponseDto>){
+    constructor(partial:Partial<OrderReponseDto>){
         Object.assign(this, partial)
     }
 }

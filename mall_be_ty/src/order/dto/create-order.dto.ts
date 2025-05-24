@@ -35,4 +35,14 @@ export class CreateOrderDto {
     @ValidateNested({each: true})
     @Type(()=>ItemDto)
     items:ItemDto[]
+
+    @ApiProperty({
+        description: "Address id",
+        example: "edded-ehdyt-dsddd-123ed",
+        required: true
+    })
+    @IsDefined()
+    @IsString()
+    @IsNotEmpty()
+    addressId:string 
 }

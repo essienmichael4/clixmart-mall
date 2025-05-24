@@ -24,7 +24,6 @@ type ShoppingCartContextType = {
 export const ShoppingCartContext = createContext({} as ShoppingCartContextType)
 
 export const ShoppingCartProvider = ({children}: {children: React.ReactNode}) => {
-    // const axios_instance_token = useAxiosToken()
     const [cartItems, setCartItems] = useLocalStorage<CartItem[]>("shopping-cart", [])
 
     const cartQuantity = cartItems.reduce((quantity, item)=> item.quantity + quantity, 0)

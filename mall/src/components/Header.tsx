@@ -19,7 +19,6 @@ interface CategoriesCheckParams {
 const Header = ({activeCategory, subCategories, subCategoriesChange}:CategoriesCheckParams) => {
     const [mobileDrawerOpen, setMobileDrawerOpen] = useState(false)
     const {auth, dispatch} = useAuth()
-    console.log(auth);
     
     const location = useLocation()
     const urlParams = new URLSearchParams(location.search)
@@ -83,19 +82,16 @@ const Header = ({activeCategory, subCategories, subCategoriesChange}:CategoriesC
                                     <DropdownMenuItem onClick={()=>{navigate(`../profile/${auth!.id}`)}}>
                                         <User className="mr-2 h-4 w-4" />
                                         <span>Profile</span>
-                                    {/* <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut> */}
                                     </DropdownMenuItem>
-                                    <DropdownMenuItem onClick={()=>{navigate(`../orders/${auth!.id}`)}}>
+                                    <DropdownMenuItem onClick={()=>{navigate(`../orders`)}}>
                                         <ShoppingBag className="mr-2 h-4 w-4" />
                                         <span>Orders</span>
-                                    {/* <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut> */}
                                     </DropdownMenuItem>
                                     <DropdownMenuItem onClick={()=>{
                                         dispatch({type: "REMOVE_AUTH", payload: undefined})
                                     }}>
                                         <LogOut className="mr-2 h-4 w-4" />
                                         <span>Log out</span>
-                                        {/* <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut> */}
                                     </DropdownMenuItem>
                                 </DropdownMenuContent>
                                 </DropdownMenu>

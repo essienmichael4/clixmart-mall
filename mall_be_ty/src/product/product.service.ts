@@ -205,7 +205,9 @@ export class ProductService {
     const productsResponse = products.map(product=> new ProductResponseDto(product))
 
     productsResponse.map(async (product) => {
-      product.imageUrl = await this.uploadService.getPresignedUrl(`products/${product.imageName}`)
+      if(product.imageName){
+        product.imageUrl = await this.uploadService.getPresignedUrl(`products/${product.imageName}`)
+      }
 
       product.productImages.map(async (image) => {
         image.imageUrl = await this.uploadService.getPresignedUrl(`products/${image.url}`)
@@ -244,7 +246,9 @@ export class ProductService {
     const productsResponse = products.map(product=> new ProductResponseDto(product))
 
     productsResponse.map(async (product) => {
-      product.imageUrl = await this.uploadService.getPresignedUrl(`products/${product.imageName}`)
+      if(product.imageName){
+        product.imageUrl = await this.uploadService.getPresignedUrl(`products/${product.imageName}`)
+      }
 
       if(product.productImages?.length > 0) {
         product.productImages.map(async (image) => {

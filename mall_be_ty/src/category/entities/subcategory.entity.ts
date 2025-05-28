@@ -1,4 +1,4 @@
-import { Column, CreateDateColumn, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, Index, JoinColumn, JoinTable, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { Category } from "./category.entity";
 import { Product } from "src/product/entities/product.entity";
 import { Brand } from "src/brand/entities/brand.entity";
@@ -25,6 +25,7 @@ export class SubCategory {
     @Column({
         unique: true
     })
+    @Index()
     slug:string
 
     @CreateDateColumn({ type: 'timestamp' })
@@ -37,7 +38,7 @@ export class SubCategory {
     isDeleted: Deleted;
 
     @ManyToOne(() => Category, (category) => category.subCategories, { onDelete: 'CASCADE' })
-    @JoinColumn({ name: 'categorySub' })
+    @JoinColumn({ name: 'categoryId' })
     category: Category;
 
     @OneToMany(() => Product, (Product) => Product.subCategory)

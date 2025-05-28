@@ -4,7 +4,7 @@ import Layout from './components/Layout'
 import Login from './pages/Login/Login'
 import Dashboard from './pages/Dashboard/Dashboard'
 import RequireAuth from './components/RequireAuth'
-import UserProfile from './pages/User/User'
+// import UserProfile from './pages/User/User'
 import NotFound from './pages/NotFound/NotFound'
 import Wizard from './pages/Wizard/Wizard'
 import CreateStore from './pages/Create/CreateStore'
@@ -34,7 +34,7 @@ function App() {
           <Route path='edit/:store/:id' element={<EditStore />} />
           <Route element={<Layout />}>
             <Route path='/dashboard/:store' element={<Dashboard />} />
-            <Route path='/profile/:id' element={<UserProfile />} />
+            {/* <Route path='/profile/:id' element={<UserProfile />} /> */}
             <Route path='/settings/:store' element={<Store />} />
             <Route path='/products/:store' element={<Products />} />
             <Route path='/orders/:store' element={<Orders />} />

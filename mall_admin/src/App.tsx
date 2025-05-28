@@ -16,6 +16,7 @@ import Products from './pages/Product/Products'
 import ProductDetails from './pages/Product/Product'
 import Orders from './pages/Order/Orders'
 import OrderDetails from './pages/Order/OrderDetails'
+import CategoryDetails from './pages/Category/Category'
 
 function App() {
 
@@ -27,6 +28,7 @@ function App() {
           <Route element={<Layout />}>
             <Route path='/dashboard' element={<Dashboard />} />
             <Route path='/categories' element={<Categories />} />
+            <Route path='/categories/:id' element={<CategoryDetails />} />
             <Route path='/brands' element={<Brands />} />
             <Route path='/brands/:id' element={<Brand />} />
             <Route path='/products' element={<Products />} />

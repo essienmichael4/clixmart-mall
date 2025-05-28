@@ -1,17 +1,19 @@
 import { Plus, Search } from "lucide-react"
 import { useState } from "react"
 import { useQuery } from "@tanstack/react-query"
-import { Category } from "@/lib/types"
+import { CategoryList } from "@/lib/types"
 import useAxiosToken from "@/hooks/useAxiosToken"
 import CategoriesTable from "@/features/CategoriesTable"
 import CreateCategory from "./CreateCategory"
 import CreateSubCategory from "./CreateSubCategory"
+import CreateThirdLevelCategory from "./CreateThirdLevelCategory"
+import CreateSecondLevelCategory from "./CreateSecondLevelCategory"
 
 const Categories = () => {
   const [filtering, setFiltering] = useState("")
   const axios_instance_token = useAxiosToken()
 
-  const categories = useQuery<Category[]>({
+  const categories = useQuery<CategoryList[]>({
     queryKey: ["categories"],
     queryFn: async() => await axios_instance_token.get(`/categories`).then(res => {
       console.log(res.data);
@@ -34,6 +36,16 @@ const Categories = () => {
             <CreateSubCategory trigger={
               <button className="py-2 px-2 md:px-4 flex items-center rounded-md border border-blue-500 text-blue-500">
                 <Plus className="w-4 h-4 mr-2 text-blue-500"/> <span className="text-xs md:text-sm">Add Sub-Category</span>
+              </button>}
+            />
+            <CreateSecondLevelCategory trigger={
+              <button className="py-2 px-2 md:px-4 flex items-center rounded-md border border-blue-500 text-blue-500">
+                <Plus className="w-4 h-4 mr-2 text-blue-500"/> <span className="text-xs md:text-sm">Add Second-Level Category</span>
+              </button>}
+            />
+            <CreateThirdLevelCategory trigger={
+              <button className="py-2 px-2 md:px-4 flex items-center rounded-md border border-blue-500 text-blue-500">
+                <Plus className="w-4 h-4 mr-2 text-blue-500"/> <span className="text-xs md:text-sm">Add Third-Level Category</span>
               </button>}
             />
           </div>

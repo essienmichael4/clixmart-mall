@@ -16,7 +16,7 @@ export class ThirdLevelSubCategory {
     id: number
 
     @Column({type: "uuid", unique:true})
-    subCategoryId: string
+    ThirdLevelSubCategoryId: string
 
     @Column({
         unique: true
@@ -41,6 +41,6 @@ export class ThirdLevelSubCategory {
     products: Product[];
 
     @ManyToOne(() => SecondLevelSubCategory, (subsub) => subsub.thirdLevelSubCategories, { onDelete: 'CASCADE' })
-    @JoinColumn({ name: 'subSubCategory' })
+    @JoinColumn({ name: 'secondLevelSubCategoryId' })
     secondLevelSubCategory: SecondLevelSubCategory;
 }

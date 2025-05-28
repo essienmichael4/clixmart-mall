@@ -19,6 +19,8 @@ import BrandPicker from "@/components/BrandPicker"
 import Tags from "@/components/Tags"
 import PrimaryImage from "./PrimaryImage"
 import SecondaryImages from "./SecondaryImages"
+import SecondLevelCategoryPicker from "@/components/SecondLevelCategoryPicker"
+import ThirdLevelCategoryPicker from "@/components/ThirdLevelCategoryPicker"
 
 const CreateProduct = () => {
     const {store, id} = useParams()
@@ -26,6 +28,9 @@ const CreateProduct = () => {
     const [discount, setDiscount] = useState('')
     const [tags, setTags] = useState<string[]>([])
     const [category, setCategory] = useState("")
+    const [subCategory, setSubCategory] = useState("")
+    const [secondLevelCategory, setSecondLevelCategory] = useState("")
+    const [thirdLevelCategory, setThirdLevelCategory] = useState("")
     const navigate = useNavigate()
     const axios_instance_token = useAxiosToken()
     const queryClient = useQueryClient()
@@ -33,6 +38,19 @@ const CreateProduct = () => {
     const handleCategoryChange = (value:string)=>{
         form.setValue("category", value)
         setCategory(value)
+    }
+
+    const handleSubCategoryChange = (value:string)=>{
+        form.setValue("subCategory", value)
+        setSubCategory(value)
+    }
+
+    const handleSecondLevelCategoryChange = (value:string)=>{
+        setSecondLevelCategory(value)
+    }
+
+    const handleThirdLevelCategoryChange = (value:string)=>{
+        setThirdLevelCategory(value)
     }
     
     const productDetail = useQuery<Product>({
@@ -84,7 +102,9 @@ const CreateProduct = () => {
         const response = await axios_instance_token.post(`/products/${store}/${id}/product-details`, {
             ...data,
             tags,
-            discount
+            discount,
+            secondLevelCategory,
+            thirdLevelCategory
         },)
 
         return response.data
@@ -120,6 +140,8 @@ const CreateProduct = () => {
         })
         mutate(data)
     }
+
+    console.log(secondLevelCategory)
 
     return (
         <>
@@ -202,15 +224,14 @@ const CreateProduct = () => {
                                         )} 
                                     />
 
-                                    <FormField 
-                                        // control={form.control}
+                                    <FormField
                                         name="discount"
                                         render={({}) =>(
                                             <FormItem className='flex-1 space-y-1'>
                                                 <FormLabel className='text-xs'>Discount</FormLabel>
                                                 <FormControl>
                                                     <div className="flex items-center gap-1">
-                                                        <Input onChange={(e)=>setDiscount(e.target.value)} className="py-4"/> <Percent className="w-8 h-8 bg-gray-300 rounded-md p-2" />
+                                                        <Input value={discount} onChange={(e)=>setDiscount(e.target.value)} className="py-4"/> <Percent className="w-8 h-8 bg-gray-300 rounded-md p-2" />
                                                     </div>
                                                 </FormControl>
                                             </FormItem>
@@ -249,15 +270,39 @@ const CreateProduct = () => {
                                 <FormField
                                     control={form.control}
                                     name="subCategory"
-                                    render={({field}) =>(
+                                    render={() =>(
                                         <FormItem className='flex-1 space-y-1'>
                                             <FormLabel className='text-xs'>Product Sub-Category</FormLabel>
                                             <FormControl>
-                                                <SubCategoryPicker category={category} onChange={field.onChange} />
+                                                <SubCategoryPicker category={category} onChange={handleSubCategoryChange} />
                                             </FormControl>
                                         </FormItem>
                                     )} 
                                 />
+                                
+                                {subCategory && <FormField
+                                    name="secondLevelCategory"
+                                    render={() =>(
+                                        <FormItem className='flex-1 space-y-1'>
+                                            <FormLabel className='text-xs'>Product Second-Level Category</FormLabel>
+                                            <FormControl>
+                                                <SecondLevelCategoryPicker subCategory={subCategory} onChange={handleSecondLevelCategoryChange} />
+                                            </FormControl>
+                                        </FormItem>
+                                    )} 
+                                />}
+                                
+                                {secondLevelCategory && secondLevelCategory !== "" && <FormField
+                                    name="thirdLevelCategory"
+                                    render={() =>(
+                                        <FormItem className='flex-1 space-y-1'>
+                                            <FormLabel className='text-xs'>Product Third-Level Category</FormLabel>
+                                            <FormControl>
+                                                <ThirdLevelCategoryPicker secondLevelCategory={secondLevelCategory} onChange={handleThirdLevelCategoryChange} />
+                                            </FormControl>
+                                        </FormItem>
+                                    )} 
+                                />}
 
                                 <FormField
                                     control={form.control}

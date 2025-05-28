@@ -1,6 +1,6 @@
-import useAuth from '@/hooks/useAuth'
+// import useAuth from '@/hooks/useAuth'
 import logo from '../assets/logo.png'
-import { LayoutDashboard, Package, Settings, Ship, Users } from 'lucide-react'
+import { LayoutDashboard, Package, Settings, Ship } from 'lucide-react'
 import { Link, NavLink, useParams } from 'react-router-dom'
 
 interface SideNavProps{
@@ -8,7 +8,7 @@ interface SideNavProps{
 }
 
 const SideNav = ({isToggled}:SideNavProps) => {
-  const {auth} = useAuth()
+  // const {auth} = useAuth()
   const {store} = useParams()
   return (
     <nav className={`fixed ${isToggled === true ? 'lg:w-[4rem] md:w-[220px] ' : 'lg:w-[220px]'} w-[4rem] top-0 bottom-0 z-50 py-3 backdrop-blur-lg border-r border-neutral-100/80 overflow-hidden transition-all ease-in-out duration-500`}>
@@ -34,10 +34,10 @@ const SideNav = ({isToggled}:SideNavProps) => {
                 <Settings className='h-6 w-6 mr-6' />
                 <span className=''>Settings</span>
             </NavLink>
-            <NavLink to={`/profile/${auth?.id}`} className='pl-1 py-2 flex items-center flex-shrink-0 mb-4 text-muted-foreground'>
+            {/* <NavLink to={`/profile/${auth?.id}`} className='pl-1 py-2 flex items-center flex-shrink-0 mb-4 text-muted-foreground'>
                 <Users className='h-6 w-6 mr-6' />
                 <span className='text-nowrap'>User Profile</span>
-            </NavLink>
+            </NavLink> */}
             
           
           {/* <div className="lg:hidden md:flex flex-col justify-end">

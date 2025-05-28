@@ -44,7 +44,7 @@ const Wizard = () => {
                             <div key={store.id} className='w-full sm:w-1/2 lg:w-1/3 p-4'>
                                 <div className={`${store.storeReview?.status === "APPROVED" && 'border-emerald-500'} ${store.storeReview?.status === "REJECTED" && 'border-rose-500'} border p-4 rounded-md flex gap-2 hover:bg-gray-100`}>
                                     {store.imageUrl && <div className='aspect-square w-20 rounded-lg overflow-hidden'>
-                                        <img src={store.imageUrl} alt="" />
+                                        <img src={store.imageUrl} className='w-full h-full' alt="" />
                                     </div>}
                                     <div>
                                         <h4 className='text-xs font-semibold'>Store name</h4>

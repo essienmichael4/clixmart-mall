@@ -24,8 +24,9 @@ export type Brand = {
     categories?: Category[]
 } 
 
-export type Category = {
+export type CategoryList = {
     id:number,
+    categoryId?: string,
     name:string,
     imageName?:string,
     imageUrl?:string,
@@ -34,7 +35,34 @@ export type Category = {
     subCategories?: Category[]
 }
 
+export type Category = {
+    id:number,
+    categoryId?: string,
+    name:string,
+    imageName?:string,
+    imageUrl?:string,
+    createdAt:string,
+    updatedAt:string,
+    subCategories?: SubCategory[]
+}
+
 export type SubCategory = {
+    id:number,
+    name:string,
+    createdAt:string,
+    updatedAt:string,
+    secondLevelSubCategories: SecondLevelSubCategory[]
+}
+
+export type SecondLevelSubCategory = {
+    id:number,
+    name:string,
+    createdAt:string,
+    updatedAt:string,
+    thirdLevelSubCategories: ThirdLevelSubCategory[]
+}
+
+export type ThirdLevelSubCategory = {
     id:number,
     name:string,
     createdAt:string,

@@ -9,12 +9,12 @@ import { cn } from '@/lib/utils'
 import { Category } from '@/lib/types'
 
 interface Props {
-    category:string,
+    subCategory:string,
     defaultValue?: string,
     onChange: (value: string)=>void
 }
 
-const SubCategoryPicker = ({ category, onChange, defaultValue }:Props) => {
+const SecondLevelCategoryPicker = ({ subCategory, onChange, defaultValue }:Props) => {
     const [open, setOpen] = useState(false)
     const [value, setValue] = useState("")
 
@@ -30,12 +30,12 @@ const SubCategoryPicker = ({ category, onChange, defaultValue }:Props) => {
     }, [onChange, value])
 
     const categoriesQuery =  useQuery<Category[]>({
-        queryKey: ["sub-categories", category],
-        queryFn: async() => category ? 
-            await axios_instance_token.get(`/categories/${category}/sub-categories`).then(res => {
+        queryKey: ["second-level-sub-categories", subCategory],
+        queryFn: async() => subCategory ? 
+            await axios_instance_token.get(`/categories/${subCategory}/second-level-sub-categories`).then(res => {
                 return res.data})
             :
-            await axios_instance_token.get(`/categories/sub-categories`).then(res => {
+            await axios_instance_token.get(`/categories/sub-categories/second-level-categories`).then(res => {
                 return res.data})
     })
 
@@ -48,7 +48,7 @@ const SubCategoryPicker = ({ category, onChange, defaultValue }:Props) => {
                     {selectedCategory ? (
                         <CategoryRow category={selectedCategory} />
                     ) : (
-                        "Select sub category"
+                        "Select second sub category"
                     )}
                     <ChevronsUpDown className='ml-2 h-4 w-4 shrink-0 opacity-50'/>
                 </Button>
@@ -63,7 +63,8 @@ const SubCategoryPicker = ({ category, onChange, defaultValue }:Props) => {
                     <CommandGroup>
                         <CommandList>
                             {categoriesQuery?.data && 
-                                categoriesQuery?.data?.map((category:Category) => {
+                                categoriesQuery?.data?.map((category:Category) => {                              
+                                    // console.log(categoriesQuery.data)
                                     return (
                                         <CommandItem key={category.name} onSelect={()=>{
                                             setValue(category.name)
@@ -90,4 +91,4 @@ function CategoryRow({category}:{category:Category}){
     )
 }
 
-export default SubCategoryPicker
+export default SecondLevelCategoryPicker

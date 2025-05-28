@@ -1,4 +1,4 @@
-import { Column, CreateDateColumn, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, Index, JoinColumn, JoinTable, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { Category } from "./category.entity";
 import { Product } from "src/product/entities/product.entity";
 import { Brand } from "src/brand/entities/brand.entity";
@@ -16,11 +16,12 @@ export class SecondLevelSubCategory {
     id: number
 
     @Column({type: "uuid", unique:true})
-    secondLevelSubCategory: string
+    secondLevelSubCategoryId: string
 
     @Column({ unique: true })
     name:string
 
+    @Index()
     @Column({ unique: true })
     slug:string
 
@@ -33,11 +34,11 @@ export class SecondLevelSubCategory {
     @Column({ default: Deleted.FALSE })
     isDeleted: Deleted;
 
-    @OneToMany(() => Product, (Product) => Product.subCategory)
+    @OneToMany(() => Product, (Product) => Product.secondLevelSubCategory)
     products: Product[];
 
     @ManyToOne(() => SubCategory, (sub) => sub.secondLevelSubCategories, { onDelete: 'CASCADE' })
-    @JoinColumn({ name: 'subCategory' })
+    @JoinColumn({ name: 'subCategoryId' })
     subCategory: SubCategory;
 
     @OneToMany(() => ThirdLevelSubCategory, (sss) => sss.secondLevelSubCategory, { cascade: true })

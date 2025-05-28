@@ -134,6 +134,8 @@ export interface ProductSearchParams {
 export interface CategoryProductsSearchParams {
     category?: string,
     subCategories?: string[],
+    secondLevelCategories?: string[],
+    thirdLevelCategories?: string[],
     brand?: string,
     page?:number,
     take?:number,
@@ -219,6 +221,24 @@ export type SubCategory = {
     subCategoryId: string,
     name:string,
     slug:string,
+    createdAt:string,
+    updatedAt:string,
+    secondLevelSubCategories: SecondLevelSubCategory[]
+}
+
+export type SecondLevelSubCategory = {
+    id: number,
+    secondLevelSubCategoryId: string,
+    name: string,
+    slug:string,
+    createdAt: string,
+    updatedAt: string,
+    thirdLevelSubCategories: ThirdLevelSubCategory[]
+}
+
+export type ThirdLevelSubCategory = {
+    id:number,
+    name:string,
     createdAt:string,
     updatedAt:string,
 }

@@ -263,12 +263,16 @@ export class ProductService {
     return new PageDto(productsResponse, pageMetaDto)
   }
 
-  async findProductsByCategoryAndSubCategories(pageOptionsDto:PageOptionsDto, category?: string, subCategories?: string[]){
+  async findProductsByCategoryAndSubCategories(pageOptionsDto:PageOptionsDto, category?: string, subCategories?: string[], secondLevelSub?:string[], thirdLevelSub?:string[]){
     const products = await this.productRepo.find({
       relations:{
         productReview: true,
         category: true,
-        subCategory: true,
+        subCategory: {
+          secondLevelSubCategories: {
+            thirdLevelSubCategories: true
+          }
+        },
         brand:true
       },
       where: {
@@ -281,7 +285,13 @@ export class ProductService {
           ...(category && { slug: category.toLowerCase() }),
         },
         subCategory: {
-          ...(subCategories.length > 0 && {subCategoryId: In(subCategories)})
+          ...(subCategories.length > 0 && {subCategoryId: In(subCategories)}),
+          secondLevelSubCategories: {
+            ...(secondLevelSub.length > 0 && {secondLevelSubCategoryId: In(secondLevelSub)}),
+            thirdLevelSubCategories: {
+              ...(thirdLevelSub.length > 0 && {ThirdLevelSubCategoryId: In(thirdLevelSub)})
+            }
+          }
         }
       },
       skip: pageOptionsDto.skip,

@@ -23,7 +23,6 @@ const AllProducts = ({store, status, review, filtering}:FilterProps) => {
         if(review && review !== undefined && review !== null && review !== "null") search.push(["review", review])
         if(status && status !== undefined && status !== null && status !== "null") search.push(["status", status])
         const params = new URLSearchParams(search).toString()
-        console.log(search);
 
         const products = await axios_instance_token.get(`/products/store/${store}?${params}`).then(res => {            
             return res.data

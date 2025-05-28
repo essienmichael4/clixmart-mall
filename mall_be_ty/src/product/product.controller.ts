@@ -127,10 +127,14 @@ export class ProductController {
   @HttpCode(HttpStatus.OK)
   @ApiPaginatedResponse(ProductResponseDto)
   @ApiConsumes("application/json")
-  findProductsByCategory(@Query() pageOptionsDto:PageOptionsDto, @Param("category") category?:string, @Query("subCategories") subCategories?:string) {
+  findProductsByCategory(@Query() pageOptionsDto:PageOptionsDto, @Param("category") category?:string, @Query("subCategories") subCategories?:string,
+   @Query("second-level-categories") secondLevelCategories?:string,
+    @Query("third-level-categories") thirdLevelCategories?:string) {
     const allSubCategories = subCategories.split(",")
+    const secondLevelSub = secondLevelCategories.split(",")
+    const thirdLevelSub = secondLevelCategories.split(",")
     if(allSubCategories.length > 0 && allSubCategories[0]!== ''){
-      return this.productService.findProductsByCategoryAndSubCategories(pageOptionsDto, category, allSubCategories);
+      return this.productService.findProductsByCategoryAndSubCategories(pageOptionsDto, category, allSubCategories, secondLevelSub, thirdLevelSub);
     }else{
       return this.productService.findProductsByCategory(pageOptionsDto, category);
     }

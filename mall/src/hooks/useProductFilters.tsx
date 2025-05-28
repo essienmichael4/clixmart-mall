@@ -1,7 +1,6 @@
 import { useCallback } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
-
 export function useSubCategoryFilters (paramName:string){
     const location = useLocation();
     const navigate = useNavigate();

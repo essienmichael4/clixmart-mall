@@ -9,14 +9,23 @@ import { useSubCategoryFilters } from "@/hooks/useProductFilters"
 const CategoryProducts = () => {
     const {category} = useParams()
     const {values, addValue, removeValue } = useSubCategoryFilters("sub-categories")
+    const secondLevelCategories = useSubCategoryFilters("second-level-categories")
     const [page, setPage] = useState(1)
-    const {products, isLoading, hasNextPage} = useCategoriesProducts({page, category:category, subCategories: values})
+    const {products, isLoading, hasNextPage} = useCategoriesProducts({page, category:category, subCategories: values, secondLevelCategories: secondLevelCategories.values})
 
     const handleSubCategoriesChange = (subCategoryId: string) => {
         if(values.includes(subCategoryId)){
             removeValue(subCategoryId)
         }else{
             addValue(subCategoryId)
+        }
+    }
+
+    const handleSecondSubCategoriesChange = (secondLevelCategoryId: string) => {
+        if(secondLevelCategories.values.includes(secondLevelCategoryId)){
+            secondLevelCategories.removeValue(secondLevelCategoryId)
+        }else{
+            secondLevelCategories.addValue(secondLevelCategoryId)
         }
     }
 
@@ -38,7 +47,7 @@ const CategoryProducts = () => {
             <Header subCategoriesChange={handleSubCategoriesChange} subCategories={values} activeCategory={category as string}/>
             <div className='container space-y-2 px-4 mx-auto mt-8'>
                 <div className="flex">
-                    <CategoriesCheck subCategoriesChange={handleSubCategoriesChange} subCategories={values} activeCategory={category as string} />
+                    <CategoriesCheck secondSubCategoriesChange={handleSecondSubCategoriesChange} secondLevelCategories={secondLevelCategories.values} subCategoriesChange={handleSubCategoriesChange} subCategories={values} activeCategory={category as string} />
                     {isLoading && "loading..."}
                     <div className='w-full flex flex-wrap'>
                         {products?.map((product, i)=>{

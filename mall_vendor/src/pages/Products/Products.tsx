@@ -7,7 +7,6 @@ import { useProductFilters } from "@/hooks/useProductFilters"
 
 const Products = () => {
   const {store} = useParams()
-  // const [status, setStatus] = useState("")
   const {status, review, setFilters} = useProductFilters()
   const [filtering, setFiltering] = useState("")
 
@@ -23,9 +22,8 @@ const Products = () => {
             }/>
         </div>
           
-        <div className="mt-4 flex flex-wrap justify-between items-center">
-              
-        <div className="flex gap-2 flex-wrap">
+        <div className="mt-4 flex flex-wrap gap-4 justify-between items-center">
+          <div className="flex gap-2 flex-wrap">
             <button onClick={()=> {setFilters({review: undefined, status: undefined})}} className={`${!status && !review && 'active bg-slate-400'} text-xs py-2 px-4 rounded-md`}>All</button>
             <div className="h-8 w-[1px] bg-gray-500"></div>
             <button  onClick={()=> {review === "PENDING" ? setFilters({review: undefined, status}) : setFilters({review: "PENDING", status})}} className={`${review === "PENDING" && 'active bg-slate-400'} text-xs py-2 px-4 rounded-md`}>Pending</button>

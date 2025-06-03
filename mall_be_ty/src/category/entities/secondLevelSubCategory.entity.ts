@@ -21,7 +21,6 @@ export class SecondLevelSubCategory {
     @Column({ unique: true })
     name:string
 
-    @Index()
     @Column({ unique: true })
     slug:string
 
@@ -38,7 +37,7 @@ export class SecondLevelSubCategory {
     products: Product[];
 
     @ManyToOne(() => SubCategory, (sub) => sub.secondLevelSubCategories, { onDelete: 'CASCADE' })
-    @JoinColumn({ name: 'subCategoryId' })
+    @JoinColumn({ name: 'subCategory' })
     subCategory: SubCategory;
 
     @OneToMany(() => ThirdLevelSubCategory, (sss) => sss.secondLevelSubCategory, { cascade: true })

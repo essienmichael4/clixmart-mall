@@ -146,7 +146,7 @@ export class CategoryController {
   @ApiConsumes("application/json")
   @Get(":subCategory/third-level-sub-categories")
   findSubCategoryThird(@Param('subCategory') secondLevelSubCategory: string) {
-    return this.categoryService.findSubCategoryThird(secondLevelSubCategory);
+    // return this.categoryService.findSubCategoryThird(secondLevelSubCategory);
   }
 
   @HttpCode(HttpStatus.OK)

@@ -49,6 +49,15 @@ export class FileService {
         }))
     }
 
+    async uploadBanner(imageBuffer: Buffer, filename:string){
+        return await this.s3Client.send(
+            new PutObjectCommand({
+            Bucket: this.configService.getOrThrow('BUCKET_NAME'),
+            Body: imageBuffer,
+            Key: `banners/${filename}`
+        }))
+    }
+
     async uploadBrand(imageBuffer: Buffer, filename:string){
         return await this.s3Client.send(
             new PutObjectCommand({

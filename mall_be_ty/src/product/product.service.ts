@@ -284,15 +284,19 @@ export class ProductService {
         category: {
           ...(category && { slug: category.toLowerCase() }),
         },
-        subCategory: {
-          ...(subCategories.length > 0 && {subCategoryId: In(subCategories)}),
-          secondLevelSubCategories: {
-            ...(secondLevelSub.length > 0 && {secondLevelSubCategoryId: In(secondLevelSub)}),
-            thirdLevelSubCategories: {
-              ...(thirdLevelSub.length > 0 && {ThirdLevelSubCategoryId: In(thirdLevelSub)})
-            }
+        ...(subCategories.length > 0 && {
+          subCategory: {
+            subCategoryId: In(subCategories),
+            ...(secondLevelSub.length > 0 && {
+              secondLevelSubCategories: {secondLevelSubCategoryId: In(secondLevelSub)},
+              ...(thirdLevelSub.length > 0 && {
+                thirdLevelSubCategories: {
+                  thirdLevelSubCategoryId: In(thirdLevelSub)
+              }
+              })
+            })
           }
-        }
+        })
       },
       skip: pageOptionsDto.skip,
       take: pageOptionsDto.take

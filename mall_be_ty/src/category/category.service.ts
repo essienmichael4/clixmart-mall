@@ -8,8 +8,8 @@ import { CreateSubCategoryDto, CreateSubLevelSubCategoryDto, EditSubCategoryDto 
 import { v4 } from 'uuid';
 import { CategoryResponseDto } from './dto/categoryResponse.dto';
 import { UploadService } from 'src/upload/upload.service';
-import { SecondLevelSubCategory } from './entities/secondLevelSubCategory.entity';
 import { ThirdLevelSubCategory } from './entities/thirdLevelSubcategory.entity';
+import { SecondLevelSubCategory } from './entities/secondLevelSubCategory.entity';
 
 @Injectable()
 export class CategoryService {

@@ -6,8 +6,8 @@ import { Category } from './entities/category.entity';
 import { SubCategory } from './entities/subcategory.entity';
 import { UploadService } from 'src/upload/upload.service';
 import { UploadModule } from 'src/upload/upload.module';
-import { SecondLevelSubCategory } from './entities/secondLevelSubCategory.entity';
 import { ThirdLevelSubCategory } from './entities/thirdLevelSubcategory.entity';
+import { SecondLevelSubCategory } from './entities/secondLevelSubCategory.entity';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Category, SubCategory, SecondLevelSubCategory, ThirdLevelSubCategory]), UploadModule],

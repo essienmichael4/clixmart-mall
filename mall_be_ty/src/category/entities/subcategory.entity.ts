@@ -17,15 +17,10 @@ export class SubCategory {
     @Column({type: "uuid", unique:true})
     subCategoryId: string
 
-    @Column({
-        unique: true
-    })
+    @Column({ unique: true })
     name:string
 
-    @Column({
-        unique: true
-    })
-    @Index()
+    @Column({ unique: true })
     slug:string
 
     @CreateDateColumn({ type: 'timestamp' })
@@ -38,7 +33,7 @@ export class SubCategory {
     isDeleted: Deleted;
 
     @ManyToOne(() => Category, (category) => category.subCategories, { onDelete: 'CASCADE' })
-    @JoinColumn({ name: 'categoryId' })
+    @JoinColumn({ name: 'categorySub' }) 
     category: Category;
 
     @OneToMany(() => Product, (Product) => Product.subCategory)

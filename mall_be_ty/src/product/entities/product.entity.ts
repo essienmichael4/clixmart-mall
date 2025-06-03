@@ -10,6 +10,7 @@ import { Brand } from "src/brand/entities/brand.entity";
 import { OrderItem } from "src/order/entities/orderItem.entity";
 import { ProductOption } from "./productOption.entity";
 import { ProductVariant } from "./productVariant.entity";
+import { ThirdLevelSubCategory } from "src/category/entities/thirdLevelSubcategory.entity";
 import { SecondLevelSubCategory } from "src/category/entities/secondLevelSubCategory.entity";
 
 export enum Discounted {
@@ -90,16 +91,20 @@ export class Product {
     store: Store;
 
     @ManyToOne(() => Category, (category) => category.products)
-    @JoinColumn({ name: 'categoryId' })
+    @JoinColumn({ name: 'category' })
     category: Category;
 
     @ManyToOne(() => SubCategory, (subCategory) => subCategory.products)
-    @JoinColumn({ name: 'subCategoryId' })
+    @JoinColumn({ name: 'subCategory' })
     subCategory: SubCategory;
 
     @ManyToOne(() => SecondLevelSubCategory, (secondSubCategory) => secondSubCategory.products)
-    @JoinColumn({ name: 'secondLevelSubCategoryId' })
+    @JoinColumn({ name: 'secondLevelSubCategory' })
     secondLevelSubCategory: SecondLevelSubCategory;
+
+    @ManyToOne(() => ThirdLevelSubCategory, (thirdSubCategory) => thirdSubCategory.products)
+    @JoinColumn({ name: 'thirdLevelSubCategory' })
+    thirdLevelSubCategory: ThirdLevelSubCategory;
 
     @OneToOne(()=> ProductReview, (productReview) => productReview.product, {cascade: true})
     @JoinColumn()

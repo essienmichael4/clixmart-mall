@@ -3,25 +3,19 @@ import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, Command
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { axios_instance_token } from '@/api/axios'
 import { useQuery } from '@tanstack/react-query'
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
+import CreateCategory from './CreateCategory'
 import { Check, ChevronsUpDown } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Category } from '@/lib/types'
 
 interface Props {
-    onChange: (value: string)=>void,
-    defaultValue?: string
+    onChange: (value: string)=>void
 }
 
-const CategoryPicker = ({ onChange, defaultValue }:Props) => {
+const SecondLevelCategoryPicker = ({ onChange }:Props) => {
     const [open, setOpen] = useState(false)
     const [value, setValue] = useState("")
-
-    useEffect(() => {
-        if (defaultValue) {
-            setValue(defaultValue);
-        }
-    }, [defaultValue]);
 
     useEffect(()=>{
         if(!value) return
@@ -29,13 +23,16 @@ const CategoryPicker = ({ onChange, defaultValue }:Props) => {
     }, [onChange, value])
 
     const categoriesQuery =  useQuery<Category[]>({
-        queryKey: ["categories"],
-        queryFn: async() => await axios_instance_token.get("/categories").then(res => {
-            return res.data
-        })
+        queryKey: ["secondLevelCategories"],
+        queryFn: async() => await axios_instance_token.get("/categories/sub-categories/second-level-categories").then(res => res.data)
     })
 
     const selectedCategory = categoriesQuery.data?.find((category:Category)=> category.name === value)
+
+    const successCallback = useCallback((category:Category)=>{
+        setValue(category.name)
+        setOpen(prev => !prev)
+    },[setValue, setOpen])
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -44,21 +41,24 @@ const CategoryPicker = ({ onChange, defaultValue }:Props) => {
                 {selectedCategory ? (
                     <CategoryRow category={selectedCategory} />
                 ) : (
-                    "Select category"
+                    "Select sub-category"
                 )}
                 <ChevronsUpDown className='ml-2 h-4 w-4 shrink-0 opacity-50'/>
             </Button>
         </PopoverTrigger>
-        <PopoverContent className='p-0'>
+        <PopoverContent className='wi[200px] p-0'>
             <Command onSubmit={e=> e.preventDefault()}>
                 <CommandInput placeholder='Search category'/>
+                <CreateCategory successCallback={successCallback}/>
                 <CommandEmpty>
                     <p>Category not found</p>
+                    <p className="text-xs text-muted-foreground">Tip: Create a new category</p>
                 </CommandEmpty>
                 <CommandGroup>
                     <CommandList>
                         {categoriesQuery?.data && 
-                            categoriesQuery?.data?.map((category:Category) => {
+                            categoriesQuery?.data?.map((category:Category) => {                              
+                                console.log(categoriesQuery.data)
                                 return (
                                     <CommandItem key={category.name} onSelect={()=>{
                                         setValue(category.name)
@@ -80,9 +80,10 @@ const CategoryPicker = ({ onChange, defaultValue }:Props) => {
 function CategoryRow({category}:{category:Category}){
     return (
         <div className="flex items-center gap-2">
+            {/* <span role='img'>{category.icon}</span> */}
             <span className='capitalize'>{category.name}</span>
         </div>
     )
 }
 
-export default CategoryPicker
+export default SecondLevelCategoryPicker

@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { Category } from '@/lib/types'
+import { CategoryList } from '@/lib/types'
 import { ColumnDef, getCoreRowModel, flexRender, useReactTable, getPaginationRowModel, getFilteredRowModel, getExpandedRowModel, ExpandedState } from '@tanstack/react-table'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { Edit, Trash2 } from 'lucide-react'
@@ -13,7 +13,7 @@ import DeleteSubCategory from '@/pages/Category/DeleteSubCategory'
 
 interface FilterProps{
     filtering:string
-    categories:Category[] 
+    categories:CategoryList[] 
 }
 
 const emptyData: any[]= []
@@ -21,7 +21,7 @@ const emptyData: any[]= []
 const CategoriesTable = ({categories, filtering}:FilterProps) => {
     const [expanded, setExpanded] = React.useState<ExpandedState>({})
 
-    const columns:ColumnDef<Category>[] =[{
+    const columns:ColumnDef<CategoryList>[] =[{
         accessorKey: "id",
         header:({column})=>(<DataTableColumnHeader column={column} title='No.' />),
         cell:({row}) => <div style={{
@@ -50,9 +50,9 @@ const CategoriesTable = ({categories, filtering}:FilterProps) => {
     },{
         accessorKey: "name",
         header:({column})=>(<DataTableColumnHeader column={column} title='Name' />),
-        cell:({row}) => <div className='capitalize'>
+        cell:({row}) => <Link to={`/categories/${row.original.id}`} className='capitalize'>
             {row.original.name}
-        </div>
+        </Link>
     },{
         accessorKey: "createdAt",
         header:({column})=>(<DataTableColumnHeader column={column} title='Day Created' />),

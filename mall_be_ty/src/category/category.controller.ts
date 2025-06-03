@@ -5,7 +5,7 @@ import { CreateCategoryDto, EditCategoryDto } from './dto/create-category.dto';
 import { uuid } from 'uuidv4';
 import { ApiConsumes, ApiCreatedResponse, ApiForbiddenResponse, ApiInternalServerErrorResponse, ApiOkResponse, ApiOperation, ApiTags, ApiUnprocessableEntityResponse } from '@nestjs/swagger';
 import { CategoryResponseDto, SubCategoryResponseDto } from './dto/categoryResponse.dto';
-import { CreateSubCategoryDto, EditSubCategoryDto } from './dto/create-sub-category.dto';
+import { CreateSubCategoryDto, CreateSubLevelSubCategoryDto, EditSubCategoryDto } from './dto/create-sub-category.dto';
 import { UploadFile } from 'src/decorators/file.decorator';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ImageFileFilter } from 'src/helpers/file-helper';
@@ -42,7 +42,7 @@ export class CategoryController {
       throw new BadRequestException("Invalid file provided, [Image files allowed]")
     }
 
-    const category = await this.categoryService.findOne(id)
+    const category = await this.categoryService.findOneById(id)
     if(!category) return new NotFoundException("Category not found")
 
     // if( category.url ){
@@ -76,12 +76,41 @@ export class CategoryController {
     return  await this.categoryService.createSubCategory(createSubCategoryDto);
   }
 
+  @HttpCode(HttpStatus.CREATED)
+  @ApiCreatedResponse({type: SubCategoryResponseDto, description: "Sub Category created successfully"})
+  @ApiOkResponse({type: SubCategoryResponseDto, description: "Sub Category created successfully"})
+  @ApiOperation({description: "Create Sub Category api"})
+  @ApiConsumes("application/json")
+  @Post("second-level-sub-categories")
+  async createSecondLevelSubCategory(@Body() createSubLevelSubCategoryDto: CreateSubLevelSubCategoryDto) {
+    return  await this.categoryService.createSecondLevelSubCategory(createSubLevelSubCategoryDto);
+  }
+
+  @HttpCode(HttpStatus.CREATED)
+  @ApiCreatedResponse({type: SubCategoryResponseDto, description: "Sub Category created successfully"})
+  @ApiOkResponse({type: SubCategoryResponseDto, description: "Sub Category created successfully"})
+  @ApiOperation({description: "Create Sub Category api"})
+  @ApiConsumes("application/json")
+  @Post("third-level-sub-categories")
+  async createThirdLevelSubCategory(@Body() createSubLevelSubCategoryDto: CreateSubLevelSubCategoryDto) {
+    return  await this.categoryService.createThirdLevelSubCategory(createSubLevelSubCategoryDto);
+  }
+
   @HttpCode(HttpStatus.OK)
   @ApiOkResponse({type: [CategoryResponseDto], description: ""})
   @ApiOperation({description: "Get all categories"})
   @Get()
   findAllCategories() {
     return this.categoryService.findAllCategories();
+  }
+
+  @HttpCode(HttpStatus.OK)
+  @ApiOkResponse({type: [CategoryResponseDto], description: ""})
+  @ApiOperation({description: "Get all sub categories"})
+  @ApiConsumes("application/json")
+  @Get("sub-categories/second-level-categories")
+  findAllSecondLevelSubcategories() {
+    return this.categoryService.findAllSecondLevelSubCategories();
   }
 
   @HttpCode(HttpStatus.OK)
@@ -104,7 +133,25 @@ export class CategoryController {
 
   @HttpCode(HttpStatus.OK)
   @ApiOkResponse({type: [CategoryResponseDto], description: ""})
-  @ApiOperation({description: "Get single categories"})
+  @ApiOperation({description: "Get all categories"})
+  @ApiConsumes("application/json")
+  @Get(":subCategory/second-level-sub-categories")
+  findSubCategorySecond(@Param('subCategory') subCategory: string) {
+    return this.categoryService.findSubCategorySecond(subCategory);
+  }
+
+  @HttpCode(HttpStatus.OK)
+  @ApiOkResponse({type: [CategoryResponseDto], description: ""})
+  @ApiOperation({description: "Get all categories"})
+  @ApiConsumes("application/json")
+  @Get(":subCategory/third-level-sub-categories")
+  findSubCategoryThird(@Param('subCategory') secondLevelSubCategory: string) {
+    // return this.categoryService.findSubCategoryThird(secondLevelSubCategory);
+  }
+
+  @HttpCode(HttpStatus.OK)
+  @ApiOkResponse({type: [CategoryResponseDto], description: ""})
+  @ApiOperation({description: "Get single category"})
   @ApiConsumes("application/json")
   @Get(':id')
   findOne(@Param('id') id: string) {

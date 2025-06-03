@@ -14,8 +14,6 @@ const EditProduct = () => {
     const {data, isLoading} = useQuery<Product>({
         queryKey: ["products", store, id],
         queryFn: async() => await axios_instance_token.get(`/products/store/${store}/${id}`).then(res => {
-            console.log(res.data);
-            
             return res.data
         })
     })

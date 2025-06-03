@@ -6,6 +6,10 @@ import { v4 } from 'uuid';
 export class UploadService {
   constructor(private readonly fileService:FileService){}
 
+  async addBanner(imageBuffer: Buffer, filename:string){
+    return await this.fileService.uploadBanner(imageBuffer, filename)
+  }
+
   async addAvatar(imageBuffer: Buffer, filename:string){
     return await this.fileService.uploadProfile(imageBuffer, filename)
   }

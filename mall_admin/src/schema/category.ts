@@ -21,6 +21,15 @@ export const SubCategorySchema = z.object({
     }),
 })
 
+export const SecondLevelSubCategorySchema = z.object({
+    name: z.string({
+        message: "Must be a valid category name."
+    }),
+    subCategory: z.string().min(2, {
+        message: "Must be a valid sub category name."
+    }),
+})
+
 export const EditSubCategorySchema = z.object({
     name: z.string().min(2, {
         message: "Must be a valid sub category name."
@@ -33,4 +42,5 @@ export const EditSubCategorySchema = z.object({
 export type CategorySchemaType = z.infer<typeof CategorySchema>
 export type EditCategorySchemaType = z.infer<typeof EditCategorySchema>
 export type SubCategorySchemaType = z.infer<typeof SubCategorySchema>
+export type SecondLevelSubCategoryType = z.infer<typeof SecondLevelSubCategorySchema>
 export type EditSubCategorySchemaType = z.infer<typeof EditSubCategorySchema>

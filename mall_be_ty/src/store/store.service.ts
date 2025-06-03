@@ -266,6 +266,34 @@ export class StoreService {
     }
   }
 
+  async findStoreBySlug(slug: string) {
+    try{
+      const store = await this.storeRepo.findOne({
+        where: {slug},
+        relations: {
+          storeReview: {
+            user: true
+          },
+          user: true,
+          storeDetail: true,
+          storeAddress: true,
+          paymentDetail: true,
+          nextOfKin: true
+        }
+      })
+ 
+      const storeResponse = new StoreReponseDto(store)
+
+      if(storeResponse.imageName){
+        storeResponse.imageUrl = await this.uploadService.getPresignedUrl(`stores/${storeResponse.imageName}`)
+      }
+
+      return storeResponse
+    }catch(err){
+      throw err
+    }
+  }
+
   update(id: number, updateStoreDto: UpdateStoreDto) {
     return `This action updates a #${id} store`;
   }

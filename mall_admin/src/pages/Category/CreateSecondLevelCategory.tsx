@@ -10,31 +10,31 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import axios from 'axios'
 import { Loader2 } from 'lucide-react'
-import { SubCategorySchema, SubCategorySchemaType } from '@/schema/category'
-import CategoryPicker from './CategoryPicker'
+import { SecondLevelSubCategorySchema, SecondLevelSubCategoryType } from '@/schema/category'
+import SubCategoryPicker from './SubCategoryPicker'
 
 interface Props{
     trigger?: React.ReactNode,
 }
 
-const CreateSubCategory = ({trigger}:Props) => {
+const CreateSecondLevelCategory = ({trigger}:Props) => {
     const [open, setOpen] = useState(false)
     const axios_instance_token = useAxiosToken()
     const queryClient = useQueryClient()
 
-    const form = useForm<SubCategorySchemaType>({
-        resolver:zodResolver(SubCategorySchema),
+    const form = useForm<SecondLevelSubCategoryType>({
+        resolver:zodResolver(SecondLevelSubCategorySchema),
         defaultValues:{
             name:""
         }
     })
 
     const handleCategoryChange = useCallback((value:string)=>{
-        form.setValue("category", value)
+        form.setValue("subCategory", value)
     }, [form])
 
-    const createSubCategory = async (data:SubCategorySchemaType)=>{
-        const response = await axios_instance_token.post(`/categories/sub-categories`, {
+    const createSubCategory = async (data:SecondLevelSubCategoryType)=>{
+        const response = await axios_instance_token.post(`/categories/second-level-sub-categories`, {
             ...data
         },)
 
@@ -44,13 +44,13 @@ const CreateSubCategory = ({trigger}:Props) => {
     const {mutate, isPending} = useMutation({
         mutationFn: createSubCategory,
         onSuccess: ()=>{
-            toast.success("Sub category added successfully", {
+            toast.success("Sub category created successfully", {
                 id: "add-sub-category"
             })
 
             form.reset({
                name: "",
-               category: ""
+               subCategory: ""
             })
 
             queryClient.invalidateQueries({queryKey: ["categories"]})
@@ -69,7 +69,7 @@ const CreateSubCategory = ({trigger}:Props) => {
         }
     })
 
-    const onSubmit = (data:SubCategorySchemaType)=>{
+    const onSubmit = (data:SecondLevelSubCategoryType)=>{
         toast.loading("Creating Sub-Category...", {
             id: "add-sub-category"
         })
@@ -82,7 +82,7 @@ const CreateSubCategory = ({trigger}:Props) => {
             <DialogContent className='w-[90%] mx-auto rounded-2xl'>
                 <DialogHeader className='items-start'>
                     <DialogTitle>
-                        Create Sub-Category
+                        Create Second-Level Category
                     </DialogTitle>
                     <DialogDescription>
                         Sub Category is used to furthur group your products
@@ -92,14 +92,14 @@ const CreateSubCategory = ({trigger}:Props) => {
                     <form className='space-y-2'>
                         <FormField 
                             control={form.control}
-                            name="category"
+                            name="subCategory"
                             render={({}) =>(
                                 <FormItem className='flex flex-col px-1'>
-                                    <FormLabel className='text-xs'>Category</FormLabel>
+                                    <FormLabel className='text-xs'>Sub-Category</FormLabel>
                                     <FormControl>
-                                        <CategoryPicker onChange={handleCategoryChange}/>
+                                        <SubCategoryPicker onChange={handleCategoryChange}/>
                                     </FormControl>
-                                    <FormDescription>Select a category</FormDescription>
+                                    <FormDescription>Select a sub-category</FormDescription>
                                 </FormItem>
                             )}
                         />
@@ -108,7 +108,7 @@ const CreateSubCategory = ({trigger}:Props) => {
                             name="name"
                             render={({field}) =>(
                                 <FormItem className='flex-1 px-1'>
-                                    <FormLabel className='text-xs'>Sub-Category Name</FormLabel>
+                                    <FormLabel className='text-xs'>Second-Level Category Name</FormLabel>
                                     <FormControl>
                                         <Input {...field} />
                                     </FormControl>
@@ -140,4 +140,4 @@ const CreateSubCategory = ({trigger}:Props) => {
     )
 }
 
-export default CreateSubCategory
+export default CreateSecondLevelCategory

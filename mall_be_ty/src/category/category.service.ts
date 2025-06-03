@@ -1,20 +1,23 @@
 import { HttpException, Injectable } from '@nestjs/common';
 import { CreateCategoryDto, EditCategoryDto } from './dto/create-category.dto';
-// import { UpdateCategoryDto } from './dto/update-category.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Category } from './entities/category.entity';
 import { Repository } from 'typeorm';
 import { SubCategory } from './entities/subcategory.entity';
-import { CreateSubCategoryDto, EditSubCategoryDto } from './dto/create-sub-category.dto';
+import { CreateSubCategoryDto, CreateSubLevelSubCategoryDto, EditSubCategoryDto } from './dto/create-sub-category.dto';
 import { v4 } from 'uuid';
 import { CategoryResponseDto } from './dto/categoryResponse.dto';
 import { UploadService } from 'src/upload/upload.service';
+import { ThirdLevelSubCategory } from './entities/thirdLevelSubcategory.entity';
+import { SecondLevelSubCategory } from './entities/secondLevelSubCategory.entity';
 
 @Injectable()
 export class CategoryService {
   constructor(
     @InjectRepository(Category) private readonly categoryRepo:Repository<Category>,
     @InjectRepository(SubCategory) private readonly subCategoryRepo:Repository<SubCategory>,
+    @InjectRepository(SecondLevelSubCategory) private readonly secondLevelSubCategoryRepo:Repository<SecondLevelSubCategory>,
+    @InjectRepository(ThirdLevelSubCategory) private readonly thirdLevelSubCategoryRepo:Repository<ThirdLevelSubCategory>,
     private readonly uploadService:UploadService,
   ){}
 
@@ -54,9 +57,58 @@ export class CategoryService {
     }
   }
 
+  async createSecondLevelSubCategory(createSubLevelSubCategoryDto: CreateSubLevelSubCategoryDto) {
+    try{      
+      const subCategory = await this.subCategoryRepo.findOneBy({name: createSubLevelSubCategoryDto.subCategory.toLowerCase()})
+      
+      if(!subCategory) throw new HttpException("Sub Category does not exist", 400)
+
+      const secondLevelSubCategoryEntity =  this.secondLevelSubCategoryRepo.create()
+      const saveEntity = {
+        ...secondLevelSubCategoryEntity,
+        name: createSubLevelSubCategoryDto.name.toLowerCase(),
+        secondLevelSubCategoryId: v4(),
+        slug: this.generateSlug(createSubLevelSubCategoryDto.name.toLowerCase()),
+        subCategory
+      }
+
+      return await this.secondLevelSubCategoryRepo.save(saveEntity)
+    }catch(err){
+      throw err
+    }
+  }
+
+  async createThirdLevelSubCategory(createSubLevelSubCategoryDto: CreateSubLevelSubCategoryDto) {
+    try{      
+      const secondLevelSubCategory = await this.secondLevelSubCategoryRepo.findOneBy({name: createSubLevelSubCategoryDto.subCategory.toLowerCase()})
+      
+      if(!secondLevelSubCategory) throw new HttpException("Sub Category does not exist", 400)
+
+      const thirdLevelSubCategoryEntity =  this.thirdLevelSubCategoryRepo.create()
+      const saveEntity = {
+        ...thirdLevelSubCategoryEntity,
+        name: createSubLevelSubCategoryDto.name.toLowerCase(),
+        subCategoryId: v4(),
+        slug: this.generateSlug(createSubLevelSubCategoryDto.name.toLowerCase()),
+        secondLevelSubCategory
+      }
+
+      return this.thirdLevelSubCategoryRepo.save(saveEntity)
+    }catch(err){
+      throw err
+    }
+  }
+
   async findAllCategories() {
     const categories = await this.categoryRepo.find({
-      relations:["subCategories"]
+      relations: {
+        subCategories: {
+          secondLevelSubCategories:{
+            thirdLevelSubCategories: true
+          }
+        },
+        
+      }
     });
     
     const categoriesResponse = await Promise.all(
@@ -77,13 +129,30 @@ export class CategoryService {
   }
 
   findAllSubCategories() {
-    return this.subCategoryRepo.find();
+    return this.subCategoryRepo.find({
+      relations: {
+        secondLevelSubCategories: {
+          thirdLevelSubCategories: true
+        }
+      }
+    });
+  }
+
+  findAllSecondLevelSubCategories() {
+    return this.secondLevelSubCategoryRepo.find({
+      relations: {
+        thirdLevelSubCategories: true
+      }
+    });
   }
 
   async findCategorySubCategories(category:string) {
     const subCategories = await this.subCategoryRepo.find({
       relations: {
-        category: true
+        category: true,
+        secondLevelSubCategories: {
+          thirdLevelSubCategories: true
+        }
       },
       where: {
         category: {
@@ -95,8 +164,56 @@ export class CategoryService {
     return subCategories
   }
 
+  async findSubCategorySecond(subCategory:string) {
+    const secondLevelSubCategories = await this.secondLevelSubCategoryRepo.find({
+      relations: {
+        subCategory: true,
+        thirdLevelSubCategories: true
+      },
+      where: {
+        subCategory: {
+          name: subCategory
+        }
+      }
+    });
+
+    return secondLevelSubCategories
+  }
+
+  async findSubCategoryThird(secondLevelSubCategory:string) {
+    const secondLevelSubCategories = await this.thirdLevelSubCategoryRepo.find({
+      relations: {
+        secondLevelSubCategory: true
+      },
+      where: {
+        secondLevelSubCategory: {
+          name: secondLevelSubCategory
+        }
+      }
+    });
+
+    return secondLevelSubCategories
+  }
+
+  async findOneById(id: number) {
+    const category = await this.categoryRepo.findOne({
+      where:{id}
+    });
+
+    return category
+  }
+
   async findOne(id: number) {
-    const category = await this.categoryRepo.findOneBy({id});
+    const category = await this.categoryRepo.findOne({
+      where:{id},
+      relations: {
+        subCategories: {
+          secondLevelSubCategories: {
+            thirdLevelSubCategories: true
+          }
+        }
+      }
+    });
     const categoryResponse = new CategoryResponseDto(category)
     if (categoryResponse.imageName) {
       categoryResponse.imageUrl = await this.uploadService.getPresignedUrl(

@@ -9,12 +9,12 @@ import { cn } from '@/lib/utils'
 import { Category } from '@/lib/types'
 
 interface Props {
-    category:string,
+    secondLevelCategory:string,
     defaultValue?: string,
     onChange: (value: string)=>void
 }
 
-const SubCategoryPicker = ({ category, onChange, defaultValue }:Props) => {
+const ThirdLevelCategoryPicker = ({ secondLevelCategory, onChange, defaultValue }:Props) => {
     const [open, setOpen] = useState(false)
     const [value, setValue] = useState("")
 
@@ -30,12 +30,12 @@ const SubCategoryPicker = ({ category, onChange, defaultValue }:Props) => {
     }, [onChange, value])
 
     const categoriesQuery =  useQuery<Category[]>({
-        queryKey: ["sub-categories", category],
-        queryFn: async() => category ? 
-            await axios_instance_token.get(`/categories/${category}/sub-categories`).then(res => {
+        queryKey: ["third-level-sub-categories", secondLevelCategory],
+        queryFn: async() => secondLevelCategory ? 
+            await axios_instance_token.get(`/categories/${secondLevelCategory}/third-level-sub-categories`).then(res => {
                 return res.data})
             :
-            await axios_instance_token.get(`/categories/sub-categories`).then(res => {
+            await axios_instance_token.get(`/categories/sub-categories/third-level-categories`).then(res => {
                 return res.data})
     })
 
@@ -48,13 +48,13 @@ const SubCategoryPicker = ({ category, onChange, defaultValue }:Props) => {
                     {selectedCategory ? (
                         <CategoryRow category={selectedCategory} />
                     ) : (
-                        "Select sub category"
+                        "Select third sub category"
                     )}
                     <ChevronsUpDown className='ml-2 h-4 w-4 shrink-0 opacity-50'/>
                 </Button>
             </PopoverTrigger>
             <PopoverContent className='w-full p-0'>
-                <Command onSubmit={e=> e.preventDefault()}>
+                <Command defaultValue={"Electronics"} onSubmit={e=> e.preventDefault()}>
                     <CommandInput placeholder='Search sub category'/>
                     <CommandEmpty>
                         <p>Category not found</p>
@@ -90,4 +90,4 @@ function CategoryRow({category}:{category:Category}){
     )
 }
 
-export default SubCategoryPicker
+export default ThirdLevelCategoryPicker

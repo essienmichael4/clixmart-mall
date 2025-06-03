@@ -1,4 +1,3 @@
-// import { Deleted } from "src/user/entities/user.entity";
 import { Column, CreateDateColumn, Entity, JoinTable, ManyToMany, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { SubCategory } from "./subcategory.entity";
 import { Product } from "src/product/entities/product.entity";
@@ -17,14 +16,10 @@ export class Category {
     @Column({type: "uuid", unique:true})
     categoryId: string
 
-    @Column({
-        unique: true
-    })
+    @Column({ unique: true })
     name:string
 
-    @Column({
-        unique: true
-    })
+    @Column({ unique: true })
     slug:string
 
     @Column({nullable: true})
@@ -39,7 +34,7 @@ export class Category {
     @Column({ default: Deleted.FALSE })
     isDeleted: Deleted;
 
-    @OneToMany(() => SubCategory, (subCategory) => subCategory.category)
+    @OneToMany(() => SubCategory, (subCategory) => subCategory.category, { cascade: true })
     subCategories: SubCategory[];
 
     @OneToMany(() => Product, (product) => product.category)

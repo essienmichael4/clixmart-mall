@@ -32,14 +32,10 @@ export class User {
     @Column({nullable: true})
     searchName:string
     
-    @Column({
-        unique: true
-    })
+    @Column({ unique: true })
     email:string
 
-    @Column({
-        nullable:true
-    })
+    @Column({ nullable:true })
     phone:string
 
     @Column()

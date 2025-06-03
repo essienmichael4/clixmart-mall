@@ -10,6 +10,7 @@ import { Separator } from "./ui/separator"
 
 const Categories = () => {
     const [active, setActive] = useState<number | undefined>()
+    const [activeSub, setActiveSub] = useState<number | undefined>()
     const categories = useQuery<Category[]>({
         queryKey: ["categories"],
         queryFn: async() => await axios_instance.get(`/categories`).then(res => {
@@ -22,6 +23,14 @@ const Categories = () => {
             setActive(undefined)
         }else{
             setActive(value)
+        }
+    }
+
+    const handleToggleActiveSub = (value:number)=>{
+        if(activeSub == value){
+            setActiveSub(undefined)
+        }else{
+            setActiveSub(value)
         }
     }
 
@@ -41,11 +50,31 @@ const Categories = () => {
                             }
                             <Link to={`/categories/${category.slug}`} className="text-sm ">{category.name}</Link> 
                         </div>
-                        <div className={`${active==category.id ? 'block' : 'hidden'} pl-10 bg-slate-50`}>
+                        <div className={`${active==category.id ? 'block' : 'hidden'} pl-4 bg-slate-50`}>
                             {category.subCategories?.map(sub=>{
-                                return <Link to={`/categories/${category.slug}?sub-categories=${sub.subCategoryId}`} className="text-xs block capitalize py-1 text-nowrap" key={sub.id}>
-                                    {sub.name}
-                                </Link>
+                                return (
+                                    <div>
+                                        <div className="text-nowrap w-full flex-1 flex gap-3 py-1 pl-2  items-center">
+                                            <Toggle onClick={()=>handleToggleActiveSub(sub.id)} className={`p-1 rounded-full hover:bg-gray-300 `}>
+                                                {activeSub == sub.id ? <ChevronDown className="w-4 h-4"/> : <ChevronRight className="w-4 h-4"/> } 
+                                            </Toggle>
+                                            <Link to={`/categories/${category.slug}?sub-categories=${sub.subCategoryId}`} className="text-xs block capitalize py-1 text-nowrap" key={sub.id}>
+                                                {sub.name}
+                                            </Link>
+                                        </div>
+                                        <div className={`${activeSub==sub.id ? 'block' : 'hidden'} ml-2 pl-4 bg-slate-200`}>
+                                            {sub.secondLevelSubCategories.map(secondSub => {
+                                                return (
+                                                    <div>
+                                                        <Link to={`/categories/${category.slug}?sub-categories=${sub.subCategoryId}&second-level-categories=${secondSub.secondLevelSubCategoryId}`} className="text-xs block capitalize py-1 text-nowrap" key={sub.id}>
+                                                            {secondSub.name}
+                                                        </Link>
+                                                    </div>
+                                                )
+                                            })}
+                                        </div>
+                                    </div>
+                                )
                             })}
                         </div>
                     </div>

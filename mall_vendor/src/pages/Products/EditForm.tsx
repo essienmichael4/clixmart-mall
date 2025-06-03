@@ -19,6 +19,8 @@ import PrimaryImage from "./PrimaryImage"
 import SecondaryImages from "./SecondaryImages"
 import { Button } from "@/components/ui/button"
 import Tags from "@/components/Tags"
+import SecondLevelCategoryPicker from "@/components/SecondLevelCategoryPicker"
+import ThirdLevelCategoryPicker from "@/components/ThirdLevelCategoryPicker"
 
 interface FormProps {
     product: Product,
@@ -35,6 +37,9 @@ const EditForm = ({product, store, id}: FormProps) => {
     const axios_instance_token = useAxiosToken()
     const queryClient = useQueryClient()
     const [category, setCategory] = useState("")
+    const [subCategory, setSubCategory] = useState("")
+    const [secondLevelCategory, setSecondLevelCategory] = useState("")
+    const [thirdLevelCategory, setThirdLevelCategory] = useState("")
 
     useEffect(()=>{
         product.imageUrl ? 
@@ -43,11 +48,24 @@ const EditForm = ({product, store, id}: FormProps) => {
         
         product.tags && setTags(product.tags.map(tag=>tag.name))
         product.discount && setDiscount(product.discount.toString())
-    }, [activeImage])
+    }, [product])
 
     const handleCategoryChange = (value:string)=>{
         form.setValue("category", value)
         setCategory(value)
+    }
+
+    const handleSubCategoryChange = (value:string)=>{
+        form.setValue("subCategory", value)
+        setSubCategory(value)
+    }
+
+    const handleSecondLevelCategoryChange = (value:string)=>{
+        setSecondLevelCategory(value)
+    }
+
+    const handleThirdLevelCategoryChange = (value:string)=>{
+        setThirdLevelCategory(value)
     }
 
     const handleImageClick = (image: string) => {
@@ -84,7 +102,7 @@ const EditForm = ({product, store, id}: FormProps) => {
     const form = useForm<EditProductDetailsSchemaType>({
         resolver:zodResolver(EditProductDetailsSchema),
         defaultValues: product ? {
-            name: product.name,
+            name: product.name || "",
             model: product.model,
             category: product.category?.name,
             subCategory: product.subCategory?.name,
@@ -99,7 +117,9 @@ const EditForm = ({product, store, id}: FormProps) => {
         const response = await axios_instance_token.patch(`/products/${store}/${id}/product-details`, {
             ...data,
             tags,
-            discount
+            discount,
+            secondLevelCategory,
+            thirdLevelCategory
         },)
 
         return response.data
@@ -111,8 +131,6 @@ const EditForm = ({product, store, id}: FormProps) => {
             toast.success("Product added successfully", {
                 id: "edit-product"
             })
-
-            form.reset({})
 
             queryClient.invalidateQueries({queryKey: ["products"]})
             navigate(`../products/${store}`)
@@ -224,7 +242,7 @@ const EditForm = ({product, store, id}: FormProps) => {
                                                     <FormLabel className='text-xs'>Discount</FormLabel>
                                                     <FormControl>
                                                         <div className="flex items-center gap-1">
-                                                            <Input onChange={(e)=>setDiscount(e.target.value)} className="py-4"/> <Percent className="w-8 h-8 bg-gray-300 rounded-md p-2" />
+                                                            <Input value={discount} onChange={(e)=>setDiscount(e.target.value)} className="py-4"/> <Percent className="w-8 h-8 bg-gray-300 rounded-md p-2" />
                                                         </div>
                                                     </FormControl>
                                                 </FormItem>
@@ -254,7 +272,7 @@ const EditForm = ({product, store, id}: FormProps) => {
                                             <FormItem className='flex-1 space-y-1'>
                                                 <FormLabel className='text-xs'>Product Category</FormLabel>
                                                 <FormControl>
-                                                    <CategoryPicker defaultValue={product.category.name} onChange={handleCategoryChange} />
+                                                    <CategoryPicker defaultValue={product?.category?.name} onChange={handleCategoryChange} />
                                                 </FormControl>
                                             </FormItem>
                                         )} 
@@ -263,15 +281,40 @@ const EditForm = ({product, store, id}: FormProps) => {
                                     <FormField
                                         control={form.control}
                                         name="subCategory"
-                                        render={({field}) =>(
+                                        render={() =>(
                                             <FormItem className='flex-1 space-y-1'>
                                                 <FormLabel className='text-xs'>Product Sub-Category</FormLabel>
                                                 <FormControl>
-                                                    <SubCategoryPicker defaultValue={product.subCategory.name} category={category} onChange={field.onChange} />
+                                                    <SubCategoryPicker defaultValue={product?.subCategory?.name} category={category} onChange={handleSubCategoryChange} />
                                                 </FormControl>
                                             </FormItem>
                                         )} 
                                     />
+
+                                    
+                                    {subCategory && <FormField
+                                        name="secondLevelCategory"
+                                        render={() =>(
+                                            <FormItem className='flex-1 space-y-1'>
+                                                <FormLabel className='text-xs'>Product Second-Level Category</FormLabel>
+                                                <FormControl>
+                                                    <SecondLevelCategoryPicker subCategory={subCategory} onChange={handleSecondLevelCategoryChange} />
+                                                </FormControl>
+                                            </FormItem>
+                                        )} 
+                                    />}
+                                    
+                                    {secondLevelCategory && secondLevelCategory !== "" && <FormField
+                                        name="thirdLevelCategory"
+                                        render={() =>(
+                                            <FormItem className='flex-1 space-y-1'>
+                                                <FormLabel className='text-xs'>Product Third-Level Category</FormLabel>
+                                                <FormControl>
+                                                    <ThirdLevelCategoryPicker secondLevelCategory={secondLevelCategory} onChange={handleThirdLevelCategoryChange} />
+                                                </FormControl>
+                                            </FormItem>
+                                        )} 
+                                    />}
     
                                     <FormField
                                         control={form.control}

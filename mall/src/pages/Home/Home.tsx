@@ -4,32 +4,12 @@ import Header from '@/components/Header'
 import ad from '@/assets/ad.jpg'
 import profit from '@/assets/profit.jpg'
 import call from '@/assets/call.jpg'
-// import useProducts from '@/hooks/useProducts'
-// import { useState } from 'react'
-// import HorizontalCarousel from '@/components/Carousel/HorizontalCarousel'
 import HorizontalCategoryCarousel from '@/components/Carousel/HorizontalCategoryCarousel'
 import HorizontalDealsCarousel from '@/components/Carousel/HorizontalDealsCarousel'
 import StaticCategories from '@/components/Static/StaticCategories'
 import StaticProducts from '@/components/Static/StaticProducts'
 
 const Home = () => {
-    // const [page, ] = useState(1)
-    // const {products, isLoading} = useProducts({page})
-    // const categories = ["Electronics", "Appliances"]
-    
-    // const intObserver = useRef<IntersectionObserver>()
-    // const lastProductRef = useCallback((node:HTMLDivElement)=>{
-    //     if(isLoading) return
-
-    //     if(intObserver.current) intObserver.current.disconnect()
-    //     intObserver.current = new IntersectionObserver(products => {
-    //         if(products[0].isIntersecting && hasNextPage)
-    //             setPage(prev => prev + 1)
-    //     })
-
-    //     if(node) intObserver.current.observe(node)
-    // }, [isLoading, hasNextPage])
-
     return (
         <>
             <Header />
@@ -63,14 +43,11 @@ const Home = () => {
                 </div>
             </div>
             <div className='container space-y-2 px-4 mx-auto my-8'>
-                {/* <HorizontalCarousel products={products}/> */}
-                
-                {/* <HorizontalCategoryCarousel title="Top Appliance" category='Appliances' /> */}
                 <HorizontalDealsCarousel title="Hot Electronics" category='Electronics' />
                 <StaticCategories />
                 <HorizontalCategoryCarousel title="Home and Office" category='Home-&-Office' />
                 <HorizontalCategoryCarousel title="Fashion and Beauty" category='fashion-&-beauty' />
-                <StaticProducts title="Unbeatable Appliance's deals" category='Appliances' />
+                <StaticProducts title="Unbeatable Appliance deals" category='Appliances' />
                 <HorizontalCategoryCarousel title="Hot Phone Deals" category='phones-&-tablets' />
             </div>
         </>

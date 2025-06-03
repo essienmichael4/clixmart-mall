@@ -123,10 +123,10 @@ export class StoreController {
     return this.storeService.findAll();
   }
 
-  // @Get(':id')
-  // findStoreBy(@Param('id') id: string) {
-  //   return this.storeService.findOne(+id);
-  // }
+  @Get(':id/store-info')
+  findStoreBySlug(@Param('id') id: string) {
+    return this.storeService.findOne(+id);
+  }
 
   @Get(':id')
   findOne(@Param('id') id: string) {

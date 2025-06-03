@@ -37,11 +37,11 @@ const SubCategoryPicker = ({ onChange }:Props) => {
   return (
     <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
-            <Button variant={"outline"} role='combobox' aria-expanded={open} className='w-[200px] justify-between'>
+            <Button variant={"outline"} role='combobox' aria-expanded={open} className='w-full justify-between'>
                 {selectedCategory ? (
                     <CategoryRow category={selectedCategory} />
                 ) : (
-                    "Select category"
+                    "Select sub-category"
                 )}
                 <ChevronsUpDown className='ml-2 h-4 w-4 shrink-0 opacity-50'/>
             </Button>
@@ -81,7 +81,7 @@ function CategoryRow({category}:{category:Category}){
     return (
         <div className="flex items-center gap-2">
             {/* <span role='img'>{category.icon}</span> */}
-            <span>{category.name}</span>
+            <span className='capitalize'>{category.name}</span>
         </div>
     )
 }

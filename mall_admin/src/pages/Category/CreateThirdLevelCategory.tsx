@@ -11,13 +11,13 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import axios from 'axios'
 import { Loader2 } from 'lucide-react'
 import { SubCategorySchema, SubCategorySchemaType } from '@/schema/category'
-import CategoryPicker from './CategoryPicker'
+import SecondLevelCategoryPicker from './SecondLevelCategoryPicker'
 
 interface Props{
     trigger?: React.ReactNode,
 }
 
-const CreateSubCategory = ({trigger}:Props) => {
+const CreateThirdLevelCategory = ({trigger}:Props) => {
     const [open, setOpen] = useState(false)
     const axios_instance_token = useAxiosToken()
     const queryClient = useQueryClient()
@@ -34,7 +34,7 @@ const CreateSubCategory = ({trigger}:Props) => {
     }, [form])
 
     const createSubCategory = async (data:SubCategorySchemaType)=>{
-        const response = await axios_instance_token.post(`/categories/sub-categories`, {
+        const response = await axios_instance_token.post(`/categories/second-level-sub-categories`, {
             ...data
         },)
 
@@ -82,7 +82,7 @@ const CreateSubCategory = ({trigger}:Props) => {
             <DialogContent className='w-[90%] mx-auto rounded-2xl'>
                 <DialogHeader className='items-start'>
                     <DialogTitle>
-                        Create Sub-Category
+                        Create Third-Level Category
                     </DialogTitle>
                     <DialogDescription>
                         Sub Category is used to furthur group your products
@@ -95,9 +95,9 @@ const CreateSubCategory = ({trigger}:Props) => {
                             name="category"
                             render={({}) =>(
                                 <FormItem className='flex flex-col px-1'>
-                                    <FormLabel className='text-xs'>Category</FormLabel>
+                                    <FormLabel className='text-xs'>Second-Level Category</FormLabel>
                                     <FormControl>
-                                        <CategoryPicker onChange={handleCategoryChange}/>
+                                        <SecondLevelCategoryPicker onChange={handleCategoryChange}/>
                                     </FormControl>
                                     <FormDescription>Select a category</FormDescription>
                                 </FormItem>
@@ -108,7 +108,7 @@ const CreateSubCategory = ({trigger}:Props) => {
                             name="name"
                             render={({field}) =>(
                                 <FormItem className='flex-1 px-1'>
-                                    <FormLabel className='text-xs'>Sub-Category Name</FormLabel>
+                                    <FormLabel className='text-xs'>Third-Level Category Name</FormLabel>
                                     <FormControl>
                                         <Input {...field} />
                                     </FormControl>
@@ -140,4 +140,4 @@ const CreateSubCategory = ({trigger}:Props) => {
     )
 }
 
-export default CreateSubCategory
+export default CreateThirdLevelCategory

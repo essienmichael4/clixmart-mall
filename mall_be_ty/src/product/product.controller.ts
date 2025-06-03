@@ -9,7 +9,7 @@ import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 import { ImageFileFilter } from 'src/helpers/file-helper';
 import { UploadFile, UploadFiles } from 'src/decorators/file.decorator';
 import { UploadService } from 'src/upload/upload.service';
-import { uuid } from 'uuidv4';
+import { v4 } from 'uuid';
 import { PageOptionsDto } from 'src/common/dto/pageOptions.dto';
 import { ApiPaginatedResponse } from 'src/decorators/pagination.decorator';
 import { ProductResponseDto } from './dto/response.dto';
@@ -56,7 +56,7 @@ export class ProductController {
       return product
     }
 
-    const filename = `${uuid()}-${file.originalname.replace(/\s+/g,'')}`
+    const filename = `${v4()}-${file.originalname.replace(/\s+/g,'')}`
     const upload = await this.uploadService.addProductImage(buffer, filename) 
     return await this.productService.updateProductImage(id, filename)
     
@@ -82,7 +82,7 @@ export class ProductController {
     const fileUploadResults = []
     const fileNames = []
     for(const file of files){
-        const filename = `${uuid()}-${file.originalname.replace(/\s+/g,'')}`
+        const filename = `${v4()}-${file.originalname.replace(/\s+/g,'')}`
         const uploadFileResponse = await this.uploadService.addProductImage(file.buffer, filename)
         fileUploadResults.push({...uploadFileResponse, success: true})
         fileNames.push(filename)
@@ -127,10 +127,14 @@ export class ProductController {
   @HttpCode(HttpStatus.OK)
   @ApiPaginatedResponse(ProductResponseDto)
   @ApiConsumes("application/json")
-  findProductsByCategory(@Query() pageOptionsDto:PageOptionsDto, @Param("category") category?:string, @Query("subCategories") subCategories?:string) {
+  findProductsByCategory(@Query() pageOptionsDto:PageOptionsDto, @Param("category") category?:string, @Query("subCategories") subCategories?:string,
+   @Query("second-level-categories") secondLevelCategories?:string,
+    @Query("third-level-categories") thirdLevelCategories?:string) {
     const allSubCategories = subCategories.split(",")
+    const secondLevelSub = secondLevelCategories.split(",")
+    const thirdLevelSub = secondLevelCategories.split(",")
     if(allSubCategories.length > 0 && allSubCategories[0]!== ''){
-      return this.productService.findProductsByCategoryAndSubCategories(pageOptionsDto, category, allSubCategories);
+      return this.productService.findProductsByCategoryAndSubCategories(pageOptionsDto, category, allSubCategories, secondLevelSub, thirdLevelSub);
     }else{
       return this.productService.findProductsByCategory(pageOptionsDto, category);
     }

@@ -91,7 +91,7 @@ const OrderDetails = () => {
                                             <h5 className="text-2xl mt-2 capitalize">{orderItem.name}</h5>
                                             <p className="text-sm text-muted-foreground">{orderItem.product.productId}</p>
                                             <p className="capitalize text-xs text-muted-foreground text-cyan-700">{orderItem.product?.category?.name}/{orderItem.product?.subCategory?.name}</p>
-                                            <p className="uppercase text-muted-foreground">{orderItem.product?.brand?.name}</p>
+                                            <p className="uppercase text-xs text-muted-foreground">{orderItem.product?.brand?.name}</p>
                                             {orderItem.status && <OrderItemStatus store={store as string} id={orderQuery.data.orderId as string} itemId={orderItem.orderItemId as string} status={orderItem.status} />}
                                         </div>
                                     </div>

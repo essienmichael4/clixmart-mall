@@ -14,7 +14,7 @@ const VendorDetails = () => {
 
     const storeQuery = useQuery<Store>({
         queryKey: ["vendor", store],
-        queryFn: async() => await axios_instance_token.get(`/stores/${store}`).then(res => {
+        queryFn: async() => await axios_instance_token.get(`/stores/${store}/store-info`).then(res => {
             console.log(res.data);
             
             return res.data

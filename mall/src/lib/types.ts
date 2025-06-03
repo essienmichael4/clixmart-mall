@@ -48,6 +48,13 @@ export type AuthContextType = {
     dispatch: Dispatch<Action>;
 }
 
+export type Banner = {
+    id: number,
+    bannerId?: string,
+    imageName: string,
+    imageUrl?:string,
+} 
+
 export type Brand = {
     id: number,
     name: string,

@@ -11,10 +11,9 @@ import { toast } from 'sonner'
 
 interface Props{
     trigger?: React.ReactNode,
-    id:number
 }
 
-const BrandImageDialog = ({id, trigger}:Props) => {
+const BannerImageDialog = ({trigger}:Props) => {
     const [open, setOpen] = useState(false)
     const axios_instance_token = useAxiosToken()
     const queryClient = useQueryClient()
@@ -26,7 +25,7 @@ const BrandImageDialog = ({id, trigger}:Props) => {
 
     const addCategoryImage = async ()=>{
         if(!image){
-            toast.error("Please hoose an image to upload", {
+            toast.error("Please choose an image to upload", {
                 id: "add-image"
             })
             return
@@ -34,7 +33,7 @@ const BrandImageDialog = ({id, trigger}:Props) => {
 
         const formData = new FormData()
         formData.append("file", image)
-        const response = await axios_instance_token.post(`/brands/${id}/upload`, formData, {
+        const response = await axios_instance_token.post(`/settings/banners`, formData, {
             headers: {
                 "content-type": "multipart/form-data",
             }
@@ -46,11 +45,11 @@ const BrandImageDialog = ({id, trigger}:Props) => {
     const {mutate, isPending} = useMutation({
         mutationFn: addCategoryImage,
         onSuccess: ()=>{
-            toast.success("Product image added successfully", {
+            toast.success("Banner image added successfully", {
                 id: "add-image"
             })
 
-            queryClient.invalidateQueries({queryKey: ["brands"]})
+            queryClient.invalidateQueries({queryKey: ["banners"]})
             
             setOpen(prev => !prev)
         },onError: (err:any) => {
@@ -67,7 +66,7 @@ const BrandImageDialog = ({id, trigger}:Props) => {
     })
     
     const onSubmit = ()=>{
-        toast.loading("Adding Product Image...", {
+        toast.loading("Adding Banner Image...", {
             id: "add-image"
         })
         mutate()
@@ -79,11 +78,11 @@ const BrandImageDialog = ({id, trigger}:Props) => {
             <DialogContent className='w-[90%] mx-auto rounded-2xl'>
                 <DialogHeader className='items-start'>
                     <DialogTitle className='capitalize'>
-                        Edit Brand Image
+                        Add Banner
                     </DialogTitle>
                 </DialogHeader>
 
-                <Dropzone handleFileChange={handleFileChange} title='Brand Image' />
+                <Dropzone handleFileChange={handleFileChange} title='Banner Image' />
 
                 <DialogFooter >
                 <DialogClose asChild>
@@ -96,7 +95,7 @@ const BrandImageDialog = ({id, trigger}:Props) => {
                 </DialogClose>
                 <Button onClick={()=>onSubmit()} disabled={isPending} className='bg-gradient-to-r from-blue-500 to-blue-800 text-white'
                 >
-                    {!isPending && "Update category"}
+                    {!isPending && "Add Banner"}
                     {isPending && <Loader2 className='animate-spin' /> }
                 </Button>
             </DialogFooter>
@@ -105,4 +104,4 @@ const BrandImageDialog = ({id, trigger}:Props) => {
     )
 }
 
-export default BrandImageDialog
+export default BannerImageDialog

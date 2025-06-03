@@ -17,6 +17,7 @@ import ProductDetails from './pages/Product/Product'
 import Orders from './pages/Order/Orders'
 import OrderDetails from './pages/Order/OrderDetails'
 import CategoryDetails from './pages/Category/Category'
+import Settings from './pages/Setting/Settings'
 
 function App() {
 
@@ -37,6 +38,7 @@ function App() {
             <Route path='/vendors/:id' element={<Vendor />} />
             <Route path='/orders' element={<Orders />} />
             <Route path='/orders/:id' element={<OrderDetails />} />
+            <Route path='/settings' element={<Settings />} />
             <Route path='/users' element={<Users />} />
             <Route path='/users/:id' element={<UserProfile />} />
           </Route>

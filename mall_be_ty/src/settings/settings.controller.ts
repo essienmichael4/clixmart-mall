@@ -42,12 +42,17 @@ export class SettingsController {
     }
     const buffer = file.buffer
     const filename = `${v4()}-${file.originalname.replace(/\s+/g,'')}`
-    const upload = await this.uploadService.addProductImage(buffer, filename) 
+    const upload = await this.uploadService.addBanner(buffer, filename) 
     return this.settingsService.addBannerImage(filename);
   }
 
   @Get('banners')
   findBanners() {
     return this.settingsService.findAllBanners();
+  }
+
+  @Delete('banners/:id')
+  deleteBanner(@Param('id') id: string) {
+    return this.settingsService.deleteBanner(id);
   }
 }

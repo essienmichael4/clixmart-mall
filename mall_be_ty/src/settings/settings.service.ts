@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreateSettingDto } from './dto/create-setting.dto';
 import { UpdateSettingDto } from './dto/update-setting.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -36,4 +36,21 @@ export class SettingsService {
 
     return bannersResponse
   }
+
+  async deleteBanner(bannerId: string){
+    try{
+
+      const banner = await this.bannerRepo.findOne({
+        where: {
+          bannerId
+        }
+      })
+      
+      if(!banner) throw new BadRequestException()
+      
+      return await this.bannerRepo.delete(bannerId)
+    }catch(err){
+    }
+  }
 }
+

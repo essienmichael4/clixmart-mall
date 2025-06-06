@@ -53,6 +53,14 @@ export type Category = {
     subCategories?: SubCategory[]
 }
 
+export type Commission = {
+    id: number,
+    category: Category,
+    rate: number,
+    createdAt:string,
+    updatedAt:string,
+}
+
 export type SubCategory = {
     id:number,
     name:string,

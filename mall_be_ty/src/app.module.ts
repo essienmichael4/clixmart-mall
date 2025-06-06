@@ -16,6 +16,8 @@ import { StatsModule } from './stats/stats.module';
 import { MailModule } from './mailer/mail.module';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { SettingsModule } from './settings/settings.module';
+import { CommissionModule } from './commission/commission.module';
+import { ReportModule } from './report/report.module';
 
 @Module({
   imports: [
@@ -46,7 +48,9 @@ import { SettingsModule } from './settings/settings.module';
     UploadModule,
     StatsModule,
     MailModule,
-    SettingsModule],
+    SettingsModule,
+    CommissionModule,
+    ReportModule],
   controllers: [AppController],
   providers: [AppService],
 })

@@ -16,14 +16,14 @@ const Billboard = () => {
   })
 
   const content = isLoading ? <Skeleton>
-            <div className="sm:h-72 md:h-80 lg:h-96 w-full">
+      <div className="sm:h-72 md:h-80 lg:h-96 w-full">
 
-            </div>
-        </Skeleton> : banners ? <div className="sm:h-72 md:h-80 lg:h-96 flex-1 aspect-video rounded-lg overflow-hidden">
-            <DynamicCarousel banners={banners} />
-        </div> : <div>
-          <MainCarousel />
-        </div>
+      </div>
+  </Skeleton> : banners ? <div className="sm:h-72 md:h-80 lg:h-96 flex-1 aspect-video rounded-lg overflow-hidden">
+      <DynamicCarousel banners={banners} />
+  </div> : <div>
+    <MainCarousel />
+  </div>
 
   return content
 }

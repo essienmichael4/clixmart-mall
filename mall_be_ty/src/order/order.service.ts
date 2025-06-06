@@ -123,6 +123,21 @@ export class OrderService {
 
 
       this.eventEmitter.emit("order.created", {order, products})
+      const commissionOrder = await this.orderRepo.findOne({
+        where:{id: order.id},
+        relations: {
+          orderItems: {
+            product: {
+              category: {
+                commision: true
+              }
+            }
+          }
+        }
+      })
+
+      this.eventEmitter.emit("order.commission", {commissionOrder})
+      
       return order
     }catch(err){
       await queryRunner.rollbackTransaction()

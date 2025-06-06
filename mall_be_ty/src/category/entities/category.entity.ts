@@ -1,7 +1,8 @@
-import { Column, CreateDateColumn, Entity, JoinTable, ManyToMany, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, JoinTable, ManyToMany, OneToMany, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { SubCategory } from "./subcategory.entity";
 import { Product } from "src/product/entities/product.entity";
 import { Brand } from "src/brand/entities/brand.entity";
+import { CommissionSetting } from "src/commission/entities/commissionSettings.entity";
 
 export enum Deleted {
     TRUE = 'TRUE',
@@ -43,4 +44,7 @@ export class Category {
     @ManyToMany(() => Brand, (brand) => brand.categories)
     @JoinTable()
     brands: Brand[];
+
+    @OneToOne(()=> CommissionSetting, (commision)=> commision.category)
+    commision: CommissionSetting
 }

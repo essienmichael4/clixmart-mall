@@ -16,6 +16,13 @@ export type AuthContextType = {
     setAuth: Dispatch<SetStateAction<AuthType | undefined>>;
 }
 
+export type Banner = {
+    id: number,
+    bannerId?: string,
+    imageName: string,
+    imageUrl?:string,
+} 
+
 export type Brand = {
     id: number,
     name: string,
@@ -44,6 +51,14 @@ export type Category = {
     createdAt:string,
     updatedAt:string,
     subCategories?: SubCategory[]
+}
+
+export type Commission = {
+    id: number,
+    category: Category,
+    rate: number,
+    createdAt:string,
+    updatedAt:string,
 }
 
 export type SubCategory = {

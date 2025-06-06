@@ -12,8 +12,6 @@ import { toast } from 'sonner'
 interface Props{
     trigger?: React.ReactNode,
     id:number,
-    // name:string,
-    // imageUrl?: string
 }
 
 const CategoryImageDialog = ({id, trigger}:Props) => {
@@ -29,7 +27,7 @@ const CategoryImageDialog = ({id, trigger}:Props) => {
     const addCategoryImage = async ()=>{
         if(!image){
             toast.error("Please choose an image to upload", {
-                id: "create-order"
+                id: "add-image"
             })
             return
         }

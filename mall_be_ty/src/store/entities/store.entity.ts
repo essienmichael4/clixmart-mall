@@ -8,6 +8,7 @@ import { StoreAddress } from "./storeAddress.entity";
 import { StoreDetail } from "./storeDetails.entity";
 import { PaymentDetail } from "./paymentDetails.entity";
 import { NextOfKin } from "./nextOfKin.entity";
+import { StoreAccount } from "./storeAccount.entity";
 
 export enum Deleted {
     TRUE = 'TRUE',
@@ -75,6 +76,10 @@ export class Store {
     @OneToOne(() => PaymentDetail, (paymentDetail) => paymentDetail.store, {cascade: true})
     @JoinColumn()
     paymentDetail: PaymentDetail;
+
+    @OneToOne(() => StoreAccount, (account) => account.store, {cascade: true})
+    @JoinColumn()
+    storeAccount: StoreAccount;
 
     @OneToOne(() => NextOfKin, (nextOfKin) => nextOfKin.store, {cascade: true})
     @JoinColumn()

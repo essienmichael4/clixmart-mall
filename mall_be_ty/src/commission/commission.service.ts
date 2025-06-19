@@ -8,15 +8,39 @@ import { Repository } from 'typeorm';
 import { CommissionTransaction } from './entities/commissionTransaction.entity';
 import { CommissionSetting } from './entities/commissionSettings.entity';
 import { Category } from 'src/category/entities/category.entity';
+import { AuditLog } from './entities/AuditLog.entity';
+import { User } from 'src/user/entities/user.entity';
 
 @Injectable()
 export class CommissionService {
   constructor(
+    @InjectRepository(User) private readonly userRepo:Repository<User>,
     @InjectRepository(OrderItem) private readonly orderItemRepo:Repository<OrderItem>,
     @InjectRepository(Category) private readonly categoryRepo:Repository<Category>,
     @InjectRepository(CommissionTransaction) private readonly commissionTransactionRepo:Repository<CommissionTransaction>,
     @InjectRepository(CommissionSetting) private readonly commissionSettingRepo:Repository<CommissionSetting>,
+    @InjectRepository(AuditLog) private readonly auditRepo: Repository<AuditLog>,
   ){}
+
+  async aduitLog(action: string, data: any, userId: number) {
+    const user = await this.userRepo.findOne({where: {id:userId}})
+    await this.auditRepo.save({
+      action,
+      data: data,
+      performedBy: user,
+    });
+  }
+
+   async auditLogError(action: string, error: Error, userId: number, data?: any) {
+    const user = await this.userRepo.findOne({where: {id:userId}})
+    await this.auditRepo.save({
+      action,
+      isError: true,
+      errorMessage: error.message,
+      data,
+      performedBy: user,
+    });
+  }
 
   async calculateCommission(payload: SuccessfulOrderEventDto){
     const orderItems = payload.order.orderItems
@@ -43,7 +67,7 @@ export class CommissionService {
       
     })
 
-    return await orderItems
+    return orderItems
   }
 
   async create(createCommissionDto: CreateCommissionDto) {

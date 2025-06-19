@@ -263,6 +263,13 @@ export type Tag = {
     name: string
 }
 
+export type Tax = {
+    id: number,
+    taxPercent: number,
+    createdAt?: string,
+    updatedAt?:string,
+}
+
 export type User = {
     id: number | null,
     name: string,

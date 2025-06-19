@@ -6,6 +6,7 @@ import { ProductReview } from "src/product/entities/review.entity";
 import { Follow } from "src/store/entities/follow.entity";
 import { StoreReview } from "src/store/entities/storeReview.entity";
 import { Address } from "./address.entity";
+import { AuditLog } from "src/commission/entities/AuditLog.entity";
 
 export enum Deleted {
     TRUE = 'TRUE',
@@ -75,4 +76,7 @@ export class User {
 
     @OneToMany(() => Follow, (follow) => follow.user)
     following: Follow[];
+    
+    @OneToMany(() => AuditLog, (logs) => logs.performedBy)
+    auditLogs: AuditLog[];
 }

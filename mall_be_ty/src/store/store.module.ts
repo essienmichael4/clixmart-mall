@@ -17,10 +17,11 @@ import { MonthHistory } from 'src/product/entities/MonthHistory.entity';
 import { YearHistory } from 'src/product/entities/YearHistory.entity';
 import { UploadModule } from 'src/upload/upload.module';
 import { UploadService } from 'src/upload/upload.service';
+import { StoreAccount } from './entities/storeAccount.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Store, Follow, StoreImage, StoreReview, PaymentDetail, StoreDetail, StoreAddress, NextOfKin, User, MonthHistory, YearHistory]),
+    TypeOrmModule.forFeature([Store, Follow, StoreImage, StoreReview, PaymentDetail, StoreAccount, StoreDetail, StoreAddress, NextOfKin, User, MonthHistory, YearHistory]),
     UserModule, UploadModule
   ],
   controllers: [StoreController],

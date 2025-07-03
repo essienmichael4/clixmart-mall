@@ -11,9 +11,10 @@ import { AuditLog } from './entities/AuditLog.entity';
 import { User } from 'src/user/entities/user.entity';
 import { Account } from './entities/commissionAccount.entity';
 import { JwtService } from '@nestjs/jwt';
+import { Store } from 'src/store/entities/store.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Account, CommissionSetting, CommissionTransaction, OrderItem, VendorPayout, Category, AuditLog, User])],
+  imports: [TypeOrmModule.forFeature([Account, Store, CommissionSetting, CommissionTransaction, OrderItem, VendorPayout, Category, AuditLog, User])],
   controllers: [CommissionController],
   providers: [CommissionService, JwtService],
   exports: [CommissionService]

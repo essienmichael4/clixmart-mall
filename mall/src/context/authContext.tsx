@@ -6,7 +6,7 @@ interface Action {
     payload?: AuthType
 }
 
-interface IContextProps {
+export interface IContextProps {
     auth: AuthType | undefined,
     dispatch: ({type, payload}:Action) => void
 }

@@ -10,7 +10,7 @@ export class StoreAccount {
     storeAccountId: string
 
     @Column({ type: 'decimal', precision: 10, scale: 2 })
-    currentAccont: number;
+    currentAccount: number;
 
     @Column({ type: 'decimal', precision: 10, scale: 2 })
     due:number

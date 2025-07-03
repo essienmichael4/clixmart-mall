@@ -10,11 +10,13 @@ import { CommissionSetting } from './entities/commissionSettings.entity';
 import { Category } from 'src/category/entities/category.entity';
 import { AuditLog } from './entities/AuditLog.entity';
 import { User } from 'src/user/entities/user.entity';
+import { Store } from 'src/store/entities/store.entity';
 
 @Injectable()
 export class CommissionService {
   constructor(
     @InjectRepository(User) private readonly userRepo:Repository<User>,
+    @InjectRepository(Store) private readonly storeRepo:Repository<Store>,
     @InjectRepository(OrderItem) private readonly orderItemRepo:Repository<OrderItem>,
     @InjectRepository(Category) private readonly categoryRepo:Repository<Category>,
     @InjectRepository(CommissionTransaction) private readonly commissionTransactionRepo:Repository<CommissionTransaction>,
@@ -113,6 +115,36 @@ export class CommissionService {
     return this.commissionSettingRepo.find({
       relations: {
         category: true
+      }
+    })
+  }
+
+  findTransactions(){
+    return this.commissionTransactionRepo.find({
+      relations: [
+        'orderItem',
+        'orderItem.order',
+        'orderItem.product',
+        'orderItem.product.store',
+        'orderItem.product.store.user',
+        'payout',
+        'vendor'
+      ]
+    })
+  }
+
+  findStoresTransactions(){
+    return this.storeRepo.find({
+      relations: {
+        storeAccount: true,
+        user: true
+      },
+      order: {
+        storeAccount: {
+          currentAccount: "DESC",
+          unpaid: "DESC",
+          due: "DESC"
+        }
       }
     })
   }

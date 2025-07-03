@@ -34,6 +34,16 @@ export class CommissionController {
     return this.commissionService.findAll();
   }
 
+  @Get('transactions/:status')
+  findItemTransactions(){
+    return this.commissionService.findTransactions()
+  }
+
+  @Get('transactions/stores/:status')
+  findStoreTransactions(){
+    return this.commissionService.findStoresTransactions()
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.commissionService.findOne(+id);

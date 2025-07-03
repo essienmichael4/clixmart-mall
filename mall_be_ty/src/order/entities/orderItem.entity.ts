@@ -66,7 +66,7 @@ export class OrderItem {
     @ManyToOne(() => Product, (product) => product.orderItems, {eager: true})
     product: Product;
 
-    @OneToOne(()=> CommissionTransaction)
+    @OneToOne(()=> CommissionTransaction, (transaction)=> transaction.orderItem)
     @JoinColumn()
     commissionTransaction: CommissionTransaction
 }

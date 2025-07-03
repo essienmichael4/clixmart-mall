@@ -61,6 +61,24 @@ export type Commission = {
     updatedAt:string,
 }
 
+export type CommissionTransaction = {
+    id: number,
+    saleAmount: number,
+    commissionRate: number,
+    commissionAmount: number,
+    vendorEarning: number,
+    isPaid: boolean,
+    isReversed: boolean,
+    reversalReason?: string,
+    reversedAt?:string,
+    reversalReferenceId?:number,
+    createdAt:string,
+    updatedAt:string,
+    orderItem: OrderItem,
+    vendor: User,
+    payout: VendorPayout 
+}
+
 export type SubCategory = {
     id:number,
     name:string,
@@ -227,12 +245,22 @@ export type Store = {
     createdAt: string,
     updatedAt: string,
     user?: User,
+    storeAccount?: StoreAccount,
     storeDetail?: StoreDetail,
     storeReview?: StoreReview,
     storeAddress?: StoreAddress,
     paymentDetail: PaymentDetail,
     nextOfKin: NextOfKin
 } 
+
+export type StoreAccount = {
+    id: number,
+    storeAccountId: string,
+    currentAccount: number,
+    due: number,
+    unpaid: number,
+    store: Store
+}
 
 export type StoreDetail = {
     id: number,
@@ -279,5 +307,15 @@ export type User = {
     createdAt?: string,
     updatedAt?:string,
     address?: Address
+}
+
+export type VendorPayout = {
+    vendor: User,
+    transactions: CommissionTransaction[],
+    totalAmount: number,
+    createdAt?: string,
+    updatedAt?:string,
+    paidAt?:string,
+    status:string
 }
 // export type Status 

@@ -1,4 +1,3 @@
-import { Vendor } from "aws-sdk/clients/directconnect";
 import { OrderItem } from "src/order/entities/orderItem.entity";
 import { User } from "src/user/entities/user.entity";
 import { Entity, PrimaryGeneratedColumn, ManyToOne, Column, CreateDateColumn, OneToOne, UpdateDateColumn } from "typeorm";
@@ -9,7 +8,7 @@ export class CommissionTransaction {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @OneToOne(() => OrderItem)
+    @OneToOne(() => OrderItem, (item)=> item.commissionTransaction)
     orderItem: OrderItem;
 
     @Column({ type: 'decimal', precision: 10, scale: 2 })

@@ -57,8 +57,6 @@ export class SettingsController {
   @UseGuards(RolesGuard)
   @Get('tax')
   findTax() {
-    console.log("in");
-    
     return this.settingsService.findTax();
   }
 

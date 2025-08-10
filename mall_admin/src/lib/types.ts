@@ -212,9 +212,28 @@ export type Product = {
     user?: User
     store?: Store,
     brand?: Brand,
+    options: ProductOption[],
+    specifications: ProductSpecification[],
     tags: Tag[],
     productImages: ProductImage[],
     productReview?: ProductReview
+}
+
+export type ProductOption = {
+    id: number,
+    name: string,
+    values: ProductOptionValue[]
+}
+
+export type ProductOptionValue = {
+    id: number,
+    value: string
+}
+
+export type ProductSpecification = {
+    id: number,
+    name: string,
+    value: string
 }
 
 export type ProductImage = {

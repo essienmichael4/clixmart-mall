@@ -31,9 +31,11 @@ const ProductDetails = () => {
     }
 
     const tags = product.data?.tags.length
-    console.log(product.data);
-    
-    
+    // console.log(product.data);
+    const colorOption = product.data?.options.find(option => option.name === "Colors")
+    const sizeOption = product.data?.options.find(option => option.name === "Sizes")
+    const otherOptions = product.data?.options.filter(option => option.name !== "Sizes" && option.name !== "Colors")    
+
     return (
         <>
             <div className="container mx-auto mb-8">
@@ -96,6 +98,49 @@ const ProductDetails = () => {
                         </div>
                         <p className="text-xl font-semibold">{FormatCurrency(Number(product.data?.price))}</p>
                         <p className="text-xs text-muted-foreground uppercase">{product.data?.brand?.name}</p>
+                        <div className="mt-2">
+                            <div className="flex flex-col items-start gap-5">
+                                {colorOption && 
+                                    <div>
+                                        <strong>Colors:</strong>
+                                        <div className="flex gap-2 mt-1">
+                                            {colorOption.values.map((color, idx)=>(
+                                                <button key={idx}
+                                                    className="w-8 h-8 cursor-pointer rounded-full border-2 "
+                                                    style={{backgroundColor: color.value}}    
+                                                />
+                                            ))}
+                                        </div>
+                                    </div>
+                                }
+                                {sizeOption && 
+                                    <div>
+                                        <strong>Sizes:</strong>
+                                        <div className="flex gap-2 mt-1">
+                                            {sizeOption.values.map((size, idx)=>(
+                                                <button key={idx}
+                                                    className="w-8 h-8 cursor-pointer rounded-full border-2 "
+                                                > {size.value} </button> 
+                                            ))}
+                                        </div>
+                                    </div>
+                                }
+                                {otherOptions?.map(options=> {
+                                    return (
+                                        <div>
+                                            <strong>{options.name}:</strong>
+                                            <div className="flex gap-2 mt-1">
+                                                {options.values.map((option, idx)=>(
+                                                    <button key={idx}
+                                                        className="w-8 h-8 cursor-pointer rounded-full border-2 "
+                                                    > {option.value} </button> 
+                                                ))}
+                                            </div>
+                                        </div>
+                                    )
+                                })}
+                            </div>
+                        </div>
                         {Number(tags) > 0 && <div>
                             <p className="text-xs font-semibold text-muted-foreground mb-1">Tags</p>
                             <div className="flex flex-wrap items-center gap-2">

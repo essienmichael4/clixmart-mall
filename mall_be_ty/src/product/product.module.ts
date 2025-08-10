@@ -19,10 +19,13 @@ import { YearHistory } from './entities/YearHistory.entity';
 import { UserYearHistory } from './entities/UserYearHistory.entity';
 import { FileService } from 'src/upload/file.service';
 import { UploadService } from 'src/upload/upload.service';
+import { ProductOption } from './entities/productOption.entity';
+import { ProductOptionValue } from './entities/productOptionValue.entity';
+import { ProductSpecification } from './entities/productSpecification.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Product, ProductImage, ProductReview, Store, User, Category, SubCategory, Brand, Tag, MonthHistory, UserMonthHistory, YearHistory, UserYearHistory]),
+    TypeOrmModule.forFeature([Product, ProductSpecification, ProductOption, ProductOptionValue, ProductImage, ProductReview, Store, User, Category, SubCategory, Brand, Tag, MonthHistory, UserMonthHistory, YearHistory, UserYearHistory]),
     UploadModule
   ],
   controllers: [ProductController],

@@ -30,6 +30,8 @@ const ProductDetails = () => {
     })
 
     const tags = product.data?.tags.length
+    const colorOption = product.data?.options.find(option => option.name === "Colors")
+    const sizeOption = product.data?.options.find(option => option.name === "Sizes")
     
     return (
         <>
@@ -103,6 +105,35 @@ const ProductDetails = () => {
                         </div>
                         <p className="text-xl font-semibold">{FormatCurrency(Number(product.data?.price))}</p>
                         <p className="text-xs text-muted-foreground uppercase">{product.data?.brand?.name}</p>
+                        {product.data?.options.some(option => option.name === "Colors") && 
+                            <div>
+                                <p className="text-xs font-semibold text-muted-foreground mb-1">Colors</p>
+                                <div className="flex gap-2 flex-wrap items-center">
+                                    {colorOption?.values.map(color => (
+                                        <div key={color.id} 
+                                        className={`border-gray-700 w-7 h-7 p-2 rounded-md my-1 flex items-center justify-center border-2 transition`}
+                                        style={{backgroundColor: color.value}}
+                                        >
+                                            
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        }
+                        {product.data?.options.some(option => option.name === "Sizes") && 
+                            <div>
+                                <p className="text-xs font-semibold text-muted-foreground mb-1">Sizes</p>
+                                <div className="flex gap-2 flex-wrap items-center">
+                                    {sizeOption?.values.map(size => (
+                                        <div key={size.id} 
+                                            className={`border-gray-700 w-7 h-7 p-2 rounded-md my-1 flex items-center justify-center border-2 transition`}
+                                        >
+                                            {size.value}
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        }
                         {Number(tags) > 0 && <div>
                             <p className="text-xs font-semibold text-muted-foreground mb-1">Tags</p>
                             <div className="flex flex-wrap items-center gap-2">

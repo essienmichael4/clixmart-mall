@@ -8,7 +8,7 @@ import { Repository } from 'typeorm';
 import { CommissionTransaction } from './entities/commissionTransaction.entity';
 import { CommissionSetting } from './entities/commissionSettings.entity';
 import { Category } from 'src/category/entities/category.entity';
-import { AuditLog } from './entities/AuditLog.entity';
+import { AuditAction, AuditLog } from './entities/AuditLog.entity';
 import { User } from 'src/user/entities/user.entity';
 import { Store } from 'src/store/entities/store.entity';
 
@@ -24,7 +24,7 @@ export class CommissionService {
     @InjectRepository(AuditLog) private readonly auditRepo: Repository<AuditLog>,
   ){}
 
-  async aduitLog(action: string, data: any, userId: number) {
+  async aduitLog(action: AuditAction, data: any, userId: number) {
     const user = await this.userRepo.findOne({where: {id:userId}})
     await this.auditRepo.save({
       action,
@@ -33,7 +33,7 @@ export class CommissionService {
     });
   }
 
-   async auditLogError(action: string, error: Error, userId: number, data?: any) {
+   async auditLogError(action: AuditAction, error: Error, userId: number, data?: any) {
     const user = await this.userRepo.findOne({where: {id:userId}})
     await this.auditRepo.save({
       action,

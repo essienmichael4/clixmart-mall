@@ -9,9 +9,9 @@ import { Tag } from "./tag.entity";
 import { Brand } from "src/brand/entities/brand.entity";
 import { OrderItem } from "src/order/entities/orderItem.entity";
 import { ProductOption } from "./productOption.entity";
-import { ProductVariant } from "./productVariant.entity";
 import { ThirdLevelSubCategory } from "src/category/entities/thirdLevelSubcategory.entity";
 import { SecondLevelSubCategory } from "src/category/entities/secondLevelSubCategory.entity";
+import { ProductSpecification } from "./productSpecification.entity";
 
 export enum Discounted {
     TRUE = 'TRUE',
@@ -127,6 +127,6 @@ export class Product {
     @OneToMany(() => ProductOption, (option) => option.product, { cascade: true })
     options: ProductOption[];
 
-    @OneToMany(() => ProductVariant, (variant) => variant.product, { cascade: true })
-    variants: ProductVariant[];
+    @OneToMany(() => ProductSpecification, (option) => option.product, { cascade: true })
+    specifications: ProductSpecification[];
 }

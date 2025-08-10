@@ -21,12 +21,20 @@ import PrimaryImage from "./PrimaryImage"
 import SecondaryImages from "./SecondaryImages"
 import SecondLevelCategoryPicker from "@/components/SecondLevelCategoryPicker"
 import ThirdLevelCategoryPicker from "@/components/ThirdLevelCategoryPicker"
+import ColorSelector from "./_components/ColorSelector"
+import CustomSpecifications from "./_components/CustomSpecifications"
+import CustomProperties from "./_components/CustomProperties"
+import SizeSelector from "./_components/SizeSelector"
 
 const CreateProduct = () => {
     const {store, id} = useParams()
     const [tag, setTag] = useState('')
     const [discount, setDiscount] = useState('')
+    const [colors, setColors] = useState<string[]>([]) 
+    const [sizes, setSizes] = useState<string[]>([]) 
     const [tags, setTags] = useState<string[]>([])
+    const [specifications, setSpecifications] = useState([{ name: "", value: "" }])
+    const [properties, setProperties] = useState<{ label: string, values: string[] }[]>([])
     const [category, setCategory] = useState("")
     const [subCategory, setSubCategory] = useState("")
     const [secondLevelCategory, setSecondLevelCategory] = useState("")
@@ -89,8 +97,14 @@ const CreateProduct = () => {
 
     const form = useForm<ProductDetailsSchemaType>({
         resolver:zodResolver(ProductDetailsSchema),
-        defaultValues:{
+        defaultValues: productDetail.data ? {
             name: productDetail.data?.name,
+            model: "",
+            category: "",
+            subCategory: "",
+            brand: ""
+        }: {
+            name: "",
             model: "",
             category: "",
             subCategory: "",
@@ -102,6 +116,10 @@ const CreateProduct = () => {
         const response = await axios_instance_token.post(`/products/${store}/${id}/product-details`, {
             ...data,
             tags,
+            colors,
+            sizes,
+            specifications,
+            properties,
             discount,
             secondLevelCategory,
             thirdLevelCategory
@@ -140,8 +158,6 @@ const CreateProduct = () => {
         })
         mutate(data)
     }
-
-    console.log(secondLevelCategory)
 
     return (
         <>
@@ -238,6 +254,7 @@ const CreateProduct = () => {
                                         )} 
                                     />
                                 </div>
+                                
                                 <Tags 
                                     handleChange={handleChange} 
                                     tag={tag} 
@@ -247,6 +264,10 @@ const CreateProduct = () => {
                                 />
                                 
                                 <h4 className="mt-16 font-semibold text-2xl">Options</h4>
+                                <ColorSelector colors={colors} setColors={setColors} />
+                                <SizeSelector sizes={sizes} setSizes={setSizes} />
+                                <CustomSpecifications specifications={specifications} setSpecifications={setSpecifications} />
+                                <CustomProperties properties={properties} setProperties={setProperties} />
                                 <Button onClick={form.handleSubmit(onSubmit)} disabled={isPending} className='bg-gradient-to-r from-blue-500 to-blue-800 text-white py-2'
                                 >
                                     {!isPending && "Add Product Details"}

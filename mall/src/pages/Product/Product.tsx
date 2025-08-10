@@ -3,12 +3,11 @@ import DescriptionParser from "@/components/DescriptionParser"
 import Header from "@/components/Header"
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator,} from "@/components/ui/breadcrumb"
 import useCart from "@/hooks/useCart"
-// import { Button } from "@/components/ui/button"
 import { FormatCurrency } from "@/lib/helper"
 import { Product } from "@/lib/types"
 import { useQuery } from "@tanstack/react-query"
 import { Heart, Minus, Plus, Star } from "lucide-react"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { useNavigate, useParams } from "react-router-dom"
 
 const ProductDetails = () => {
@@ -16,25 +15,38 @@ const ProductDetails = () => {
     const navigate = useNavigate()
     const {increaseCartQuanity, decreaseCartQuantity, getItemQuantity} = useCart()
     const [activeImage, setActiveImage] = useState("")
-
+    
     const product = useQuery<Product>({
         queryKey: ["product", id],
         queryFn: async() => await axios_instance.get(`/products/${id}`).then(res => {
             res.data?.imageUrl ? 
-                setActiveImage(res.data.imageUrl) : 
-                res.data?.productImages ? setActiveImage(res.data.productImages[0].url) : setActiveImage("")
+            setActiveImage(res.data.imageUrl) : 
+            res.data?.productImages ? setActiveImage(res.data.productImages[0].url) : setActiveImage("")
             return res.data
         })
     })
+    
+    const [selectedColor, setSelectedColor] = useState("");
+    const [selectedSize, setSelectedSize] = useState("");
+
+    useEffect(() => {
+    if (product.data) {
+        const color = product.data.options.find(opt => opt.name === "Colors")?.values[0]?.value;
+        const size = product.data.options.find(opt => opt.name === "Sizes")?.values[0]?.value;
+
+        if (!selectedColor && color) setSelectedColor(color);
+        if (!selectedSize && size) setSelectedSize(size);
+    }
+    }, [product.data]);
 
     const handleImageClick = (image: string) => {
         setActiveImage(image)
     }
 
     const tags = product.data?.tags.length
-    // product.data?.imageUrl ? 
-    //     setActiveImage(product.data.imageUrl) : 
-    //     product.data?.productImages ? setActiveImage(product.data.productImages[0].url) : setActiveImage("")
+    const colorOption = product.data?.options.find(option => option.name === "Colors")
+    const sizeOption = product.data?.options.find(option => option.name === "Sizes")
+    const otherOptions = product.data?.options.filter(option => option.name !== "Sizes" && option.name !== "Colors")  
     
     return (
         <>
@@ -71,7 +83,7 @@ const ProductDetails = () => {
                             </button>
                             }
                             {
-                                product.data?.productImages.map((image, idx) =>{
+                                product.data?.productImages?.map((image, idx) =>{
                                     return <button key={idx}  onClick={() => handleImageClick(image.imageUrl as string)} className="flex items-center justify-center w-[18%] aspect-square rounded-lg border">
                                         <img src={image.url} alt="" />
                                     </button>
@@ -100,6 +112,51 @@ const ProductDetails = () => {
                         </div>
                         <p className="text-xl font-semibold">{FormatCurrency(Number(product.data?.price))}</p>
                         <p className="text-xs text-muted-foreground uppercase">{product.data?.brand?.name}</p>
+                        <div className="mt-2">
+                            <div className="flex flex-col items-start gap-5">
+                                {colorOption && 
+                                    <div>
+                                        <strong>Colors:</strong>
+                                        <div className="flex gap-2 mt-1">
+                                            {colorOption.values.map((color, idx)=>{
+                                                return <button key={idx}
+                                                    className={`w-8 h-8 cursor-pointer rounded-full border-2 ${color.value === selectedColor ? "ring-2 ring-blue-500" : ""}`}                                                    
+                                                    style={{backgroundColor: color.value}}
+                                                    onClick={() => setSelectedColor(color.value)}
+                                                />
+                                            })}
+                                        </div>
+                                    </div>
+                                }
+                                {sizeOption && 
+                                    <div>
+                                        <strong>Sizes:</strong>
+                                        <div className="flex gap-2 mt-1">
+                                            {sizeOption.values.map((size, idx)=>{
+                                                return <button key={idx}
+                                                    className={`w-8 h-8 cursor-pointer rounded-full border-2 ${size.value === selectedSize ? "bg-blue-700 text-white border-blue-700" : ""}`}
+                                                    onClick={() => setSelectedSize(size.value)}
+                                                > {size.value} </button>
+                                            })}
+                                        </div>
+                                    </div>
+                                }
+                                {otherOptions?.map(options=> {
+                                    return (
+                                        <div>
+                                            <strong>{options.name}:</strong>
+                                            <div className="flex gap-2 mt-1">
+                                                {options.values.map((option, idx)=>{
+                                                    return <button key={idx}
+                                                        className="w-8 h-8 cursor-pointer rounded-full border-2 "
+                                                    > {option.value} </button> 
+                                                })}
+                                            </div>
+                                        </div>
+                                    )
+                                })}
+                            </div>
+                        </div>
                         {Number(tags) > 0 && <div>
                             <p className="text-xs font-semibold text-muted-foreground mb-1">Tags</p>
                             <div className="flex flex-wrap items-center gap-2">
@@ -107,13 +164,13 @@ const ProductDetails = () => {
                             </div>
                         </div>}
                         <div>
-                            {getItemQuantity(id as string) === 0 && <button onClick={()=> increaseCartQuanity(id as string)} className="uppercase text-xs py-3 bg-blue-700 text-white rounded-md border px-12">Add to cart</button>}
-                            {getItemQuantity(id as string) > 0 && <div className=''>
+                            {getItemQuantity(id as string, selectedColor, selectedSize) === 0 && <button disabled={(colorOption && !selectedColor) || (sizeOption && !selectedSize)} onClick={()=> increaseCartQuanity(id as string, selectedColor, selectedSize)} className="uppercase text-xs py-3 bg-blue-700 text-white rounded-md border px-12">Add to cart</button>}
+                            {getItemQuantity(id as string, selectedColor, selectedSize) > 0 && <div className=''>
                                 <p className='text-xs font-semibold text-muted-foreground mb-1'>Qty:</p>
                                 <div className="flex items-center gap-4">
-                                    <button onClick={()=>decreaseCartQuantity(id as string)} className='p-1 md:p-2 border rounded-md text-gray-600 hover:text-blue-600 hover:border-blue-400'><Minus className='w-2 h-2 md:w-4 md:h-4'/></button>
-                                    <p>{getItemQuantity(id as string)}</p>
-                                    <button onClick={()=> increaseCartQuanity(id as string)} className='p-1 md:p-2 border rounded-md text-gray-600 hover:text-blue-600 hover:border-blue-400'><Plus className='w-2 h-2 md:w-4 md:h-4'/></button>
+                                    <button onClick={()=>decreaseCartQuantity(id as string, selectedColor, selectedSize)} className='p-1 md:p-2 border rounded-md text-gray-600 hover:text-blue-600 hover:border-blue-400'><Minus className='w-2 h-2 md:w-4 md:h-4'/></button>
+                                    <p>{getItemQuantity(id as string, selectedColor, selectedSize)}</p>
+                                    <button onClick={()=> increaseCartQuanity(id as string, selectedColor, selectedSize)} className='p-1 md:p-2 border rounded-md text-gray-600 hover:text-blue-600 hover:border-blue-400'><Plus className='w-2 h-2 md:w-4 md:h-4'/></button>
                                 </div>
                             </div>}
                         </div>

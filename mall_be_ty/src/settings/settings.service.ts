@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateSettingDto } from './dto/create-setting.dto';
 import { UpdateSettingDto } from './dto/update-setting.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -13,13 +13,17 @@ import { UserInfo } from 'src/decorators/user.decorator';
 import { User } from 'src/user/entities/user.entity';
 import { CommissionService } from 'src/commission/commission.service';
 import { AuditAction } from 'src/commission/entities/AuditLog.entity';
+import { CategoryBanner } from './entities/categoriesBanner.entity';
+import { Revenue } from './entities/revenue.entity';
 
 @Injectable()
 export class SettingsService {
   constructor(
     @InjectRepository(Banner) private readonly bannerRepo:Repository<Banner>,
+    @InjectRepository(CategoryBanner) private readonly categoryBannerRepo:Repository<CategoryBanner>,
     @InjectRepository(Tax) private readonly taxRepo:Repository<Tax>,
     @InjectRepository(User) private readonly userRepo:Repository<User>,
+    @InjectRepository(Revenue) private readonly revenueRepo:Repository<Revenue>,
     private readonly uploadService: UploadService,
     private readonly commissionService: CommissionService,
     private readonly dataSource:DataSource
@@ -39,7 +43,7 @@ export class SettingsService {
       } 
       
       const createdTax = await this.taxRepo.save(saveEntity)
-      await this.commissionService.aduitLog(AuditAction.CREATE_TAX, {
+      await this.commissionService.auditLog(AuditAction.CREATE_TAX, {
         taxPercent: tax.taxPercent,
         status: "SUCCESSFUL"
       }, userId);
@@ -71,6 +75,17 @@ export class SettingsService {
     return this.bannerRepo.save(saveEntity)
   }
 
+  addCategoryBannerImage(id:number, filename:string) {
+    const categoryBanner = this.categoryBannerRepo.findOne({
+      where: {id}
+    })
+    if(!categoryBanner) throw new NotFoundException("The category banner was not found")
+
+    return this.categoryBannerRepo.update(id, {
+      imageName: filename,
+    })
+  }
+
   async findAllBanners() {
     const banners = await this.bannerRepo.find()
     const bannersResponse = banners.map(banner=>new BannerResponseDto(banner))
@@ -80,6 +95,14 @@ export class SettingsService {
     })
 
     return bannersResponse
+  }
+
+  async calculateRevenueCommissions(){
+    const commisions = await this.revenueRepo.findOne({
+      where: {},
+      order: {id: "DESC"}
+    })
+    return commisions
   }
 
   async findTax(){
@@ -100,7 +123,7 @@ export class SettingsService {
         taxPercent: tax.taxPercent
       })
 
-      await this.commissionService.aduitLog(AuditAction.UPDATE_TAX, {
+      await this.commissionService.auditLog(AuditAction.UPDATE_TAX, {
         previousTaxPercent: prevTax.taxPercent,
         taxPercent: tax.taxPercent,
         status: "SUCCESSFUL"
@@ -125,7 +148,6 @@ export class SettingsService {
 
   async deleteBanner(bannerId: string){
     try{
-
       const banner = await this.bannerRepo.findOne({
         where: {
           bannerId

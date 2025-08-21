@@ -1,10 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CommissionTransaction } from 'src/commission/entities/commissionTransaction.entity';
-import { VendorPayout } from 'src/commission/entities/vendorPayout.entity';
 import { User } from 'src/user/entities/user.entity';
 import { Between, Repository } from 'typeorm';
 import { AccountStatementLine } from './dto/account-statement.dto';
+import { VendorPayout } from 'src/store/entities/vendorPayout.entity';
+import { Store } from 'src/store/entities/store.entity';
 
 @Injectable()
 export class ReportService {
@@ -12,35 +13,36 @@ export class ReportService {
         @InjectRepository(User) private readonly userRepo: Repository<User>,
         @InjectRepository(CommissionTransaction) private readonly txRepo: Repository<CommissionTransaction>,
         @InjectRepository(VendorPayout) private readonly payoutRepo: Repository<VendorPayout>,
+        @InjectRepository(Store) private readonly storeRepo: Repository<Store>,
     ) {}
 
-    async getVendorSummary(vendorId: number): Promise<any> {
+    async getVendorSummary(storeId: number): Promise<any> {
         const [totalSales, totalCommission, totalEarnings, pendingCommission] = await Promise.all([
             this.txRepo
             .createQueryBuilder('tx')
             .select('SUM(tx.saleAmount)', 'total')
-            .where('tx.vendorId = :vendorId', { vendorId })
+            .where('tx.orderItem.product.store.id = :storeId', { storeId })
             .andWhere('tx.isReversed = false')
             .getRawOne(),
 
-            this.txRepo
+            this.payoutRepo
             .createQueryBuilder('tx')
             .select('SUM(tx.commissionAmount)', 'total')
-            .where('tx.vendorId = :vendorId', { vendorId })
+            .where('tx.orderItem.product.store.id = :storeId', { storeId })
             .andWhere('tx.isReversed = false')
             .getRawOne(),
 
             this.txRepo
             .createQueryBuilder('tx')
             .select('SUM(tx.vendorEarning)', 'total')
-            .where('tx.vendorId = :vendorId', { vendorId })
+            .where('tx.orderItem.product.store.id = :storeId', { storeId })
             .andWhere('tx.isReversed = false')
             .getRawOne(),
 
             this.txRepo
             .createQueryBuilder('tx')
             .select('SUM(tx.vendorEarning)', 'total')
-            .where('tx.vendorId = :vendorId AND tx.isPaid = false AND tx.isReversed = false', { vendorId })
+            .where('tx.orderItem.product.store.id = :storeId AND tx.isPaid = false AND tx.isReversed = false', { storeId })
             .getRawOne(),
         ]);
 
@@ -53,9 +55,9 @@ export class ReportService {
     }
 
 
-    async getVendorPayoutHistory(vendorId: number): Promise<VendorPayout[]> {
+    async getVendorPayoutHistory(storeId: number): Promise<VendorPayout[]> {
         return this.payoutRepo.find({
-            where: { vendor: { id: vendorId } },
+            where: { store: { id: storeId } },
             order: { createdAt: 'DESC' },
         });
     }
@@ -64,7 +66,7 @@ export class ReportService {
 
         return this.txRepo
             .createQueryBuilder('tx')
-            .select('tx.vendorId', 'vendorId')
+            .select('tx.orderItem.product.store.id', 'vendorId')
             .addSelect('SUM(tx.vendorEarning)', 'totalEarning')
             .where('tx.isReversed = false')
             .groupBy('tx.vendorId')
@@ -90,20 +92,26 @@ export class ReportService {
         };
     }
 
-    async getVendorAccountStatement(vendorId: number, startDate: Date, endDate: Date,): Promise<AccountStatementLine[]> {
+    async getVendorAccountStatement(storeId: number, startDate: Date, endDate: Date,): Promise<AccountStatementLine[]> {
         const transactions = await this.txRepo.find({
             where: {
-            vendor: { id: vendorId },
-            createdAt: Between(startDate, endDate),
+                orderItem: { 
+                    product: {
+                        store:{
+                            id: storeId
+                        }
+                    }
+                 },
+                createdAt: Between(startDate, endDate),
             },
-            relations: ['orderItem'],
+            relations: ['orderItem.product.store'],
             order: { createdAt: 'ASC' },
         });
 
         const payouts = await this.payoutRepo.find({
             where: {
-            vendor: { id: vendorId },
-            createdAt: Between(startDate, endDate),
+                store: {id: storeId},
+                createdAt: Between(startDate, endDate),
             },
             order: { createdAt: 'ASC' },
         });
@@ -147,6 +155,16 @@ export class ReportService {
         statement = statement.sort((a, b) => a.date.localeCompare(b.date));
 
         return statement;
+    }
+
+    async getTotalProcessedRevenue(): Promise<number> {
+        const result = await this.storeRepo
+            .createQueryBuilder('store')
+            .select('COALESCE(SUM(store.processedRevenue), 0)', 'totalRevenue')
+            .where('store.isDeleted = :isDeleted', { isDeleted: 'FALSE' })
+            .getRawOne();
+
+        return parseFloat(result.totalRevenue);
     }
 
 }

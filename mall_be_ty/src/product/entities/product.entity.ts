@@ -46,6 +46,9 @@ export class Product {
     @Column({type: 'float', default: 0.00})
     price: number;
 
+    @Column({type: 'float', default: 0.00})
+    actualPrice: number;
+
     @Column({nullable: true})
     quantity: number;
 

@@ -19,6 +19,8 @@ export class CommissionController {
 
   @OnEvent("order.commission")
   calculateOrderCommission(@Body() payload:SuccessfulOrderEventDto){
+    console.log(payload);
+    
     return this.commissionService.calculateCommission(payload)
   }
 
@@ -32,6 +34,11 @@ export class CommissionController {
   @Get()
   findCommissions() {
     return this.commissionService.findAll();
+  }
+
+  @Get('transactions/statistics')
+  findTransactionsStatistics(){
+    return this.commissionService.findTransactions()
   }
 
   @Get('transactions/:status')

@@ -1,6 +1,7 @@
 import { useState } from "react"
 import OrderItemTransactions from "./_components/OrderItemTransactions"
 import StoreTransactions from "./_components/StoreTransactions"
+import TransactionsStatistics from "./_components/TransactionsStatistics"
 
 const Transactions = () => {
   const [active, setActive] = useState("Items")
@@ -12,7 +13,7 @@ const Transactions = () => {
   return (
     <div>
       <div>
-        {/* stats */}
+        <TransactionsStatistics />
       </div>
       <div className="my-3">
         <div className="flex gap-2">

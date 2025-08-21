@@ -74,9 +74,10 @@ export type CommissionTransaction = {
     reversalReferenceId?:number,
     createdAt:string,
     updatedAt:string,
+    processedStatus?:string,
     orderItem: OrderItem,
     vendor: User,
-    payout: VendorPayout 
+
 }
 
 export type SubCategory = {
@@ -258,11 +259,14 @@ export type ProductStats = {
 
 export type Store = {
     id: number,
+    storeId?: string,
     name: string,
     url: string,
     unspacedName:string,
     createdAt: string,
     updatedAt: string,
+    processedRevenue: number,
+    payments: Payouts[],
     user?: User,
     storeAccount?: StoreAccount,
     storeDetail?: StoreDetail,
@@ -271,6 +275,15 @@ export type Store = {
     paymentDetail: PaymentDetail,
     nextOfKin: NextOfKin
 } 
+
+export type Payouts = {
+    id: number,
+    paidBy: User,
+    totalAmount: number,
+    status:string,
+    createdAt:string,
+    store: Store
+}
 
 export type StoreAccount = {
     id: number,

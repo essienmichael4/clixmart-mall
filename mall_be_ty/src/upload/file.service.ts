@@ -76,6 +76,15 @@ export class FileService {
         }))
     }
 
+    async uploadCategoryBanner(imageBuffer: Buffer, filename:string){
+        return await this.s3Client.send(
+            new PutObjectCommand({
+            Bucket: this.configService.getOrThrow('BUCKET_NAME'),
+            Body: imageBuffer,
+            Key: `categoryBanner/${filename}`
+        }))
+    }
+
     async uploadStore(imageBuffer: Buffer, filename:string){
         return await this.s3Client.send(
             new PutObjectCommand({
@@ -106,6 +115,14 @@ export class FileService {
             new DeleteObjectCommand({
             Bucket: this.configService.getOrThrow('BUCKET_NAME'),
             Key: `category/${filename}`
+        }))
+    }
+
+    async deleteCategoryBannerImage(filename:string){
+        return await this.s3Client.send(
+            new DeleteObjectCommand({
+            Bucket: this.configService.getOrThrow('BUCKET_NAME'),
+            Key: `categoryBanner/${filename}`
         }))
     }
 

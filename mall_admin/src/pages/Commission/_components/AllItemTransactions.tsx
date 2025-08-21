@@ -72,7 +72,15 @@ const AllItemTransactions = ({status}: TransactionProps) => {
             header:({column})=>(<DataTableColumnHeader column={column} title='Is Paid' />),
             cell:({row}) => { 
                 return <div className='text-muted-foreground text-nowrap'>
-                    {row.original.isPaid}
+                    {row.original.isPaid.toString()}
+                </div>
+            }
+        },{
+            accessorKey: "processedStatus",
+            header:({column})=>(<DataTableColumnHeader column={column} title='Proccessed' />),
+            cell:({row}) => { 
+                return <div className='text-muted-foreground text-nowrap'>
+                    {row.original.processedStatus}
                 </div>
             }
         },{

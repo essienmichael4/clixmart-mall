@@ -29,10 +29,16 @@ export class OrderItem {
     @Column()
     name:string
 
-    @Column({type: "decimal", precision: 10, scale: 2})
+    @Column({ type: 'decimal', precision: 10, scale: 2, nullable:true, transformer: {
+        to: (value: number) => value,
+        from: (value: string) => parseFloat(value),
+    }})
     price: number;
 
-    @Column({type: "decimal", precision: 10, scale: 2})
+    @Column({ type: 'decimal', precision: 10, scale: 2, nullable:true, transformer: {
+        to: (value: number) => value,
+        from: (value: string) => parseFloat(value),
+    }})
     subTotal: number;
 
     @Column()
@@ -50,15 +56,6 @@ export class OrderItem {
     @Column({ default: Deleted.FALSE })
     isDeleted: Deleted;
 
-    @Column({ type: 'decimal', precision: 5, scale: 2, nullable: true })
-    commissionRate: number; // e.g., 10.00 for 10%
-
-    @Column({ type: 'decimal', precision: 10, scale: 2, nullable: true })
-    commissionAmount: number;
-
-    @Column({ type: 'decimal', precision: 10, scale: 2, nullable: true })
-    vendorEarning: number;
-
     @ManyToOne(() => Order, (order) => order.orderItems, {onDelete: "CASCADE"})
     @JoinColumn({ name: 'order' })
     order: Order;
@@ -66,7 +63,10 @@ export class OrderItem {
     @ManyToOne(() => Product, (product) => product.orderItems, {eager: true})
     product: Product;
 
-    @OneToOne(()=> CommissionTransaction, (transaction)=> transaction.orderItem)
+    @OneToOne(() => CommissionTransaction, (transaction) => transaction.orderItem, {
+        cascade: true,
+        onDelete: "CASCADE",
+    })
     @JoinColumn()
     commissionTransaction: CommissionTransaction
 }

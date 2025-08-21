@@ -48,6 +48,32 @@ export class SettingsController {
     return this.settingsService.addBannerImage(filename);
   }
 
+  @Post('category-banners/:id/upload')
+  @UploadFile('file')
+  @ApiForbiddenResponse({description: 'UNAUTHORIZED_REQUEST'})
+  @ApiUnprocessableEntityResponse({description: 'BAD_REQUEST'})
+  @ApiInternalServerErrorResponse({description: 'INTERNAL_SERVER_ERROR'})
+  @ApiConsumes("multipart/form-data")
+  @UseInterceptors(
+    FileInterceptor("file", {
+      fileFilter: ImageFileFilter
+    })
+  )
+  async addCategoryBannerImage(@Param('id', ParseIntPipe) id: number, @Req() req:any,
+    @UploadedFile(
+      new ParseFilePipeBuilder()
+        .addMaxSizeValidator({maxSize: MAX_IMAGE_SIZE_IN_BYTE})
+        .build({errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY})
+  ) file: Express.Multer.File){
+    if(!file || req.fileValidationError){
+      throw new BadRequestException("Invalid file provided, [Image files allowed]")
+    }
+    const buffer = file.buffer
+    const filename = `${v4()}-${file.originalname.replace(/\s+/g,'')}`
+    const upload = await this.uploadService.addCategoryBannerImage(buffer, filename) 
+    return this.settingsService.addCategoryBannerImage(id, filename);
+  }
+
   @Get('banners')
   findBanners() {
     return this.settingsService.findAllBanners();
@@ -58,6 +84,13 @@ export class SettingsController {
   @Get('tax')
   findTax() {
     return this.settingsService.findTax();
+  }
+
+  @Role("ADMIN")
+  @UseGuards(RolesGuard)
+  @Get('commissions')
+  findTotalCommissions() {
+    return this.settingsService.calculateRevenueCommissions();
   }
 
   @Role("ADMIN")

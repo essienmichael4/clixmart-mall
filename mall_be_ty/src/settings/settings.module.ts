@@ -11,9 +11,13 @@ import { Tax } from './entities/tax.entity';
 import { User } from 'src/user/entities/user.entity';
 import { AuditLog } from 'src/commission/entities/AuditLog.entity';
 import { CommissionModule } from 'src/commission/commission.module';
+import { CategoryBanner } from './entities/categoriesBanner.entity';
+import { Revenue } from './entities/revenue.entity';
+import { RevenueYearHistory } from './entities/revenueYearHistory.entity';
+import { RevenueMonthHistory } from './entities/revenueMonthHistory.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Tax, Banner, User, AuditLog]), UploadModule, CommissionModule],
+  imports: [TypeOrmModule.forFeature([Tax, RevenueYearHistory, RevenueMonthHistory, Revenue, Banner, User, AuditLog, CategoryBanner]), UploadModule, CommissionModule],
   controllers: [SettingsController],
   providers: [SettingsService, JwtService, FileService, UploadService],
 })

@@ -8,6 +8,8 @@ import { DataTableColumnHeader } from "@/components/DataTable/ColumnHeader";
 import { Button } from "@/components/ui/button";
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/ui/table";
 import { Skeleton } from "@/components/ui/skeleton";
+import AddPaymentDialog from "./PaymentDialog";
+import { PlusCircle } from "lucide-react";
 
 interface TransactionProps {
     status: string
@@ -36,7 +38,7 @@ const AllStoreTransactions = ({status}: TransactionProps) => {
         },{
             accessorKey: "name",
             header:({column})=>(<DataTableColumnHeader column={column} title='Store' />),
-            cell:({row}) => <div className='capitalize'>
+            cell:({row}) => <div className=''>
                 <Link to={`./${row.original.id}`}>
                     {row.original.name}
                 </Link>
@@ -50,35 +52,45 @@ const AllStoreTransactions = ({status}: TransactionProps) => {
                 </div>
             }
         },{
-            accessorKey: "storeAccount.currentAccount",
+            accessorKey: "processedRevenue",
             header:({column})=>(<DataTableColumnHeader column={column} title='To be Paid' />),
             cell:({row}) => { 
                 return <div className='text-muted-foreground text-nowrap'>
-                    {row.original.storeAccount?.currentAccount}
+                    {row.original.processedRevenue}
                 </div>
             }
-        },{
-            accessorKey: "storeAccount.due",
-            header:({column})=>(<DataTableColumnHeader column={column} title='Due' />),
-            cell:({row}) => { 
-                return <div className='text-muted-foreground text-nowrap'>
-                    {row.original.storeAccount?.due}
-                </div>
-            }
-        },{
-            accessorKey: "storeAccount.unpaid",
-            header:({column})=>(<DataTableColumnHeader column={column} title='Unpaid' />),
-            cell:({row}) => { 
-                return <div className='text-muted-foreground text-nowrap'>
-                    {row.original.storeAccount?.unpaid}
-                </div>
-            }
-        },{
+        },
+        // {
+        //     accessorKey: "storeAccount.currentAccount",
+        //     header:({column})=>(<DataTableColumnHeader column={column} title='To be Paid' />),
+        //     cell:({row}) => { 
+        //         return <div className='text-muted-foreground text-nowrap'>
+        //             {row.original.storeAccount?.currentAccount}
+        //         </div>
+        //     }
+        // },{
+        //     accessorKey: "storeAccount.due",
+        //     header:({column})=>(<DataTableColumnHeader column={column} title='Due' />),
+        //     cell:({row}) => { 
+        //         return <div className='text-muted-foreground text-nowrap'>
+        //             {row.original.storeAccount?.due}
+        //         </div>
+        //     }
+        // },{
+        //     accessorKey: "storeAccount.unpaid",
+        //     header:({column})=>(<DataTableColumnHeader column={column} title='Unpaid' />),
+        //     cell:({row}) => { 
+        //         return <div className='text-muted-foreground text-nowrap'>
+        //             {row.original.storeAccount?.unpaid}
+        //         </div>
+        //     }
+        // },
+        {
             accessorKey: "ids",
             header:({column})=>(<DataTableColumnHeader column={column} title='Actions' />),
-            cell:({}) => <div>
+            cell:({row}) => <div>
                 <span className="flex gap-2 items-center"  >
-                    {/* <EditCommission commission={row.original} trigger={<button><Edit className="w-4 h-4 text-emerald-400"/></button>} /> */}
+                    <AddPaymentDialog store={row.original} trigger={<button className="flex flex-col items-center text-xs"><PlusCircle className="w-4 h-4 text-emerald-400"/> payment</button>} />
                     {/* <EditBrandImage item={row.original} trigger={<button><Image className="w-4 h-4 text-blue-400"/></button>} /> */}
                     {/* <DeletePackage trackingNumber={row.original.trackingNumber} id={Number(row.original.id)} trigger={<button><Trash2 className="w-4 h-4 text-rose-400" /></button>} />  */}
                 </span> 

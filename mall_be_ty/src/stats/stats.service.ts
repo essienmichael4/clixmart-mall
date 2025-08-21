@@ -13,6 +13,8 @@ import { User } from 'src/user/entities/user.entity';
 import { OrderItem } from 'src/order/entities/orderItem.entity';
 import { calcPercentageDifference, DateToUTCDate } from 'src/helpers/common';
 import { endOfDay, endOfMonth, endOfYear, endOfYesterday, startOfDay, startOfMonth, startOfYear, startOfYesterday, subYears } from 'date-fns';
+import { RevenueMonthHistory } from 'src/settings/entities/revenueMonthHistory.entity';
+import { RevenueYearHistory } from 'src/settings/entities/revenueYearHistory.entity';
 
 @Injectable()
 export class StatsService {
@@ -21,6 +23,8 @@ export class StatsService {
     @InjectRepository(YearHistory) private readonly yearHistoryRepo:Repository<YearHistory>,
     @InjectRepository(UserMonthHistory) private readonly userMonthHistoryRepo:Repository<UserMonthHistory>,
     @InjectRepository(UserYearHistory) private readonly userYearHistoryRepo:Repository<UserYearHistory>,
+    @InjectRepository(RevenueMonthHistory) private readonly revenueMonthHistoryRepo:Repository<RevenueMonthHistory>,
+    @InjectRepository(RevenueYearHistory) private readonly revenueYearHistoryRepo:Repository<RevenueYearHistory>,
     @InjectRepository(Order) private readonly orderRepo:Repository<Order>,
     @InjectRepository(OrderItem) private readonly orderItemRepo:Repository<OrderItem>,
     @InjectRepository(Product) private readonly productRepo:Repository<Product>,
@@ -533,5 +537,170 @@ export class StatsService {
 
     const result = await query.getRawOne()
     return parseInt(result.count, 10)
+  }
+
+  async getRevenueHistoryPeriods(){
+    const result = await this.revenueMonthHistoryRepo.createQueryBuilder("monthHistory")
+        .select("DISTINCT monthHistory.year", "year") // Select distinct years
+        .orderBy("monthHistory.year", "ASC")
+        .getRawMany();
+
+    const years = result.map((el: { year: any }) => el.year);
+    
+    if (years.length === 0) {
+        return [new Date().getFullYear()]; // Return the current year if no years found
+    }
+
+    return years;
+  };
+
+  async getRevenueHistoryData(timeframe: "MONTH" | "YEAR", month:number, year:number, userId?:number){
+    if(timeframe === "YEAR"){
+        const revenueYearHistory = await this.getYearRevenueHistory(year)
+        const revenueYearStats = await this.getYearRevenueStats(year)
+        return {
+          ...revenueYearStats,
+          historyData: revenueYearHistory
+        }
+    }
+    if(timeframe === "MONTH"){
+        const revenueMonthHistory = await this.getMonthRevenueHistory(month, year)
+        const revenueMonthStats = await this.getMonthRevenueStats(month, year)
+        return {
+          ...revenueMonthStats,
+          historyData: revenueMonthHistory
+        }
+    }
+  }
+
+  async getMonthRevenueHistory(month: number, year: number){
+    const result = this.revenueMonthHistoryRepo.createQueryBuilder("monthHistory")
+      .select("monthHistory.day", "day")
+      .addSelect("SUM(monthHistory.taxRevenue)", "taxRevenue")
+      .addSelect("SUM(monthHistory.soldRevenue)", "soldRevenue")
+      .addSelect("SUM(monthHistory.vendorEarnings)", "vendorEarnings")
+      .addSelect("SUM(monthHistory.commissionRevenue)", "commissionRevenue")
+      .where("monthHistory.month = :month", { month })
+      .andWhere("monthHistory.year = :year", { year });
+
+      result.groupBy("monthHistory.day")
+        .orderBy("day", "ASC");
+
+    const aggregatedResult = await result.getRawMany();
+
+    if (!aggregatedResult || aggregatedResult.length === 0) return [];
+
+    const history: HistoryDataDto[] = [];
+    const daysInMonth = new Date(year, month + 1, 0).getDate(); // Get days in month
+
+    for (let i = 1; i <= daysInMonth; i++) {
+      let vendorEarnings = 0;
+      let taxRevenue = 0;
+      let commissionRevenue = 0;
+      let soldRevenue = 0;
+
+      const dayData = aggregatedResult.find((row: { day: number }) => row.day === i);
+      if (dayData) {
+        vendorEarnings = dayData.vendorEarnings || 0;
+        taxRevenue = dayData.taxRevenue || 0;
+        commissionRevenue = dayData.commissionRevenue || 0;
+        soldRevenue = dayData.soldRevenue || 0;
+      }
+
+      history.push({
+        year,
+        month,
+        day: i,
+        vendorEarnings,
+        taxRevenue,
+        commissionRevenue,
+        soldRevenue
+      });
+    }
+
+    return history;
+  }
+
+  async getYearRevenueHistory(year: number){
+    const result = this.revenueYearHistoryRepo.createQueryBuilder("yearHistory")
+      .select("yearHistory.month", "month")
+      .addSelect("SUM(yearHistory.taxRevenue)", "taxRevenue")
+      .addSelect("SUM(yearHistory.soldRevenue)", "soldRevenue")
+      .addSelect("SUM(yearHistory.vendorEarnings)", "vendorEarnings")
+      .addSelect("SUM(yearHistory.commissionRevenue)", "commissionRevenue")
+      .where("yearHistory.year = :year", { year });
+
+    result.groupBy("yearHistory.month")
+      .orderBy("month", "ASC");
+
+    const aggregatedResult = await result.getRawMany();
+
+    if (!aggregatedResult || aggregatedResult.length === 0) return [];
+
+    const history: HistoryDataDto[] = [];
+
+    for (let i = 0; i < 12; i++) {
+      let vendorEarnings = 0;
+      let taxRevenue = 0;
+      let commissionRevenue = 0;
+      let soldRevenue = 0;
+
+      const month = aggregatedResult.find((row: { month: number }) => row.month === i);
+      if (month) {
+        vendorEarnings = month.vendorEarnings || 0;
+        taxRevenue = month.taxRevenue || 0;
+        commissionRevenue = month.commissionRevenue || 0;
+        soldRevenue = month.soldRevenue || 0;
+      }
+
+      history.push({
+        year,
+        month,
+        day: i,
+        vendorEarnings,
+        taxRevenue,
+        commissionRevenue,
+        soldRevenue
+      });
+    }
+
+    return history;
+  }
+
+  async getMonthRevenueStats(month: number, year: number){
+    const result = await this.revenueMonthHistoryRepo
+      .createQueryBuilder("monthHistory")
+      .select("COALESCE(SUM(monthHistory.taxRevenue), 0)", "taxRevenue")
+      .addSelect("COALESCE(SUM(monthHistory.soldRevenue), 0)", "soldRevenue")
+      .addSelect("COALESCE(SUM(monthHistory.vendorEarnings), 0)", "vendorEarnings")
+      .addSelect("COALESCE(SUM(monthHistory.commissionRevenue), 0)", "commissionRevenue")
+      .where("monthHistory.month = :month", { month })
+      .andWhere("monthHistory.year = :year", { year })
+      .getRawOne();
+
+    return {
+      taxRevenue: parseFloat(result.taxRevenue),
+      soldRevenue: parseFloat(result.soldRevenue),
+      vendorEarnings: parseFloat(result.vendorEarnings),
+      commissionRevenue: parseFloat(result.commissionRevenue),
+    };
+  }
+
+  async getYearRevenueStats(year: number){
+    const result = await this.revenueYearHistoryRepo
+      .createQueryBuilder("yearHistory")
+      .select("COALESCE(SUM(yearHistory.taxRevenue), 0)", "taxRevenue")
+      .addSelect("COALESCE(SUM(yearHistory.soldRevenue), 0)", "soldRevenue")
+      .addSelect("COALESCE(SUM(yearHistory.vendorEarnings), 0)", "vendorEarnings")
+      .addSelect("COALESCE(SUM(yearHistory.commissionRevenue), 0)", "commissionRevenue")
+      .where("yearHistory.year = :year", { year })
+      .getRawOne();
+
+    return {
+      taxRevenue: parseFloat(result.taxRevenue),
+      soldRevenue: parseFloat(result.soldRevenue),
+      vendorEarnings: parseFloat(result.vendorEarnings),
+      commissionRevenue: parseFloat(result.commissionRevenue),
+    };
   }
 }

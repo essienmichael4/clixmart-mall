@@ -1,5 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsDefined, IsNotEmpty, IsNumber, IsOptional, IsString } from "class-validator";
+import { IsDefined, IsNotEmpty, IsNumber, IsOptional, IsPositive, IsString } from "class-validator";
 import { Registered } from "../entities/storeDetails.entity";
 import { Mode } from "../entities/paymentDetails.entity";
 
@@ -180,4 +180,16 @@ export class NextOfKinDto {
     @IsString()
     @IsNotEmpty()
     phone:string 
+}
+
+export class PaymentDto {
+    @ApiProperty({
+        description: "Amount paid to vendor",
+        example: 2000,
+        required: true
+    })
+    @IsDefined()
+    @IsNumber()
+    @IsPositive()
+    amount:number 
 }

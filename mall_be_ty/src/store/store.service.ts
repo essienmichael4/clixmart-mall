@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, ForbiddenException, HttpException, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { CreateStoreDto, NextOfKinDto, StoreAddressDto, StoreDetailsDto, StorePaymentDetailsDto } from './dto/create-store.dto';
 import { UpdateStoreDto, UpdateStoreReviewDto } from './dto/update-store.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -17,6 +17,9 @@ import { v4 } from 'uuid';
 import { GetDay, GetMonth, GetYear } from 'src/helpers/common';
 import { StoreReponseDto } from './dto/response.dto';
 import { UploadService } from 'src/upload/upload.service';
+import { CommissionService } from 'src/commission/commission.service';
+import { AuditAction } from 'src/commission/entities/AuditLog.entity';
+import { PayoutStatus, VendorPayout } from './entities/vendorPayout.entity';
 
 @Injectable()
 export class StoreService {
@@ -30,7 +33,9 @@ export class StoreService {
     @InjectRepository(MonthHistory) private readonly monthHistoryRepo:Repository<MonthHistory>,
     @InjectRepository(YearHistory) private readonly yearHistoryRepo:Repository<YearHistory>,
     @InjectRepository(User) private readonly userRepo:Repository<User>,
+    @InjectRepository(VendorPayout) private readonly vendorPayoutRepo:Repository<VendorPayout>,
     private userService: UserService,
+    private readonly commissionService: CommissionService,
     private readonly uploadService:UploadService,
     private readonly dataSource:DataSource
   ){}
@@ -294,6 +299,124 @@ export class StoreService {
     }
   }
 
+  async allPayouts(){
+    return this.vendorPayoutRepo.find({
+      relations: {
+        store: true
+      },
+      where: {},
+      order:{
+        id:"DESC"
+      }
+    })
+  }
+
+  async allStorePayouts(storeId: string,){
+    return this.vendorPayoutRepo.find({
+      relations:{
+        store:true
+      },
+      where: {
+        store: {
+          storeId
+        }
+      }
+    })
+  }
+
+  async payoutStore(storeId: string, amount: number, paidBy: number) {
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+
+    try {
+      await this.commissionService.auditLog(
+        AuditAction.PAYOUT_INITIATED,
+        { storeId, amount },
+        paidBy,
+        'PAYOUTS',
+      );
+
+      // Find store
+      const store = await queryRunner.manager.findOne(Store, {
+        where: { storeId },
+        relations: ['payments'],
+      });
+
+      if (!store) {
+        throw new NotFoundException(`Store with id ${storeId} not found.`);
+      }
+
+      const paidByUser = await queryRunner.manager.findOne(User, {
+        where: { id: paidBy },
+      });
+
+      if (!paidByUser) {
+        throw new NotFoundException(`The account making the payment does not exist.`);
+      }
+
+      if (Number(store.processedRevenue) < amount) {
+        throw new BadRequestException(
+          `Insufficient balance: available=${store.processedRevenue}, requested=${amount}.`,
+        );
+      }
+
+      // Create payout record
+      const payout = queryRunner.manager.create(VendorPayout, {
+        paidBy: paidByUser,
+        store,
+        totalAmount: amount,
+        status: PayoutStatus.SUCCESS,
+        paidAt: new Date(),
+      });
+
+      await queryRunner.manager.save(VendorPayout, payout);
+
+      // Deduct processed revenue
+      store.processedRevenue = Number(store.processedRevenue) - amount;
+      await queryRunner.manager.save(Store, store);
+
+      // Log completion
+      await this.commissionService.auditLog(
+        AuditAction.PAYOUT_COMPLETED,
+        {
+          storeId: store.storeId,
+          storeName: store.name,
+          payoutId: payout.id,
+          amount,
+          remainingBalance: store.processedRevenue,
+        },
+        paidBy,
+        'PAYOUTS',
+      );
+
+      await queryRunner.commitTransaction();
+      return payout;
+    } catch (error) {
+      await queryRunner.rollbackTransaction();
+
+      await this.commissionService.auditLogError(
+        AuditAction.PAYOUT_FAILED,
+        error,
+        paidBy,
+        { storeId, amount },
+        'PAYOUTS',
+      );
+
+      // If it's already an HttpException, just rethrow
+      if (error instanceof BadRequestException ||
+          error instanceof NotFoundException ||
+          error instanceof ForbiddenException) {
+        throw error;
+      }
+
+      // Otherwise, wrap unexpected errors
+      throw new InternalServerErrorException(error.message);
+    } finally {
+      await queryRunner.release();
+    }
+  }
+  
   update(id: number, updateStoreDto: UpdateStoreDto) {
     return `This action updates a #${id} store`;
   }

@@ -1,6 +1,6 @@
 import { Controller, Get, Body, Patch, Param, Delete, UseGuards, ParseIntPipe, ValidationPipe, UsePipes, HttpStatus, HttpCode, Post, BadRequestException, NotFoundException, ParseFilePipeBuilder, Req, UploadedFile, UseInterceptors} from '@nestjs/common';
 import { StoreService } from './store.service';
-import { CreateStoreDto, NextOfKinDto, StoreAddressDto, StoreDetailsDto, StorePaymentDetailsDto } from './dto/create-store.dto';
+import { CreateStoreDto, NextOfKinDto, PaymentDto, StoreAddressDto, StoreDetailsDto, StorePaymentDetailsDto } from './dto/create-store.dto';
 import { UpdateStoreDto, UpdateStoreReviewDto } from './dto/update-store.dto';
 import { User, UserInfo } from 'src/decorators/user.decorator';
 import { JwtGuard } from 'src/guards/jwt.guard';
@@ -112,9 +112,32 @@ export class StoreController {
   }
 
   @UseGuards(JwtGuard)
+  @Post(":id/payments")
+  @HttpCode(HttpStatus.CREATED)
+  @ApiCreatedResponse({type: "", description: "Store payment added successfully"})
+  @ApiOkResponse({type: "", description: "Store payment added added successfully"})
+  @ApiOperation({description: "Create Store payment api"})
+  @ApiConsumes("application/json")
+  MakeStorePayment(@Param('id') id: string, @Body() paymentDto: PaymentDto, @User() user:UserInfo) {
+    return this.storeService.payoutStore(id, paymentDto.amount, user.sub.id);
+  }
+
+  @UseGuards(JwtGuard)
   @Get("all")
   findAllUserStores(@User() user:UserInfo) {
     return this.storeService.findAllUserStores(user.sub.id);
+  }
+
+  @UseGuards(JwtGuard)
+  @Get("payouts")
+  findAllStoresPayouts(@User() user:UserInfo) {
+    return this.storeService.allPayouts();
+  }
+
+  @UseGuards(JwtGuard)
+  @Get(":id/payouts")
+  findAllStorePayouts(@Param("id") id:string, @User() user:UserInfo) {
+    return this.storeService.allStorePayouts(id);
   }
 
   @UseGuards(JwtGuard)

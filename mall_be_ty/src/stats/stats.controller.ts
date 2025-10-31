@@ -21,6 +21,16 @@ export class StatsController {
     return this.statsService.getPeriods();
   }
 
+  @Get('revenue-history-periods')
+  revenueHistoryPeriods() {
+    return this.statsService.getRevenueHistoryPeriods();
+  }
+
+  @Get('revenue-history')
+  adminRevenueHistory(@Query() statsHistoryDto:StatsHistoryDto) {
+    return this.statsService.getRevenueHistoryData(statsHistoryDto.timeframe, statsHistoryDto.month, statsHistoryDto.year);
+  }
+
   @Get('admin-history')
   adminHistory(@Query() statsHistoryDto:StatsHistoryDto) {
     return this.statsService.getHistoryData(statsHistoryDto.timeframe, statsHistoryDto.month, statsHistoryDto.year);

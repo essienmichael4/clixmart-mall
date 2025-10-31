@@ -121,7 +121,6 @@ export class OrderService {
           products = [...products, itemObject]
       })
 
-
       this.eventEmitter.emit("order.created", {order, products})
       const commissionOrder = await this.orderRepo.findOne({
         where:{id: order.id},
@@ -130,13 +129,14 @@ export class OrderService {
             product: {
               category: {
                 commision: true
-              }
+              },
+              user: true
             }
           }
         }
       })
 
-      this.eventEmitter.emit("order.commission", {commissionOrder})
+      this.eventEmitter.emit("order.commission", {order: commissionOrder})
       
       return order
     }catch(err){

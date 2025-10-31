@@ -15,10 +15,11 @@ import { UserYearHistory } from 'src/product/entities/UserYearHistory.entity';
 import { UploadService } from 'src/upload/upload.service';
 import { UploadModule } from 'src/upload/upload.module';
 import { Address } from 'src/user/entities/address.entity';
+import { Tracking } from './entities/orderTracking.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Order, OrderItem, Product, User, MonthHistory, Address, YearHistory, UserMonthHistory, UserYearHistory]),
+    TypeOrmModule.forFeature([Tracking, Order, OrderItem, Product, User, MonthHistory, Address, YearHistory, UserMonthHistory, UserYearHistory]),
     UploadModule
   ],
   controllers: [OrderController],

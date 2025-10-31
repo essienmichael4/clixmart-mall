@@ -21,6 +21,10 @@ import { Button } from "@/components/ui/button"
 import Tags from "@/components/Tags"
 import SecondLevelCategoryPicker from "@/components/SecondLevelCategoryPicker"
 import ThirdLevelCategoryPicker from "@/components/ThirdLevelCategoryPicker"
+import ColorSelector from "./_components/ColorSelector"
+import CustomProperties from "./_components/CustomProperties"
+import CustomSpecifications from "./_components/CustomSpecifications"
+import SizeSelector from "./_components/SizeSelector"
 
 interface FormProps {
     product: Product,
@@ -29,10 +33,17 @@ interface FormProps {
 }
 
 const EditForm = ({product, store, id}: FormProps) => {
+    const colorOption = product.options.find(option => option.name === "Colors")
+    const sizeOption = product.options.find(option => option.name === "Sizes")
+    const otherOptions = product.options.filter(option => option.name !== "Sizes" && option.name !== "Colors")
     const [tag, setTag] = useState('')
     const [discount, setDiscount] = useState('')
     const [tags, setTags] = useState<string[]>([])
     const [activeImage, setActiveImage] = useState("")
+    const [colors, setColors] = useState<string[]>([]) 
+    const [sizes, setSizes] = useState<string[]>([]) 
+    const [specifications, setSpecifications] = useState([{ name: "", value: "" }])
+    const [properties, setProperties] = useState<{ label: string, values: string[] }[]>([])
     const navigate = useNavigate()
     const axios_instance_token = useAxiosToken()
     const queryClient = useQueryClient()
@@ -258,6 +269,10 @@ const EditForm = ({product, store, id}: FormProps) => {
                                     />
                                     
                                     <h4 className="mt-16 font-semibold text-2xl">Options</h4>
+                                    <ColorSelector colors={colors} setColors={setColors} savedColors={colorOption?.values}/>
+                                    <SizeSelector sizes={sizes} setSizes={setSizes} savedSizes={sizeOption?.values} />
+                                    <CustomSpecifications specifications={specifications} setSpecifications={setSpecifications} />
+                                    <CustomProperties properties={properties} setProperties={setProperties} savedProperties={otherOptions} />
                                     <Button onClick={form.handleSubmit(onSubmit)} disabled={isPending} className='bg-gradient-to-r from-blue-500 to-blue-800 text-white py-2'
                                     >
                                         {!isPending && "Edit Product Details"}

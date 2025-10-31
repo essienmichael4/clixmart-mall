@@ -14,10 +14,12 @@ import { Store } from 'src/store/entities/store.entity';
 import { User } from 'src/user/entities/user.entity';
 import { Order } from 'src/order/entities/order.entity';
 import { OrderItem } from 'src/order/entities/orderItem.entity';
+import { RevenueMonthHistory } from 'src/settings/entities/revenueMonthHistory.entity';
+import { RevenueYearHistory } from 'src/settings/entities/revenueYearHistory.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Product, Store, Order, OrderItem, User, Category, SubCategory, Brand, MonthHistory, UserMonthHistory, YearHistory, UserYearHistory]),
+    TypeOrmModule.forFeature([Product, Store, Order, OrderItem, User, Category, SubCategory, Brand, MonthHistory, UserMonthHistory, YearHistory, UserYearHistory, RevenueMonthHistory, RevenueYearHistory]),
   ],
   controllers: [StatsController],
   providers: [StatsService],

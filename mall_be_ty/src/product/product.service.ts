@@ -24,6 +24,9 @@ import { UserYearHistory } from './entities/UserYearHistory.entity';
 import { YearHistory } from './entities/YearHistory.entity';
 import { GetDay, GetMonth, GetYear } from 'src/helpers/common';
 import { ProductFilterDto } from './dto/request.dto';
+import { ProductOption } from './entities/productOption.entity';
+import { ProductOptionValue } from './entities/productOptionValue.entity';
+import { ProductSpecification } from './entities/productSpecification.entity';
 
 @Injectable()
 export class ProductService {
@@ -31,6 +34,9 @@ export class ProductService {
     @InjectRepository(Store) private readonly storeRepo:Repository<Store>,
     @InjectRepository(Product) private readonly productRepo:Repository<Product>,
     @InjectRepository(ProductReview) private readonly productReviewRepo:Repository<ProductReview>,
+    @InjectRepository(ProductOption) private readonly productOptionRepo:Repository<ProductOption>,
+    @InjectRepository(ProductOptionValue) private readonly productOptionValueRepo:Repository<ProductOptionValue>,
+    @InjectRepository(ProductSpecification) private readonly productSpecificationRepo:Repository<ProductSpecification>,
     @InjectRepository(ProductImage) private readonly productImageRepo:Repository<ProductImage>,
     @InjectRepository(Tag) private readonly tagRepo:Repository<Tag>,
     @InjectRepository(User) private readonly userRepo:Repository<User>,
@@ -121,23 +127,73 @@ export class ProductService {
           }
         }
       })
+
       const category = await this.categoryRepo.findOneBy({name: productDetails.category.toLowerCase()})
       const subCategory = await this.subCategoryRepo.findOneBy({name: productDetails.subCategory.toLowerCase()})
       const brand = await this.brandRepo.findOneBy({name: productDetails.brand.toLowerCase()})
-      const tags = productDetails.tags.map(tag=>{
-        const tagEntity = this.tagRepo.create()
-        const saveEntity = {
-          ...tagEntity,
-          name: tag.toLowerCase(),
-          tagId: v4(),
+      // ✅ Resolve or create tags
+      const newTags = [];
+      for (const tag of productDetails.tags) {
+        const existing = await this.tagRepo.findOneBy({ name: tag.toLowerCase() });
+        if (existing) {
+          newTags.push(existing);
+        } else {
+          const newTag = this.tagRepo.create({
+            tagId: v4(),
+            name: tag.toLowerCase()
+          });
+          const savedTag = await this.tagRepo.save(newTag);
+          newTags.push(savedTag);
         }
-        return saveEntity
-      })
+      }
+
+      // ✅ Rebuild options
+      const incomingOptions = [];
+
+      if (productDetails.colors?.length) {
+        incomingOptions.push({ name: "Colors", values: productDetails.colors });
+      }
+
+      if (productDetails.sizes?.length) {
+        incomingOptions.push({ name: "Sizes", values: productDetails.sizes });
+      }
+
+      if (productDetails.properties?.length) {
+        incomingOptions.push(...productDetails.properties); // These already have { name, values } format
+      }
+
+      // ✅ Merge with existing options
+      const updatedOptions = [];
+
+      for (const opt of incomingOptions) {
+        // create new option
+        const newOption = this.productOptionRepo.create({
+          name: opt.name,
+          product: product,
+          values: opt.values.map((v: string) =>
+            this.productOptionValueRepo.create({ value: v })
+          )
+        });
+        updatedOptions.push(newOption);
+      }
 
       if(name){
         product.name = name
         product.searchName = name.toLowerCase()
       }
+
+      if (productDetails.specifications?.length) {
+        product.specifications = productDetails.specifications.map(spec => {
+          const specEntity = this.productSpecificationRepo.create(); // or new ProductSpecification()
+          return {
+            ...specEntity,
+            name: spec.name,
+            value: spec.value,
+            product: product  // link back to parent if needed
+          };
+        });
+      }
+
       product.category = category
       product.subCategory = subCategory
       product.brand = brand
@@ -146,7 +202,8 @@ export class ProductService {
       product.price = productDetails.price
       product.quantity = productDetails.quantity
       product.discount = productDetails.discount || 0
-      product.tags = tags
+      product.tags = newTags
+      product.options = updatedOptions
 
       return await this.productRepo.save(product)
     }catch(err){
@@ -182,7 +239,11 @@ export class ProductService {
         category: true,
         subCategory: true,
         brand:true,
-        productImages:true
+        productImages:true,
+        options: {
+          values: true
+        },
+        specifications: true
       },
       where: {
         ...(q && { name: Like(`%${q.toLowerCase()}%`) }),
@@ -227,7 +288,11 @@ export class ProductService {
         category: true,
         subCategory: true,
         brand:true,
-        productImages: true
+        productImages: true,
+        specifications: true,
+        options: {
+          values: true
+        }
       },
       where: {
         inventory: Inventory.INSTOCK,
@@ -266,6 +331,10 @@ export class ProductService {
   async findProductsByCategoryAndSubCategories(pageOptionsDto:PageOptionsDto, category?: string, subCategories?: string[], secondLevelSub?:string[], thirdLevelSub?:string[]){
     const products = await this.productRepo.find({
       relations:{
+        options: {
+          values: true
+        },
+        specifications: true,
         productReview: true,
         category: true,
         subCategory: {
@@ -323,6 +392,10 @@ export class ProductService {
   async findAll() {
     const products = await this.productRepo.find({
       relations: {
+        options: {
+          values: true
+        },
+        specifications: true,
         store: true,
         productImages: true,
         productReview: true,
@@ -354,6 +427,10 @@ export class ProductService {
     const {status, review} = productFilterDto
     const products = await this.productRepo.find({
       relations: {
+        options: {
+          values: true
+        },
+        specifications: true,
         store: true,
         productImages: true,
         productReview: true,
@@ -390,6 +467,10 @@ export class ProductService {
     const product = await this.productRepo.findOne({
       where: {productId: id},
       relations: {
+        options: {
+          values: true
+        },
+        specifications: true,
         store: true,
         productImages: true,
         productReview: true,
@@ -428,7 +509,11 @@ export class ProductService {
         brand: true,
         category: true,
         subCategory: true,
-        user: true
+        user: true,
+        options: {
+          values: true
+        },
+        specifications: true,
       },
     });
 
@@ -479,7 +564,11 @@ export class ProductService {
         brand: true,
         category: true,
         subCategory: true,
-        user: true
+        user: true,
+        specifications: true,
+        options: {
+          values: true
+        }
       },
       where: {
         productId: productId,
@@ -512,7 +601,11 @@ export class ProductService {
         brand: true,
         category: true,
         subCategory: true,
-        user: true
+        user: true,
+        specifications: true,
+        options: {
+          values: true
+        }
       },
       where: {
         ...(status && { status:  status}),
@@ -565,28 +658,115 @@ export class ProductService {
           }
         }
       })
+
+      if (!product) throw new Error("Product not found");
+
       const category = await this.categoryRepo.findOneBy({name: productDetails.category.toLowerCase()})
       const subCategory = await this.subCategoryRepo.findOneBy({name: productDetails.subCategory.toLowerCase()})
       const brand = await this.brandRepo.findOneBy({name: productDetails.brand.toLowerCase()})
-      let newtags = []
-      productDetails.tags.map(async(tag)=>{
-        const savedTag = await this.tagRepo.findOneBy({name: tag})
-        if(savedTag){
-          newtags.push(savedTag)
-          return
-        } 
+      
+      const newtags = await Promise.all(
+        productDetails.tags.map(async (tag) => {
+          const lowerTag = tag.toLowerCase();
+          const savedTag = await this.tagRepo.findOneBy({ name: lowerTag });
 
-        const tagEntity = this.tagRepo.create()
-        const saveEntity = {
-          ...tagEntity,
-          name: tag.toLowerCase(),
-          tagId: v4(),
+          if (savedTag) return savedTag;
+
+          const tagEntity = this.tagRepo.create({
+            name: lowerTag,
+            tagId: v4()
+          });
+
+          return await this.tagRepo.save(tagEntity);
+        })
+      );
+
+      let options = []
+      if (productDetails.colors?.length) {
+        options.push({ name: "Colors", values: productDetails.colors });
+      }
+
+      if (productDetails.sizes?.length) {
+        options.push({ name: "Sizes", values: productDetails.sizes });
+      }
+
+      if (productDetails.properties?.length) {
+        options.push(...productDetails.properties);
+      }
+
+      const existingOptions = await this.productOptionRepo.find({
+        where: { product: { id: product.id } },
+        relations: ["values"]
+      });
+
+      const updatedOptions: ProductOption[] = [];
+
+      for (const opt of options) {
+        const existing = existingOptions.find(o => o.name === opt.name);
+
+        if (existing) {
+          // Update existing option's values
+          // First, remove old values (or handle updates if needed)
+          await this.productOptionValueRepo.delete({ option: { id: existing.id } });
+
+          existing.values = opt.values.map((v: string) =>
+            this.productOptionValueRepo.create({ value: v })
+          );
+
+          const saved = await this.productOptionRepo.save(existing);
+          updatedOptions.push(saved);
+        } else {
+          // Create new option
+          const newOption = this.productOptionRepo.create({
+            name: opt.name,
+            product: product,
+            values: opt.values.map((v: string) =>
+              this.productOptionValueRepo.create({ value: v })
+            )
+          });
+
+          const saved = await this.productOptionRepo.save(newOption);
+          updatedOptions.push(saved);
         }
-        const newTag = await this.tagRepo.save(saveEntity)
-        newtags.push(newTag)
-        return 
-      })
+      }
 
+      if (productDetails.specifications?.length) {
+        const existingSpecs = await this.productSpecificationRepo.find({
+          where: { product: { id: product.id } },
+        });
+
+        const updatedSpecs: ProductSpecification[] = [];
+
+        for (const spec of productDetails.specifications) {
+          // Try to find existing spec by name
+          const existing = existingSpecs.find(s => s.name === spec.name);
+
+          if (existing) {
+            // Update value
+            existing.value = spec.value;
+            updatedSpecs.push(existing);
+          } else {
+            // New spec
+            const newSpec = this.productSpecificationRepo.create({
+              name: spec.name,
+              value: spec.value,
+              product,
+            });
+            updatedSpecs.push(newSpec);
+          }
+        }
+        
+        // Remove obsolete specs (those not in the new list)
+        const incomingNames = productDetails.specifications.map(s => s.name);
+        const toRemove = existingSpecs.filter(s => !incomingNames.includes(s.name));
+
+        if (toRemove.length) {
+          await this.productSpecificationRepo.remove(toRemove);
+        }
+        product.specifications = updatedSpecs
+      }
+
+      product.options = updatedOptions;
       product.name = productDetails.name
       product.searchName = productDetails.name.toLowerCase()
       product.category = category

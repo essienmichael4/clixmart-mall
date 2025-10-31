@@ -20,6 +20,35 @@ class ProductReviewResponseDto {
     public status:string 
 }
 
+class ProductOptionValuesResponseDto {
+    @ApiResponseProperty({
+        example: 1
+    })
+    id:number 
+
+    @ApiResponseProperty({
+        example: "000000000000000000000000"
+    })
+    public value:string
+}
+
+class ProductOptionsResponseDto {
+    @ApiResponseProperty({
+        example: 1
+    })
+    id:number 
+
+    @ApiResponseProperty({
+        example: "000000000000000000000000"
+    })
+    public name:string
+    
+    @ApiResponseProperty({
+        example: "PENDING"
+    })
+    public values?:ProductOptionValuesResponseDto[] 
+}
+
 class ProductImageResponseDto {
     @ApiResponseProperty({
         example: 1
@@ -135,6 +164,11 @@ export class ProductResponseDto{
         type: ProductReviewResponseDto
     })
     review?: ProductReviewResponseDto
+    
+    @ApiResponseProperty({
+        type: ProductOptionsResponseDto
+    })
+    options?: ProductOptionsResponseDto[]
 
     @ApiResponseProperty({
         type: [ProductImageResponseDto]

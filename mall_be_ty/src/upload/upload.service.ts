@@ -26,6 +26,10 @@ export class UploadService {
     return await this.fileService.uploadCategory(imageBuffer, filename)
   }
 
+  async addCategoryBannerImage(imageBuffer: Buffer, filename:string){
+    return await this.fileService.uploadCategory(imageBuffer, filename)
+  }
+
   async addStoreImage(imageBuffer: Buffer, filename:string){
     return await this.fileService.uploadStore(imageBuffer, filename)
   }
@@ -39,6 +43,10 @@ export class UploadService {
   }
 
   async deleteCategoryImage(filename:string){
+    return await this.fileService.deleteCategoryImage(filename)
+  }
+
+  async deleteCategoryBannerImage(filename:string){
     return await this.fileService.deleteCategoryImage(filename)
   }
 

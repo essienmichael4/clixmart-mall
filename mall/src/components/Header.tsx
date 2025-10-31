@@ -38,7 +38,7 @@ const Header = ({activeCategory, subCategories, subCategoriesChange}:CategoriesC
         }else{
             navigate(`/products`)
         }
-      }
+    }
 
     return (
         <>

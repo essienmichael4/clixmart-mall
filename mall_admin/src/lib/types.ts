@@ -61,6 +61,25 @@ export type Commission = {
     updatedAt:string,
 }
 
+export type CommissionTransaction = {
+    id: number,
+    saleAmount: number,
+    commissionRate: number,
+    commissionAmount: number,
+    vendorEarning: number,
+    isPaid: boolean,
+    isReversed: boolean,
+    reversalReason?: string,
+    reversedAt?:string,
+    reversalReferenceId?:number,
+    createdAt:string,
+    updatedAt:string,
+    processedStatus?:string,
+    orderItem: OrderItem,
+    vendor: User,
+
+}
+
 export type SubCategory = {
     id:number,
     name:string,
@@ -194,9 +213,28 @@ export type Product = {
     user?: User
     store?: Store,
     brand?: Brand,
+    options: ProductOption[],
+    specifications: ProductSpecification[],
     tags: Tag[],
     productImages: ProductImage[],
     productReview?: ProductReview
+}
+
+export type ProductOption = {
+    id: number,
+    name: string,
+    values: ProductOptionValue[]
+}
+
+export type ProductOptionValue = {
+    id: number,
+    value: string
+}
+
+export type ProductSpecification = {
+    id: number,
+    name: string,
+    value: string
 }
 
 export type ProductImage = {
@@ -221,18 +259,40 @@ export type ProductStats = {
 
 export type Store = {
     id: number,
+    storeId?: string,
     name: string,
     url: string,
     unspacedName:string,
     createdAt: string,
     updatedAt: string,
+    processedRevenue: number,
+    payments: Payouts[],
     user?: User,
+    storeAccount?: StoreAccount,
     storeDetail?: StoreDetail,
     storeReview?: StoreReview,
     storeAddress?: StoreAddress,
     paymentDetail: PaymentDetail,
     nextOfKin: NextOfKin
 } 
+
+export type Payouts = {
+    id: number,
+    paidBy: User,
+    totalAmount: number,
+    status:string,
+    createdAt:string,
+    store: Store
+}
+
+export type StoreAccount = {
+    id: number,
+    storeAccountId: string,
+    currentAccount: number,
+    due: number,
+    unpaid: number,
+    store: Store
+}
 
 export type StoreDetail = {
     id: number,
@@ -263,6 +323,13 @@ export type Tag = {
     name: string
 }
 
+export type Tax = {
+    id: number,
+    taxPercent: number,
+    createdAt?: string,
+    updatedAt?:string,
+}
+
 export type User = {
     id: number | null,
     name: string,
@@ -272,5 +339,15 @@ export type User = {
     createdAt?: string,
     updatedAt?:string,
     address?: Address
+}
+
+export type VendorPayout = {
+    vendor: User,
+    transactions: CommissionTransaction[],
+    totalAmount: number,
+    createdAt?: string,
+    updatedAt?:string,
+    paidAt?:string,
+    status:string
 }
 // export type Status 

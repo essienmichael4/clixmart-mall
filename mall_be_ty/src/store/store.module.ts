@@ -4,7 +4,6 @@ import { StoreController } from './store.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Store } from './entities/store.entity';
 import { Follow } from './entities/follow.entity';
-import { StoreImage } from './entities/storeImage.entity';
 import { StoreReview } from './entities/storeReview.entity';
 import { PaymentDetail } from './entities/paymentDetails.entity';
 import { StoreDetail } from './entities/storeDetails.entity';
@@ -17,13 +16,16 @@ import { MonthHistory } from 'src/product/entities/MonthHistory.entity';
 import { YearHistory } from 'src/product/entities/YearHistory.entity';
 import { UploadModule } from 'src/upload/upload.module';
 import { UploadService } from 'src/upload/upload.service';
+import { StoreAccount } from './entities/storeAccount.entity';
+import { VendorPayout } from './entities/vendorPayout.entity';
+import { CommissionModule } from 'src/commission/commission.module';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Store, Follow, StoreImage, StoreReview, PaymentDetail, StoreDetail, StoreAddress, NextOfKin, User, MonthHistory, YearHistory]),
-    UserModule, UploadModule
+    TypeOrmModule.forFeature([Store, VendorPayout, Follow, StoreReview, PaymentDetail, StoreAccount, StoreDetail, StoreAddress, NextOfKin, User, MonthHistory, YearHistory]),
+    UserModule, UploadModule, CommissionModule
   ],
   controllers: [StoreController],
-  providers: [StoreService, JwtService, UploadService],
+  providers: [StoreService, JwtService, UploadService,],
 })
 export class StoreModule {}

@@ -40,4 +40,24 @@ export class HistoryDataDto {
         example: 1
     })
     products?:number 
+    
+    @ApiResponseProperty({
+        example: 1
+    })
+    vendorEarnings?:number 
+    
+    @ApiResponseProperty({
+        example: 1
+    })
+    taxRevenue?:number 
+    
+    @ApiResponseProperty({
+        example: 1
+    })
+    commissionRevenue?:number 
+    
+    @ApiResponseProperty({
+        example: 1
+    })
+    soldRevenue?:number 
 }

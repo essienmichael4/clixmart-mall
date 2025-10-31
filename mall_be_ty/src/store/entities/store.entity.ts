@@ -2,12 +2,13 @@ import { Product } from "src/product/entities/product.entity";
 import { User } from "src/user/entities/user.entity";
 import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm"
 import { StoreReview } from "./storeReview.entity";
-import { StoreImage } from "./storeImage.entity";
 import { Follow } from "./follow.entity";
 import { StoreAddress } from "./storeAddress.entity";
 import { StoreDetail } from "./storeDetails.entity";
 import { PaymentDetail } from "./paymentDetails.entity";
 import { NextOfKin } from "./nextOfKin.entity";
+import { StoreAccount } from "./storeAccount.entity";
+import { VendorPayout } from "./vendorPayout.entity";
 
 export enum Deleted {
     TRUE = 'TRUE',
@@ -34,6 +35,12 @@ export class Store {
     @Column({ unique: true })
     url:string
 
+    @Column({ type: 'decimal', precision: 10, scale: 2, default: 0.00, transformer: {
+        to: (value: number) => value,
+        from: (value: string) => parseFloat(value),
+    }})
+    processedRevenue: number;
+
     @Column({ nullable: true })
     imageName:string
 
@@ -50,19 +57,15 @@ export class Store {
     @JoinColumn({ name: 'addedBy' })
     user: User;
 
-    @OneToMany(() => Product, (product) => product.store)
+    @OneToMany(() => Product, (product) => product.store, { cascade: true, onDelete: 'CASCADE' })
     products: Product[];
 
-    @OneToMany(() => Follow, (follow) => follow.store)
+    @OneToMany(() => Follow, (follow) => follow.store, { cascade: true, onDelete: 'CASCADE' })
     follows: Follow[];
 
     @OneToOne(()=> StoreReview, (storeReview)=> storeReview.store, {cascade: true})
     @JoinColumn()
     storeReview: StoreReview
-
-    // @OneToOne(() => StoreImage, (storeImage) => storeImage.store, {cascade: true})
-    // @JoinColumn()
-    // storeImage: StoreImage;
 
     @OneToOne(() => StoreAddress, (storeAddress) => storeAddress.store, {cascade: true})
     @JoinColumn()
@@ -76,7 +79,14 @@ export class Store {
     @JoinColumn()
     paymentDetail: PaymentDetail;
 
+    @OneToOne(() => StoreAccount, (account) => account.store, {cascade: true})
+    @JoinColumn()
+    storeAccount: StoreAccount;
+
     @OneToOne(() => NextOfKin, (nextOfKin) => nextOfKin.store, {cascade: true})
     @JoinColumn()
     nextOfKin: NextOfKin;
+
+    @OneToMany(() => VendorPayout, (payment) => payment.store)
+    payments: VendorPayout[];
 }

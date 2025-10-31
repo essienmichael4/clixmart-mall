@@ -1,5 +1,4 @@
 import { Entity, Column, PrimaryColumn } from "typeorm"
-export type Status = "CANCELLED" | "PENDING" | "HELD" | "COMPLETED"
 
 @Entity({name: "monthHistory"})
 export class MonthHistory {

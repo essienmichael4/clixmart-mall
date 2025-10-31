@@ -352,33 +352,33 @@ export class StatsService {
 
     if (!aggregatedResult || aggregatedResult.length === 0) return [];
 
-    const history: HistoryDataDto[] = [];
+      const history: HistoryDataDto[] = [];
 
-    for (let i = 0; i < 12; i++) {
-      let products = 0;
-      let orders = 0;
-      let stores = 0;
-      let users = 0;
-      let revenue = 0;
+      for (let i = 0; i < 12; i++) {
+        let products = 0;
+        let orders = 0;
+        let stores = 0;
+        let users = 0;
+        let revenue = 0;
 
-      const month = aggregatedResult.find((row: { month: number }) => row.month === i);
-      if (month) {
-        stores = month.stores || 0;
-        products = month.products || 0;
-        orders = month.orders || 0;
-        users = month.users || 0;
-        revenue = month.revenue || 0;
-      }
+        const month = aggregatedResult.find((row: { month: number }) => row.month === i);
+        if (month) {
+          stores = month.stores || 0;
+          products = month.products || 0;
+          orders = month.orders || 0;
+          users = month.users || 0;
+          revenue = month.revenue || 0;
+        }
 
-      history.push({
-        year,
-        month: i,
-        products,
-        orders,
-        stores,
-        users,
-        revenue
-      });
+        history.push({
+          year,
+          month: i,
+          products,
+          orders,
+          stores,
+          users,
+          revenue
+        });
     }
 
     return history;

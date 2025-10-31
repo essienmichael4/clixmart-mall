@@ -10,7 +10,7 @@ interface NavbarProps{
 }
 
 const Navbar = ({toggleNavbar}:NavbarProps) => {
-  const {auth, setAuth} = useAuth()
+  const {auth, dispatch} = useAuth()
   const navigate = useNavigate()
   // @ts-ignore comment
   const path = useResolvedPath().pathname.split("/")[1].toLocaleUpperCase()
@@ -20,7 +20,7 @@ const Navbar = ({toggleNavbar}:NavbarProps) => {
       <div className="lg:container px-4 mx-auto relative text-sm">
         <div className="flex justify-between items-center">
           <div className='flex items-center gap-4'>
-            <div className="hidden md:flex flex-col justify-end">
+            <div className="flex flex-col justify-end">
               <button onClick={toggleNavbar}><Menu className='text-muted-foreground' /></button>
             </div>
             <h2 className="text-xl tracking-tight text-muted-foreground">{path}</h2>
@@ -43,7 +43,7 @@ const Navbar = ({toggleNavbar}:NavbarProps) => {
                   <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={()=>{
-                    setAuth(undefined)
+                    dispatch({type:"REMOVE_AUTH",payload: undefined})
                   }}>
                   <LogOut className="mr-2 h-4 w-4" />
                   <span>Log out</span>

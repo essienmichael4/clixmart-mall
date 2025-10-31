@@ -157,3 +157,29 @@ mall_mobile/*.tsbuildinfo
 
 mall_mobile/expo-env.d.ts
 # @end expo-cli
+
+# Logs
+mall_delivery/logs
+mall_delivery/*.log
+mall_delivery/npm-debug.log*
+mall_delivery/yarn-debug.log*
+mall_delivery/yarn-error.log*
+mall_delivery/pnpm-debug.log*
+mall_delivery/lerna-debug.log*
+
+mall_delivery/node_modules
+mall_delivery/dist
+mall_delivery/dist-ssr
+mall_delivery/*.local
+
+# Editor directories and files
+mall_delivery/.vscode/*
+mall_delivery/!.vscode/extensions.json
+mall_delivery/.idea
+mall_delivery/.DS_Store
+mall_delivery/*.suo
+mall_delivery/*.ntvs*
+mall_delivery/*.njsproj
+mall_delivery/*.sln
+mall_delivery/*.sw?
+mall_delivery/.env

@@ -13,7 +13,7 @@ import { Input } from './ui/input'
 import { PasswordInput } from './ui/password-input'
 
 const Login = () => {
-    const {setAuth} = useAuth()
+    const {dispatch} = useAuth()
     const [isPending, setIsPending] = useState(false)
     const navigate = useNavigate()
     
@@ -39,7 +39,7 @@ const Login = () => {
             console.log(response.data);
             
             
-            setAuth(response.data)
+            dispatch({type: "ADD_AUTH", payload: response.data})
             form.reset()
             setIsPending(false)
             toast.success("Login successful", {

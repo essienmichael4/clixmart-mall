@@ -8,6 +8,7 @@ import HorizontalCategoryCarousel from '@/components/Carousel/HorizontalCategory
 import HorizontalDealsCarousel from '@/components/Carousel/HorizontalDealsCarousel'
 import StaticCategories from '@/components/Static/StaticCategories'
 import StaticProducts from '@/components/Static/StaticProducts'
+import Footer from '@/components/Footer'
 
 const Home = () => {
     return (
@@ -49,6 +50,9 @@ const Home = () => {
                 <HorizontalCategoryCarousel title="Fashion and Beauty" category='fashion-&-beauty' />
                 <StaticProducts title="Unbeatable Appliance deals" category='Appliances' />
                 <HorizontalCategoryCarousel title="Hot Phone Deals" category='phones-&-tablets' />
+            </div>
+            <div className='container space-y-2 px-4 mx-auto my-8'>
+                <Footer />
             </div>
         </>
     )

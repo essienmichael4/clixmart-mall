@@ -1,89 +1,146 @@
-import logo from '../assets/logo.jpeg'
-import { Activity, BaggageClaim, GripVertical, LayoutDashboard, PackageSearch, Settings, ShoppingBag, Store, Users } from 'lucide-react'
-import { Link, NavLink } from 'react-router-dom'
+import { useState } from 'react';
+import logo from '../assets/logo.jpeg';
+import {
+  Activity,
+  BaggageClaim,
+  ChevronDown,
+  ChevronRight,
+  GripVertical,
+  LayoutDashboard,
+  PackageSearch,
+  Settings,
+  ShoppingBag,
+  Store,
+  Users,
+} from 'lucide-react';
+import { Link, NavLink } from 'react-router-dom';
 
-interface SideNavProps{
-    isToggled: boolean
+interface SideNavProps {
+  isToggled: boolean;
 }
 
-const SideNav = ({isToggled}:SideNavProps) => {
+const SideNav = ({ isToggled }: SideNavProps) => {
+  const [openGroup, setOpenGroup] = useState<string | null>(null);
+
+  const toggleGroup = (group: string) => {
+    setOpenGroup(openGroup === group ? null : group);
+  };
+
+  const groupedLinks = [
+    {
+      title: 'Overview',
+      links: [
+        { to: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
+      ],
+    },
+    {
+      title: 'Management',
+      links: [
+        { to: '/categories', label: 'Categories', icon: GripVertical },
+        { to: '/brands', label: 'Brands', icon: BaggageClaim },
+        { to: '/vendors', label: 'Vendors', icon: Store },
+      ],
+    },
+    {
+      title: 'Products & Orders',
+      links: [
+        { to: '/products', label: 'Products', icon: PackageSearch },
+        { to: '/orders', label: 'Orders', icon: ShoppingBag },
+        { to: '/commissions', label: "Comm's & Stat's", icon: Activity },
+      ],
+    },
+    {
+      title: 'Users & Settings',
+      links: [
+        { to: '/users', label: 'Users', icon: Users },
+        { to: '/settings', label: 'Settings', icon: Settings },
+      ],
+    },
+  ];
+
   return (
-    <nav className={`fixed ${isToggled === true ? 'lg:w-[4rem] md:w-[220px] ' : 'lg:w-[220px]'} w-[4rem] top-0 bottom-0 z-50 py-3 backdrop-blur-lg border-r border-neutral-100/80 overflow-hidden transition-all ease-in-out duration-500`}>
-      <div className="px-4 mx-auto relative text-sm">
-        <div className="flex flex-col items-start">
-          <Link to={"/"} className="flex items-center flex-shrink-0 mb-8">
-            <img src={logo} alt="logo" className='h-10 w-10 mr-4' />
-            <span className="text-xl tracking-tight text-nowrap">CLIXMART</span>
+    <nav
+      className={`fixed top-0 bottom-0 z-50 py-3 backdrop-blur-lg border-r border-neutral-100/80 transition-all ease-in-out duration-500
+        ${isToggled ? 'lg:w-[4rem] w-[4rem]' : 'lg:w-[220px] w-[220px]'} `}
+    >
+      <div className="px-4 mx-auto relative text-sm h-full flex flex-col">
+        {/* LOGO */}
+        <div className="flex items-center flex-shrink-0 mb-6">
+          <Link to="/" className="flex items-center">
+            <img src={logo} alt="logo" className="h-10 w-10 mr-3" />
+            {!isToggled && (
+              <span className="text-xl tracking-tight whitespace-nowrap font-semibold">
+                CLIXMART
+              </span>
+            )}
           </Link>
-            <NavLink to={"/dashboard"} className='pl-1 py-2 flex items-center flex-shrink-0 mb-4 text-muted-foreground'>
-                <LayoutDashboard className='h-6 w-6 mr-6' />
-                <span className=''>Dashboard {isToggled}</span>
-            </NavLink>
-            <NavLink to={"/categories"} className='pl-1 py-2 flex items-center flex-shrink-0 mb-4 text-muted-foreground'>
-                <GripVertical className='h-6 w-6 mr-6' />
-                <span className=''>Categories</span>
-            </NavLink>
-            <NavLink to={"/commissions"} className='pl-1 py-2 flex items-center text-nowrap flex-shrink-0 mb-4 text-muted-foreground'>
-                <Activity className='h-6 w-6 mr-6' />
-                <span className='text-nowrap'>Comm's & Stat's</span>
-            </NavLink>
-            <NavLink to={"/brands"} className='pl-1 py-2 flex items-center flex-shrink-0 mb-4 text-muted-foreground'>
-                <BaggageClaim className='h-6 w-6 mr-6' />
-                <span className=''>Brands</span>
-            </NavLink>
-            <NavLink to={"/vendors"} className='pl-1 py-2 flex items-center flex-shrink-0 mb-4 text-muted-foreground'>
-                <Store className='h-6 w-6 mr-6' />
-                <span className=''>Vendors</span>
-            </NavLink>
-            <NavLink to={"/products"} className='pl-1 py-2 flex items-center flex-shrink-0 mb-4 text-muted-foreground'>
-                <PackageSearch className='h-6 w-6 mr-6' />
-                <span className=''>Products</span>
-            </NavLink>
-            <NavLink to={"/orders"} className='pl-1 py-2 flex items-center flex-shrink-0 mb-4 text-muted-foreground'>
-                <ShoppingBag className='h-6 w-6 mr-6' />
-                <span className=''>Orders</span>
-            </NavLink>
-            <NavLink to={"/users"} className='pl-1 py-2 flex items-center flex-shrink-0 mb-4 text-muted-foreground'>
-                <Users className='h-6 w-6 mr-6' />
-                <span className=''>Users</span>
-            </NavLink>
-            <NavLink to={"/settings"} className='pl-1 py-2 flex items-center flex-shrink-0 mb-4 text-muted-foreground'>
-                <Settings className='h-6 w-6 mr-6' />
-                <span className=''>Settings</span>
-            </NavLink>
-            
-          
-          {/* <div className="lg:hidden md:flex flex-col justify-end">
-            <button onClick={toggleNavbar}>{mobileDrawerOpen ? <X /> : <Menu />}</button>
-          </div> */}
         </div>
-        {/* {mobileDrawerOpen && 
-          <div className="fixed right-0 z-20 w-full bg-white backdrop-blur-lg p-12 flex flex-col justify-center items-center lg:hidden">
-            <ul>
-              <li className='py-4'>
-                <Link to={"/"}>Home</Link>
-              </li>
-              <li className='py-4'>
-                <Link to={"/gallery"}>Services</Link>
-              </li>
-              <li className='py-4'>
-                <Link to={"/gallery"}>About</Link>
-              </li>
-            </ul>
-            <div className=" flex space-x-6">
-            <p className='py-2 px-3 rounded-md border '>
-            (+233) 24 366 0662
-            </p>
-            <Link to={"/contact"} className='text-white bg-blue-700 py-2 px-3 rounded-md'>
-              Contact Us
-            </Link>
+
+        {/* SCROLLABLE NAV */}
+        <div className="flex-1 overflow-y-auto overflow-x-hidden pr-1 scrollbar-thin scrollbar-thumb-gray-300 hover:scrollbar-thumb-gray-400 scrollbar-track-transparent">
+          {groupedLinks.map((group) => (
+            <div key={group.title} className="mb-4">
+              {/* Section Header */}
+              {!isToggled && (
+                <button
+                  onClick={() => toggleGroup(group.title)}
+                  className="flex items-center justify-between w-full text-xs font-semibold text-neutral-500 uppercase mb-2 tracking-wide hover:text-blue-600"
+                >
+                  <span>{group.title}</span>
+                  {openGroup === group.title ? (
+                    <ChevronDown className="w-4 h-4" />
+                  ) : (
+                    <ChevronRight className="w-4 h-4" />
+                  )}
+                </button>
+              )}
+
+              {/* Section Links */}
+              <div
+                className={`transition-all duration-300 ease-in-out overflow-hidden ${
+                  openGroup === group.title || isToggled ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
+                }`}
+              >
+                {group.links.map(({ to, label, icon: Icon }) => (
+                  <NavLink
+                    key={to}
+                    to={to}
+                    className={({ isActive }) =>
+                      `pl-1 py-2 flex items-center mb-1 rounded-md transition-colors ${
+                        isActive
+                          ? 'text-blue-600 bg-blue-50'
+                          : 'text-muted-foreground hover:text-blue-600 hover:bg-blue-50/50'
+                      }`
+                    }
+                  >
+                    <Icon className="h-5 w-5 mr-6 flex-shrink-0" />
+                    {!isToggled && <span>{label}</span>}
+                  </NavLink>
+                ))}
+              </div>
             </div>
-          </div>
-        } */}
+          ))}
+        </div>
+
+        {/* FOOTER (optional settings or logout section) */}
+        <div className="mt-auto pt-4 border-t border-neutral-100">
+          <NavLink
+            to="/settings"
+            className={({ isActive }) =>
+              `pl-1 py-2 flex items-center rounded-md mb-2 transition-colors ${
+                isActive
+                  ? 'text-blue-600 bg-blue-50'
+                  : 'text-muted-foreground hover:text-blue-600 hover:bg-blue-50/50'
+              }`
+            }
+          >
+            <Settings className="h-5 w-5 mr-6" />
+            {!isToggled && <span>Settings</span>}
+          </NavLink>
+        </div>
       </div>
-
     </nav>
-  )
-}
+  );
+};
 
-export default SideNav
+export default SideNav;

@@ -212,6 +212,10 @@ export class CommissionService {
     return commissionPercent / 100
   }
 
+  async oldfunc(){
+    
+  }
+
   async updateStore(payload:Store, queryRunner:QueryRunner){
     return await queryRunner.manager.update(Store, { id: payload.id }, { processedRevenue: payload.processedRevenue })
   }

@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreateCommissionDto } from './dto/create-commission.dto';
 import { UpdateCommissionDto } from './dto/update-commission.dto';
 import { SuccessfulOrderEventDto } from 'src/mailer/dto/successOrder.dto';
@@ -17,6 +17,8 @@ import { GetDay, GetMonth, GetYear } from 'src/helpers/common';
 import { RevenueMonthHistory } from 'src/settings/entities/revenueMonthHistory.entity';
 import { v4 } from 'uuid';
 import { RevenueYearHistory } from 'src/settings/entities/revenueYearHistory.entity';
+import { PayoutStatus, VendorPayout } from 'src/store/entities/vendorPayout.entity';
+import { Account } from './entities/commissionAccount.entity';
 
 @Injectable()
 export class CommissionService {
@@ -212,8 +214,68 @@ export class CommissionService {
     return commissionPercent / 100
   }
 
-  async oldfunc(){
-    
+  async processVendorPayout(storeId: number, amount: number, paidById: number) {
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+
+    try {
+      // Load entities with relation
+      const storeRepo = queryRunner.manager.getRepository(Store);
+      const userRepo = queryRunner.manager.getRepository(User);
+      const payoutRepo = queryRunner.manager.getRepository(VendorPayout);
+      const accountRepo = queryRunner.manager.getRepository(Account);
+
+      const store = await storeRepo.findOne({
+        where: { id: storeId },
+        relations: ['storeAccount', 'storeAccount.account'], // assuming `StoreAccount` links to `Account`
+      });
+
+      if (!store) throw new BadRequestException('Store not found');
+      // if (!store.account) throw new BadRequestException('Store account not found');
+
+      // const account = store.account;
+      const paidBy = await userRepo.findOneBy({ id: paidById });
+      if (!paidBy) throw new BadRequestException('Paying user not found');
+
+      // Check balance
+      // if (Number(account.currentAccount) < amount) {
+      //   throw new BadRequestException('Insufficient account balance');
+      // }
+
+      // Create payout record
+      const payout = payoutRepo.create({
+        store,
+        // account,
+        paidBy,
+        totalAmount: amount,
+        status: PayoutStatus.SUCCESS,
+        paidAt: new Date(),
+      });
+
+      // Save payout
+      await payoutRepo.save(payout);
+
+      // Deduct from account
+      // account.currentAccount = Number(account.currentAccount) - amount;
+      // await accountRepo.save(account);
+
+      // Commit transaction
+      await queryRunner.commitTransaction();
+
+      return payout;
+    } catch (error) {
+      // Rollback transaction if anything fails
+      await queryRunner.rollbackTransaction();
+      throw new BadRequestException(error.message || 'Payout processing failed');
+    } finally {
+      // Always release the query runner
+      await queryRunner.release();
+    }
+  }
+
+  async newfunc(){
+    return
   }
 
   async updateStore(payload:Store, queryRunner:QueryRunner){

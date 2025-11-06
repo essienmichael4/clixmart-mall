@@ -1,33 +1,35 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { Routes, Route } from 'react-router-dom';
+import './globals.css';
+import LoginPage from './pages/login/Login';
+import SignupPage from './pages/signup/Signup';
+import OtpPage from './pages/otp/Otp';
+import RequireAuth from './components/RequireAuth';
+import { DashboardLayout } from './components/dashboard-layout';
+import { DashboardPage } from './pages/dashboard/dashboard-page';
+import { StatisticsPage } from './pages/statistics/statistics-page';
+import { DeliveryPage } from './pages/delivery/delivery-page';
+import { SettingsPage } from './pages/settings/settings-page';
+
 
 function App() {
-  const [count, setCount] = useState(0)
 
   return (
     <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      <Routes>
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/signup" element={<SignupPage />} />
+        <Route path="/otp" element={<OtpPage />} />
+        <Route path="/" element={<LoginPage />} /> {/* Default route */}
+        <Route element={<RequireAuth children={undefined} />}>
+          <Route  element={<DashboardLayout children={undefined} />}>
+            {/* <Route path='/dashboard' element={<Dashboard />} /> */}
+            <Route path='/dashboard' element={<DashboardPage />} />
+            <Route path='/statistics' element={<StatisticsPage />} />
+            <Route path='/delivery' element={<DeliveryPage />} />
+            <Route path='/settings' element={<SettingsPage />} />
+          </Route>
+        </Route>
+      </Routes>
     </>
   )
 }

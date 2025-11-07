@@ -3,6 +3,7 @@ import './globals.css';
 import LoginPage from './pages/login/Login';
 import SignupPage from './pages/signup/Signup';
 import OtpPage from './pages/otp/Otp';
+import ForgotPasswordPage from './pages/forgot-password/ForgotPassword';
 import RequireAuth from './components/RequireAuth';
 import { DashboardLayout } from './components/dashboard-layout';
 import { DashboardPage } from './pages/dashboard/dashboard-page';
@@ -19,6 +20,7 @@ function App() {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<SignupPage />} />
         <Route path="/otp" element={<OtpPage />} />
+        <Route path="/forgot-password" element={<ForgotPasswordPage />} />
         <Route path="/" element={<LoginPage />} /> {/* Default route */}
         <Route element={<RequireAuth children={undefined} />}>
           <Route  element={<DashboardLayout children={undefined} />}>

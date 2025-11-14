@@ -51,9 +51,9 @@ const Home = () => {
                 <StaticProducts title="Unbeatable Appliance deals" category='Appliances' />
                 <HorizontalCategoryCarousel title="Hot Phone Deals" category='phones-&-tablets' />
             </div>
-            <div className='container space-y-2 px-4 mx-auto my-8'>
+            {/* <div className='container space-y-2 px-4 mx-auto my-8'> */}
                 <Footer />
-            </div>
+            {/* </div> */}
         </>
     )
 }

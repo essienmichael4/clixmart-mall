@@ -1,14 +1,14 @@
 import { ApiProperty } from "@nestjs/swagger"
 import { IsEnum, IsOptional, IsString } from "class-validator"
-import { Status } from "../entities/order.entity"
+import { OrderStatus } from "../entities/order.entity"
 
 export class OrderFilterDto {
     @ApiProperty({
             description: "Status",
-            example: Status.PENDING,
+            example: OrderStatus.PENDING,
             required: false
         })
-    @IsEnum(Status)
+    @IsEnum(OrderStatus)
     @IsOptional()
-    status?:Status
+    status?:OrderStatus
 }

@@ -20,11 +20,13 @@ import { UploadService } from 'src/upload/upload.service';
 import { CommissionService } from 'src/commission/commission.service';
 import { AuditAction } from 'src/commission/entities/AuditLog.entity';
 import { PayoutStatus, VendorPayout } from './entities/vendorPayout.entity';
+import { Account } from 'src/commission/entities/commissionAccount.entity';
 
 @Injectable()
 export class StoreService {
   constructor(
     @InjectRepository(Store) private readonly storeRepo:Repository<Store>,
+    @InjectRepository(Account) private readonly accountRepo:Repository<Account>,
     @InjectRepository(StoreDetail) private readonly storeDetailRepo:Repository<StoreDetail>,
     @InjectRepository(StoreReview) private readonly storeReviewRepo:Repository<StoreReview>,
     @InjectRepository(StoreAddress) private readonly storeAddressRepo:Repository<StoreAddress>,
@@ -60,6 +62,13 @@ export class StoreService {
 
       const storeReview = await this.createStoreReview(storeReviewEntity, queryRunner)
 
+      const account = await this.accountRepo.create({
+        accountId: v4(),
+        currentAccount: 0.0,
+        tax: 0.0,
+        shipping: 0.0,
+      });
+
       const storeEntity =  this.storeRepo.create()
       const saveEntity = {
         ...storeEntity,
@@ -69,7 +78,8 @@ export class StoreService {
         url: this.generateStoreUrl(unspaced),
         slug: unspaced,
         storeReview: storeReview,
-        user
+        user,
+        account
       }
     
       const store = await this.createStore(saveEntity, queryRunner)

@@ -1,5 +1,39 @@
 import { Dispatch, SetStateAction } from "react"
 
+export type AuditLog = {
+    id: number;
+    action: string;
+    context: string | null;
+    isError: boolean;
+    errorMessage?: string | null;
+    data?: any;
+    performedBy?: { id: number; name: string };
+    createdAt: string;
+}
+
+export type Ledger = {
+  day: number;
+  month: number;
+  year: number;
+  totalCommission: string;
+  totalTax: string;
+  totalShipping: string;
+  createdAt: string;
+}
+
+export type AccountLedger = {
+    id: number,
+    account?: { id: number, accountId: string },
+    storeAccount?: { id: number, accountId: string },
+    payout?: Payouts,
+    type: string,
+    amount: number,
+    balanceAfter: number,
+    description: string,
+    reference: string,
+    createdAt: string
+}
+
 export type AuthType = {
     name: string,
     email: string,
@@ -80,6 +114,11 @@ export type CommissionTransaction = {
 
 }
 
+export type Data = {
+    data: User[] | AuditLog[] | Ledger[] | AccountLedger[],
+    meta: Meta
+}
+
 export type SubCategory = {
     id:number,
     name:string,
@@ -135,6 +174,15 @@ export type LoadingType = {
     status: "IN_TRANSIT" | "ARRIVED" | "DELIVERED"
 }
 
+export type Meta = {
+    page: number
+    take: number
+    itemCount: number
+    pageCount?: number
+    hasPreviousPage?: boolean
+    hasNextPage?: boolean
+}
+
 export type NextOfKin = {
     id: number,
     name: string,
@@ -166,24 +214,6 @@ export type OrderItem = {
     createdAt: string,
     updatedAt: string,
     product: Product
-}
-
-export type Package = {
-    id:number,
-    trackingNumber:string,
-    cbm:string,
-    email:string,
-    phone?: string,
-    customer: string
-    quantity:number,
-    loaded?:string,
-    received?:string,
-    vessel?:string,
-    status:string,
-    createdAt:string,
-    eta?: string,
-    package:string
-    description?:string
 }
 
 export type PaymentDetail = {

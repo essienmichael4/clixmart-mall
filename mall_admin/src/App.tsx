@@ -20,9 +20,12 @@ import CategoryDetails from './pages/Category/Category'
 import Settings from './pages/Setting/Settings'
 import Commissions from './pages/Commission/Commissions'
 import CategoryCommissions from './pages/Commission/CategoryCommissions'
-import Statements from './pages/Commission/Statements'
+import Statements from './pages/Commission/_components/Statements'
 import Transactions from './pages/Commission/Transactions'
 import Payouts from './pages/Commission/Payouts'
+import AuditLogs from './pages/Commission/AuditLogs'
+import AccountLedger from './pages/Commission/AccountLedger'
+import AccountsLedger from './pages/Commission/AccountsLedger'
 
 function App() {
 
@@ -39,7 +42,11 @@ function App() {
             <Route path='/categories/:id' element={<CategoryDetails />} />
             <Route path='/commissions' element={<Commissions />} >
               <Route index element={<CategoryCommissions />}></Route>
-              <Route path='statements' element={<Statements />}></Route>
+              <Route path='statements' element={<Statements />}>
+                <Route path="history-ledger" element={<AccountLedger />} />
+                <Route path="accounts-ledger" element={<AccountsLedger />} />
+                <Route path="audit-logs" element={<AuditLogs />} />
+              </Route>
               <Route path='transactions' element={<Transactions />}></Route>
               <Route path='vendor-payouts' element={<Payouts />}></Route>
             </Route>

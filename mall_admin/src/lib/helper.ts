@@ -2,6 +2,17 @@ const CURRENCY_FORMATTER = new Intl.NumberFormat("en-GH", {
     style: "currency", currency: "GHS"
 })
 
+export const ACTION_OPTIONS = [
+  "ALL",
+  "PAYOUT_INITIATED",
+  "PAYOUT_COMPLETED",
+  "PAYOUT_FAILED",
+  "REVENUE_PROCESSED",
+  "REVENUE_PROCESS_FAILED",
+  "COMMISSION_PROCESSED",
+  "STORE_UPDATED",
+];
+
 export const FormattedDate = (date:Date) => {
     return date.toLocaleDateString("default", {
         timeZone: "UTC",

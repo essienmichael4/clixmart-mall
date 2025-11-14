@@ -9,7 +9,7 @@ export enum Deleted {
     FALSE = 'FALSE',
 }
 
-export enum Status {
+export enum OrderStatus {
     PENDING = 'PENDING',
     SHIPPING = 'SHIPPING',
     SHIPPED = 'SHIPPED',
@@ -37,8 +37,8 @@ export class Order {
     @Column({nullable: true})
     shownOrderId: string
 
-    @Column({ default: Status.PENDING })
-    status: Status;
+    @Column({ default: OrderStatus.PENDING })
+    status: OrderStatus;
 
     @Column({type: "decimal", precision: 10, scale: 2})
     total: number;

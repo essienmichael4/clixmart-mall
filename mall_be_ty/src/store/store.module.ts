@@ -19,10 +19,11 @@ import { UploadService } from 'src/upload/upload.service';
 import { StoreAccount } from './entities/storeAccount.entity';
 import { VendorPayout } from './entities/vendorPayout.entity';
 import { CommissionModule } from 'src/commission/commission.module';
+import { Account } from 'src/commission/entities/commissionAccount.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Store, VendorPayout, Follow, StoreReview, PaymentDetail, StoreAccount, StoreDetail, StoreAddress, NextOfKin, User, MonthHistory, YearHistory]),
+    TypeOrmModule.forFeature([Store, VendorPayout, Follow, StoreReview, PaymentDetail, StoreAccount, StoreDetail, StoreAddress, NextOfKin, User, MonthHistory, YearHistory, Account]),
     UserModule, UploadModule, CommissionModule
   ],
   controllers: [StoreController],

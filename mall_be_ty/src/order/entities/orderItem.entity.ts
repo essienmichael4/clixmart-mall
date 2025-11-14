@@ -8,7 +8,7 @@ export enum Deleted {
     FALSE = 'FALSE',
 }
 
-export enum Status {
+export enum OrderItemStatus {
     PENDING = 'PENDING',
     SHIPPING = 'SHIPPING',
     SHIPPED = 'SHIPPED',
@@ -44,8 +44,8 @@ export class OrderItem {
     @Column()
     quantity: number;
 
-    @Column({ default: Status.PENDING })
-    status: Status;
+    @Column({ default: OrderItemStatus.PENDING })
+    status: OrderItemStatus;
 
     @CreateDateColumn({ type: 'timestamp' })
     createdAt: Date;

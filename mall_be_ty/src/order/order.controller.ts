@@ -7,6 +7,8 @@ import { ApiConsumes, ApiCreatedResponse, ApiOkResponse, ApiOperation, ApiTags }
 import { User, UserInfo } from 'src/decorators/user.decorator';
 import { OrderFilterDto } from './dto/request.dto';
 import { PageOptionsDto } from 'src/common/dto/pageOptions.dto';
+import { OrderStatus } from './entities/order.entity';
+import { OrderItemStatus } from './entities/orderItem.entity';
 
 @Controller('orders')
 @UsePipes(new ValidationPipe({
@@ -77,6 +79,16 @@ export class OrderController {
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateOrderDto: UpdateOrderDto) {
     return this.orderService.update(+id, updateOrderDto);
+  }
+
+  @Patch(':id/status')
+  updateOrderStatus(@Param('id') id: string, @Body('status') status: OrderStatus) {
+    return this.orderService.updateOrderStatus(id, status);
+  }
+
+  @Patch(':id/:itemId/status')
+  updateOrderItemStatus(@Param('id') id: string, @Param('itemId') itemId: string, @Body('status') status: OrderItemStatus) {
+    return this.orderService.updateOrderItemStatus(id, itemId, status);
   }
 
   @Delete(':id')

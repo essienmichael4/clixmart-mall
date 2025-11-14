@@ -1,12 +1,12 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, QueryRunner, Repository } from 'typeorm';
 import { Inventory, Product, Status } from 'src/product/entities/product.entity';
 import { User } from 'src/user/entities/user.entity';
-import { OrderItem } from './entities/orderItem.entity';
-import { Order } from './entities/order.entity';
+import { OrderItem, OrderItemStatus } from './entities/orderItem.entity';
+import { Order, OrderStatus } from './entities/order.entity';
 import { v4 } from 'uuid';
 import { ReviewStatus } from 'src/product/entities/review.entity';
 import { MonthHistory } from 'src/product/entities/MonthHistory.entity';
@@ -23,6 +23,7 @@ import { PageOptionsDto } from 'src/common/dto/pageOptions.dto';
 import { PageMetaDto } from 'src/common/dto/pageMeta.dto';
 import { PageDto } from 'src/common/dto/page.dto';
 import { Address } from 'src/user/entities/address.entity';
+import { Tracking, TrackingStatus } from './entities/orderTracking.entity';
 
 @Injectable()
 export class OrderService {
@@ -36,6 +37,7 @@ export class OrderService {
     @InjectRepository(YearHistory) private readonly yearHistoryRepo:Repository<YearHistory>,
     @InjectRepository(UserMonthHistory) private readonly userMonthHistoryRepo:Repository<UserMonthHistory>,
     @InjectRepository(UserYearHistory) private readonly userYearHistoryRepo:Repository<UserYearHistory>,
+    @InjectRepository(Tracking) private readonly trackingRepo: Repository<Tracking>,
     private readonly dataSource:DataSource,
     private readonly uploadService: UploadService,
     private eventEmitter:EventEmitter2
@@ -95,6 +97,10 @@ export class OrderService {
         shownOrderId: this.generateAmazonStyleOrderId(),
         total: total,
         orderItems: orderItems,
+        tracking: {
+          trackingId: v4(),
+          status: TrackingStatus.PENDING,
+        },
         user: user,
         ...(userAddress && {address: userAddress})
       }
@@ -342,6 +348,54 @@ export class OrderService {
     return `This action updates a #${id} order`;
   }
 
+  async updateOrderStatus(orderId: string, status: OrderStatus) {
+    const order = await this.orderRepo.findOne({
+      where: { orderId },
+      relations: ['tracking'],
+    });
+
+    if (!order) throw new NotFoundException(`Order ${orderId} not found`);
+
+    // Optional: restrict invalid transitions
+    if (order.status === OrderStatus.CANCELLED)
+      throw new BadRequestException('Cannot update a cancelled order');
+
+    order.status = status;
+    await this.orderRepo.save(order);
+
+    // Sync tracking if exists
+    if (order.tracking) {
+      order.tracking.status = this.mapTrackingStatus(status);
+      await this.trackingRepo.save(order.tracking);
+    }
+
+    return { message: `Order ${orderId} updated to ${status}` };
+  }
+
+  async updateOrderItemStatus(orderId: string, itemId: string, status: OrderItemStatus) {
+    const order = await this.orderRepo.findOne({
+      where: { orderId },
+      relations: ['orderItems'],
+    });
+
+    if (!order) throw new NotFoundException(`Order ${orderId} not found`);
+
+    const orderItem = order.orderItems.find((i) => i.orderItemId === itemId);
+    if (!orderItem) throw new NotFoundException(`Order item ${itemId} not found`);
+
+    orderItem.status = status;
+    await this.orderItemRepo.save(orderItem);
+
+    // Optional: if all items delivered, mark order as delivered
+    const allDelivered = order.orderItems.every((i) => i.status === OrderItemStatus.DELIVERED);
+    if (allDelivered) {
+      order.status = OrderStatus.DELIVERED;
+      await this.orderRepo.save(order);
+    }
+
+    return { message: `Order item ${itemId} updated to ${status}` };
+  }
+
   async upsertMonthHistoryOrder(queryRunner: QueryRunner){
     const day = GetDay()
     const month = GetMonth()
@@ -435,5 +489,18 @@ export class OrderService {
     return `ORD-${part1}-${part2}-${part3}`;
   }
 
-
+  private mapTrackingStatus(status: OrderStatus): TrackingStatus {
+    switch (status) {
+      case OrderStatus.SHIPPING:
+        return TrackingStatus.SHIPPING;
+      case OrderStatus.SHIPPED:
+        return TrackingStatus.SHIPPED;
+      case OrderStatus.DELIVERED:
+        return TrackingStatus.DELIVERED;
+      case OrderStatus.FAILED:
+        return TrackingStatus.FAILED;
+      default:
+        return TrackingStatus.PENDING;
+    }
+  }
 }

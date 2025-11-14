@@ -36,7 +36,7 @@ const AddPaymentDialog = ({trigger, store}:Props) => {
     }
 
   const addPayment = async (data:PaymentSchemaType)=>{
-    const response = await axios_instance_token.post(`stores/${data.store}/payments`, {
+    const response = await axios_instance_token.post(`commissions/vendors/${data.store}/payments`, {
       amount: data.amount
     },)
 

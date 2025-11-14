@@ -9,6 +9,7 @@ import { PaymentDetail } from "./paymentDetails.entity";
 import { NextOfKin } from "./nextOfKin.entity";
 import { StoreAccount } from "./storeAccount.entity";
 import { VendorPayout } from "./vendorPayout.entity";
+import { Account } from "src/commission/entities/commissionAccount.entity";
 
 export enum Deleted {
     TRUE = 'TRUE',
@@ -88,5 +89,9 @@ export class Store {
     nextOfKin: NextOfKin;
 
     @OneToMany(() => VendorPayout, (payment) => payment.store)
-    payments: VendorPayout[];
+    payouts: VendorPayout[];
+
+    // @OneToOne(() => Account, (account) => account.store, { cascade: true })
+    // @JoinColumn()
+    // financialAccount: Account;
 }

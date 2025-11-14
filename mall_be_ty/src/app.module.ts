@@ -18,6 +18,7 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
 import { SettingsModule } from './settings/settings.module';
 import { CommissionModule } from './commission/commission.module';
 import { ReportModule } from './report/report.module';
+import { TrackingModule } from './tracking/tracking.module';
 
 @Module({
   imports: [
@@ -50,7 +51,8 @@ import { ReportModule } from './report/report.module';
     MailModule,
     SettingsModule,
     CommissionModule,
-    ReportModule],
+    ReportModule,
+    TrackingModule],
   controllers: [AppController],
   providers: [AppService],
 })

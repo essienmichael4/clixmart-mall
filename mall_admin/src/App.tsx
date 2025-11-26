@@ -26,6 +26,9 @@ import Payouts from './pages/Commission/Payouts'
 import AuditLogs from './pages/Commission/AuditLogs'
 import AccountLedger from './pages/Commission/AccountLedger'
 import AccountsLedger from './pages/Commission/AccountsLedger'
+import Departments from './pages/User/Departments'
+import UsersTablePage from './pages/User/UsersTablePage'
+import DepartmentDetails from './pages/User/DepartmentDetails'
 
 function App() {
 
@@ -43,7 +46,7 @@ function App() {
             <Route path='/commissions' element={<Commissions />} >
               <Route index element={<CategoryCommissions />}></Route>
               <Route path='statements' element={<Statements />}>
-                <Route path="history-ledger" element={<AccountLedger />} />
+                <Route index element={<AccountLedger />} />
                 <Route path="accounts-ledger" element={<AccountsLedger />} />
                 <Route path="audit-logs" element={<AuditLogs />} />
               </Route>
@@ -57,8 +60,12 @@ function App() {
             <Route path='/orders' element={<Orders />} />
             <Route path='/orders/:id' element={<OrderDetails />} />
             <Route path='/settings' element={<Settings />} />
-            <Route path='/users' element={<Users />} />
+            <Route path='/users' element={<Users />} >
+              <Route index element={<UsersTablePage />} />
+              <Route path='departments' element={<Departments />} />
+            </Route>
             <Route path='/users/:id' element={<UserProfile />} />
+            <Route path='/users/departments/:id' element={<DepartmentDetails />} />
           </Route>
         </Route>
         <Route path='*' element={<NotFound />} />

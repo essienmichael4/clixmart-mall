@@ -3,10 +3,17 @@ public_key.pem
 
 # compiled output
 mall_be_ty/dist
+mall_be_ty/dist.zip
 mall_be_ty/node_modules
 
 mall_be_ty/.env
 mall_be_ty/src.zip
+mall_be/dist
+mall_be/dist.zip
+mall_be/node_modules
+
+mall_be/.env
+mall_be/src.zip
 
 # Logs
 mall_be_ty/logs

@@ -18,7 +18,7 @@ export enum OrderItemStatus {
     RETURNED = 'RETURNED'
 }
 
-@Entity({name: "orderItem"})
+@Entity({name: "order_item"})
 export class OrderItem {
     @PrimaryGeneratedColumn()
     id: number

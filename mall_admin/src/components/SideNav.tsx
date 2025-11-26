@@ -1,26 +1,27 @@
 import logo from '../assets/logo.jpeg';
-import {
-  Activity,
-  BaggageClaim,
-  GripVertical,
-  LayoutDashboard,
-  PackageSearch,
-  Settings,
-  ShoppingBag,
-  Store,
-  Users,
-  FileText,
-  Landmark,
-  Captions,
-} from 'lucide-react';
+import { MdLocalShipping, MdDeliveryDining  } from "react-icons/md";
+import { RiGuideLine } from "react-icons/ri";
+import { Activity, BaggageClaim, GripVertical, LayoutDashboard, PackageSearch, Settings, ShoppingBag, Store, Users, FileText, Landmark, Captions } from 'lucide-react';
 import { Link, NavLink } from 'react-router-dom';
 
 interface SideNavProps {
   isToggled: boolean;
 }
 
+interface NavLinkItem {
+  to: string;
+  label: string;
+  icon: React.ComponentType<any>;
+  exact?: boolean;
+}
+
+interface GroupedLink {
+  title?: string;
+  links: NavLinkItem[];
+}
+
 const SideNav = ({ isToggled }: SideNavProps) => {
-  const groupedLinks = [
+  const groupedLinks: GroupedLink[] = [
     {
       title: 'Overview',
       links: [{ to: '/dashboard', label: 'Dashboard', icon: LayoutDashboard }],
@@ -41,11 +42,19 @@ const SideNav = ({ isToggled }: SideNavProps) => {
       ],
     },
     {
+      title: 'Deliveries & Couriers',
+      links: [
+        { to: '/deliveries', label: 'Deliveries', icon: RiGuideLine  },
+        { to: '/carriers', label: 'Carriers', icon: MdDeliveryDining  },
+        { to: '/couriers', label: 'Couriers', icon: MdLocalShipping },
+      ],
+    },
+    {
       title: 'Finance',
       links: [
         { to: '/commissions', label: 'Commissions', icon: Activity },
         { to: '/commissions/statements/audit-logs', label: 'Audit Logs', icon: FileText },
-        { to: '/commissions/statements/history-ledger', label: 'History Ledger', icon: Landmark },
+        { to: '/commissions/statements', label: 'History Ledger', icon: Landmark, exact: true },
         { to: '/commissions/statements/accounts-ledger', label: 'Account Ledger', icon: Captions },
       ],
     },
@@ -86,10 +95,11 @@ const SideNav = ({ isToggled }: SideNavProps) => {
                 </div>
               )}
 
-              {group.links.map(({ to, label, icon: Icon }) => (
+              {group.links.map(({ to, label, icon: Icon, exact }) => (
                 <NavLink
                   key={to}
                   to={to}
+                  end={exact ? true : false} 
                   className={({ isActive }) =>
                     `pl-1 py-2 flex items-center mb-1 rounded-md transition-colors ${
                       isActive

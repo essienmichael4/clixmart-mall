@@ -70,7 +70,7 @@ export class Order {
     @OneToMany(() => OrderItem, (orderItem) => orderItem.order, {cascade: true})
     orderItems: OrderItem[];
 
-    @ManyToOne(() => User, (user) => user.products)
+    @ManyToOne(() => User, (user) => user.orders, { eager: true })
     @JoinColumn({ name: 'orderedBy' })
     user: User;
 

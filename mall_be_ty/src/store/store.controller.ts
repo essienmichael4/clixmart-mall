@@ -136,7 +136,7 @@ export class StoreController {
 
   @UseGuards(JwtGuard)
   @Get(":id/payouts")
-  findAllStorePayouts(@Param("id") id:string, @User() user:UserInfo) {
+  findAllStorePayouts(@Param("id") id:string) {
     return this.storeService.allStorePayouts(id);
   }
 

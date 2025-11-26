@@ -6,15 +6,15 @@ const Footer = () => {
   return (
     <div className='w-full bg-gray-300 pt-6'>
         <div className='container space-y-2 px-4 mx-auto my-12 '>
-            <div className="flex justify-between">
-                <div className='w-2/6'>
+            <div className="flex justify-between flex-wrap">
+                <div className='w-full sm:2/3 md:w-2/6 mb-4'>
                     <div className='flex items-center gap-2'>
                         <img src={logo} alt="logo" className='h-5 w-5 lg:h-8 lg:w-8 mr-2' />
                         <span className="text-sm font-bold lg:text-lg tracking-tight">CLIXMART</span>
                     </div>
                     <p className='text-xs'>The perfect ecommerce platform for all <br /> your business needs.</p>
                 </div>
-                <div className='w-1/6'>
+                <div className='w-1/2 sm:w-1/3 md:w-1/6'>
                     <h3 className='font-bold text-sm mb-2'>Company</h3>
                     <div className='space-y-2'>
                         <p className='text-xs'>Our story</p>
@@ -25,7 +25,7 @@ const Footer = () => {
                         <p className='text-xs'>Couriers</p>
                     </div>
                 </div>
-                <div className='w-1/6'>
+                <div className='w-1/2 sm:w-1/3 md:w-1/6'>
                     <h3 className='font-bold text-sm mb-2'>Customers</h3>
                     <div className='space-y-2'>
                         <p className='text-xs'>Log in</p>
@@ -37,7 +37,7 @@ const Footer = () => {
                         <p className='text-xs'>CSL Shipping</p>
                     </div>
                 </div>
-                <div className='w-1/6'>
+                <div className='w-full sm:w-1/3 md:w-full lg:w-1/6 mt-4 sm:mt-0 md:mt-4 lg:mt-0'>
                     <h3 className='font-bold text-lg mb-2'> Talk to us</h3>
                     <div>
                         <p className='text-xs'>Got Questions? call us</p>

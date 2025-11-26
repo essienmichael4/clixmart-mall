@@ -1,10 +1,9 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, UsePipes, ValidationPipe, HttpCode, HttpStatus, ParseIntPipe, UnauthorizedException, UseGuards } from '@nestjs/common';
 import { UserService } from './user.service';
 import { AddressDto, CreateUserDto, FindUsersDto } from './dto/create-user.dto';
-import { UpdateUserDto, UpdateUserPasswordRequest, UpdateUserRequest } from './dto/update-user.dto';
+import { UpdateUserPasswordRequest, UpdateUserRequest } from './dto/update-user.dto';
 import { ApiConsumes, ApiCreatedResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { UserResponseDto } from './dto/userResponse.dto';
-// import { User } from './entities/user.entity';
 import { User, UserInfo } from 'src/decorators/user.decorator';
 import { JwtGuard } from 'src/guards/jwt.guard';
 

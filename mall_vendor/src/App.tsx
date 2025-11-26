@@ -19,6 +19,10 @@ import ForgotPassword from './pages/ForgotPassword/ForgotPassword'
 import PasswordReset from './pages/PasswordReset/PasswordReset'
 import OrderDetails from './pages/Orders/OrderDetails'
 import EditStore from './pages/Create/EditStore'
+import Financials from './pages/Finance/Financials'
+import Sale from './pages/Finance/Sale'
+import Commissions from './pages/Finance/Commissions'
+import Payouts from './pages/Finance/Payouts'
 
 function App() {
 
@@ -42,6 +46,12 @@ function App() {
             <Route path='/products/:store/:id' element={<Product />} />
             <Route path='/products/:store/:id/edit' element={<EditProduct />} />
             <Route path='/products/:store/:id/product-info' element={<CreateProduct />} />
+            <Route path='/finance/:store/' element={<Financials />} >
+              <Route index element={<Sale />}/>
+              <Route path='commissions' element={<Commissions />}/>
+              <Route path='payouts' element={<Payouts />}/>
+            </Route>
+
           </Route>
         </Route>
         <Route path='*' element={<NotFound />} />

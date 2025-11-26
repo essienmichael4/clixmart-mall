@@ -9,7 +9,7 @@ import { Tag } from "./tag.entity";
 import { Brand } from "src/brand/entities/brand.entity";
 import { OrderItem } from "src/order/entities/orderItem.entity";
 import { ProductOption } from "./productOption.entity";
-import { ThirdLevelSubCategory } from "src/category/entities/thirdLevelSubcategory.entity";
+// import { ThirdLevelSubCategory } from "src/category/entities/thirdLevelSubcategory.entity";
 import { SecondLevelSubCategory } from "src/category/entities/secondLevelSubCategory.entity";
 import { ProductSpecification } from "./productSpecification.entity";
 
@@ -49,7 +49,7 @@ export class Product {
     @Column({type: 'float', default: 0.00})
     actualPrice: number;
 
-    @Column({nullable: true})
+    @Column({nullable: true, default: 0})
     quantity: number;
 
     @Column({nullable: true})
@@ -105,9 +105,9 @@ export class Product {
     @JoinColumn({ name: 'secondLevelSubCategory' })
     secondLevelSubCategory: SecondLevelSubCategory;
 
-    @ManyToOne(() => ThirdLevelSubCategory, (thirdSubCategory) => thirdSubCategory.products)
-    @JoinColumn({ name: 'thirdLevelSubCategory' })
-    thirdLevelSubCategory: ThirdLevelSubCategory;
+    // @ManyToOne(() => ThirdLevelSubCategory, (thirdSubCategory) => thirdSubCategory.products)
+    // @JoinColumn({ name: 'thirdLevelSubCategory' })
+    // thirdLevelSubCategory: ThirdLevelSubCategory;
 
     @OneToOne(()=> ProductReview, (productReview) => productReview.product, {cascade: true})
     @JoinColumn()

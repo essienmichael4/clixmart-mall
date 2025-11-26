@@ -38,6 +38,12 @@ export class CommissionTransaction {
     }})
     commissionAmount: number;
 
+    @Column({ type: 'decimal', nullable:true, precision: 10, scale: 2, transformer: {
+        to: (value: number) => value,
+        from: (value: string) => parseFloat(value),
+    }})
+    tax: number;
+
     @Column({ type: 'decimal', precision: 10, scale: 2, transformer: {
         to: (value: number) => value,
         from: (value: string) => parseFloat(value),

@@ -9,7 +9,7 @@ export enum Deleted {
     FALSE = 'FALSE',
 }
 
-@Entity({name: "subCategory"})
+@Entity({name: "sub_category"})
 export class SubCategory {
     @PrimaryGeneratedColumn()
     id: number

@@ -75,6 +75,11 @@ export class CommissionController {
     );
   }
 
+  @Get(':store/transactions/statistics')
+  findStoreTransactionsStatistics(@Param('store') store: string,){
+    return this.commissionService.findTransactions()
+  }
+
   @Get('transactions/statistics')
   findTransactionsStatistics(){
     return this.commissionService.findTransactions()
@@ -85,8 +90,18 @@ export class CommissionController {
     return this.commissionService.findTransactions()
   }
 
+  @Get(':store/transactions')
+  findStoreTransactions(@Param('store') store: string,){
+    return this.commissionService.findStoresTransactions()
+  }
+
+  @Get(':store/payouts')
+  findStorePayouts(@Param('store') store: string,){
+    return this.commissionService.findStorePayouts(store)
+  }
+
   @Get('transactions/stores/:status')
-  findStoreTransactions(){
+  findStoresTransactions(){
     return this.commissionService.findStoresTransactions()
   }
 

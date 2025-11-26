@@ -1,7 +1,7 @@
 import { Column, Entity, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import { Store } from "./store.entity";
 
-@Entity({name: "storeAccount"})
+@Entity({name: "store_account"})
 export class StoreAccount {
     @PrimaryGeneratedColumn()
     id: number

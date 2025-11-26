@@ -111,12 +111,20 @@ export type CommissionTransaction = {
     processedStatus?:string,
     orderItem: OrderItem,
     vendor: User,
-
 }
 
 export type Data = {
-    data: User[] | AuditLog[] | Ledger[] | AccountLedger[],
+    data: User[] | AuditLog[] | Ledger[] | AccountLedger[] | Department[] | Commission[] | CommissionTransaction[],
     meta: Meta
+}
+
+export type Department = {
+    id: number,
+    name: string,
+    description?: string,
+    createdAt: string,
+    updatedAt: string,
+    admins?: User[]
 }
 
 export type SubCategory = {

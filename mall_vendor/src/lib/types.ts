@@ -45,6 +45,24 @@ export type Category = {
     subCategories?: Category[]
 }
 
+export type CommissionTransaction = {
+    id: number,
+    saleAmount: number,
+    commissionRate: number,
+    commissionAmount: number,
+    vendorEarning: number,
+    isPaid: boolean,
+    isReversed: boolean,
+    reversalReason?: string,
+    reversedAt?:string,
+    reversalReferenceId?:number,
+    createdAt:string,
+    updatedAt:string,
+    processedStatus?:string,
+    orderItem: OrderItem,
+    vendor: User,
+}
+
 export type LoadingType = {
     id: number,
     vessel?:string,
@@ -86,22 +104,13 @@ export type OrderItem = {
     product: Product
 }
 
-export type Package = {
-    id:number,
-    trackingNumber:string,
-    cbm:string,
-    email:string,
-    phone?: string,
-    customer: string
-    quantity:number,
-    loaded?:string,
-    received?:string,
-    vessel?:string,
+export type Payout = {
+    id: number,
+    paidBy: User,
+    totalAmount: number,
     status:string,
     createdAt:string,
-    eta?: string,
-    package:string
-    description?:string
+    store: Store
 }
 
 export type PaymentDetail = {

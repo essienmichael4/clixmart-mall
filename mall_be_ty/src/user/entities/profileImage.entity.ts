@@ -1,7 +1,7 @@
 import { Column, CreateDateColumn, Entity, OneToMany, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { User } from "./user.entity";
 
-@Entity({name: "profileImage"})
+@Entity({name: "profile_image"})
 export class ProfileImage {
     @PrimaryGeneratedColumn()
     id: number

@@ -3,13 +3,15 @@ import { AddressDto, CreateUserDto, FindUsersDto } from './dto/create-user.dto';
 import { UpdateUserDto, UpdateUserPasswordRequest, UpdateUserRequest } from './dto/update-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
-import { DataSource, Like, QueryRunner, Repository } from 'typeorm';
+import { DataSource, In, Like, QueryRunner, Repository } from 'typeorm';
 import { compare, hash } from 'bcryptjs';
 import { v4 } from 'uuid';
 import { GetDay, GetMonth, GetYear } from 'src/helpers/common';
 import { MonthHistory } from 'src/product/entities/MonthHistory.entity';
 import { YearHistory } from 'src/product/entities/YearHistory.entity';
 import { Address } from './entities/address.entity';
+import { Department } from './entities/department.entity';
+import e from 'express';
 
 @Injectable()
 export class UserService {
@@ -21,36 +23,59 @@ export class UserService {
     private readonly dataSource:DataSource
   ){}
 
-  async create(createUserDto: CreateUserDto):Promise<User> {
-    const queryRunner =this.dataSource.createQueryRunner()
-    try{
-      await queryRunner.connect()
-      await queryRunner.startTransaction()
+  async create(createUserDto: CreateUserDto): Promise<User> {
+    const queryRunner = this.dataSource.createQueryRunner();
 
-      const userEntity = this.userRepo.create()
+    try {
+      await queryRunner.connect();
+      await queryRunner.startTransaction();
+
+      // 1. Prepare base user
+      const userEntity = this.userRepo.create();
       const saveEntity = {
         ...userEntity,
-        ...createUserDto,
+        name:createUserDto.name,
+        email:createUserDto.email.toLowerCase(),
+        role: createUserDto.role,
         userId: v4(),
         password: await this.hashPassword(createUserDto.password),
-        name: createUserDto.name,
         searchName: createUserDto.name.toLowerCase(),
-        email: createUserDto.email.toLowerCase()  
+      };
+
+      // 2. Save user
+      const user = await this.createUser(saveEntity, queryRunner);
+
+      // 3. Attach departments (if provided)
+      if (createUserDto.departments && createUserDto.departments.length > 0) {
+        // fetch departments by name or id
+        const departments = await queryRunner.manager.find(Department, {
+          where: {
+            name: In(createUserDto.departments) // if using names
+            // id: In(createUserDto.departments) // if using ID instead
+          }
+        });
+
+        user.departments = departments;
+
+        // save updated user with relations
+        await queryRunner.manager.save(user);
       }
 
-      const user = await this.createUser(saveEntity, queryRunner)
-      await this.upsertMonthHistoryUsers(queryRunner)
-      await this.upsertYearHistoryUsers(queryRunner)
+      // 4. Update historical stats
+      await this.upsertMonthHistoryUsers(queryRunner);
+      await this.upsertYearHistoryUsers(queryRunner);
 
-      await queryRunner.commitTransaction()
-      return user
-    }catch(err){
-      await queryRunner.rollbackTransaction()
-      throw err
-    }finally{
-      await queryRunner.release()
+      await queryRunner.commitTransaction();
+      return user;
+
+    } catch (err) {
+      await queryRunner.rollbackTransaction();
+      throw err;
+    } finally {
+      await queryRunner.release();
     }
   }
+
 
   async createUser(payload:User, queryRunner:QueryRunner){
     return await queryRunner.manager.save(User, {

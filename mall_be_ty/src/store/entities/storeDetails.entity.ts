@@ -6,7 +6,7 @@ export enum Registered {
     FALSE = 'FALSE',
 }
 
-@Entity({name: "storeDetail"})
+@Entity({name: "store_detail"})
 export class StoreDetail {
     @PrimaryGeneratedColumn()
     id: number

@@ -1,6 +1,6 @@
 import { Column, CreateDateColumn, Entity, JoinTable, ManyToMany, OneToMany, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 
-@Entity({name: "categoryBanner"})
+@Entity({name: "category_banner"})
 export class CategoryBanner {
     @PrimaryGeneratedColumn()
     id: number

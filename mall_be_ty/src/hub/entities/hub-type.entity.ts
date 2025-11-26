@@ -20,9 +20,6 @@ export class HubType {
   description?: string;
 
   @Column({ nullable: true })
-  color?: string; // optional UI color code
-
-  @Column({ nullable: true })
   icon?: string; // optional icon name
 
   @ManyToMany(() => Hub, (hub) => hub.types)

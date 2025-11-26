@@ -1,20 +1,10 @@
-import {
-  Entity,
-  PrimaryGeneratedColumn,
-  Column,
-  ManyToMany,
-  OneToMany,
-  ManyToOne,
-  CreateDateColumn,
-  UpdateDateColumn,
-  DeleteDateColumn,
-  JoinTable,
-} from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToMany, OneToMany, ManyToOne, CreateDateColumn, UpdateDateColumn, DeleteDateColumn, JoinTable, } from 'typeorm';
 import { User } from 'src/user/entities/user.entity';
 import { HubType } from './hub-type.entity';
 import { Delivery } from 'src/delivery/entities/delivery.entity';
 import { Region } from './region.entity';
 import { Mmda } from './metropolitan.entity';
+import { Town } from './town.entity';
 
 @Entity('hub')
 export class Hub {
@@ -58,6 +48,13 @@ export class Hub {
         onDelete: "SET NULL",
     })
     mmda?: Mmda;
+
+    // OPTIONAL: Belongs to a Town
+    @ManyToOne(() => Town, (town) => town.hubs, {
+        nullable: true,
+        onDelete: "SET NULL",
+    })
+    town?: Town;
 
     // --- Many-to-Many HubTypes ---
     @ManyToMany(() => HubType, (type) => type.hubs, { eager: true })

@@ -114,7 +114,7 @@ export type CommissionTransaction = {
 }
 
 export type Data = {
-    data: User[] | AuditLog[] | Ledger[] | AccountLedger[] | Department[] | Commission[] | CommissionTransaction[],
+    data: User[] | AuditLog[] | Ledger[] | AccountLedger[] | Department[] | Commission[] | CommissionTransaction[] | Hub[] | HubType[] | Mmda[] | Town[],
     meta: Meta
 }
 
@@ -174,6 +174,38 @@ export type AddressType = {
     address: string
 }
 
+export type Hub = {
+    id: number,
+    name: string,
+    code: string,
+    location: string,
+    address?: string,
+    isActive: boolean,
+    manager?: User,
+    latitude?: number,
+    longitude?: number,
+    types: HubType[],
+    createdAt: string,
+    updatedAt: string,
+    deletedAt?: string,
+    region?: Region,
+    mmda?: Mmda,
+    town?: Town,
+    users?: User[],
+    deliveries?: string[],
+    pickupDeliveries?: string[],
+
+}
+
+export type HubType = {
+    id: number,
+    name: string,
+    description?: string,
+    createdAt: string,
+    updatedAt: string,
+    hubs?: Hub[],
+}
+
 export type LoadingType = {
     id: number,
     vessel?:string,
@@ -189,6 +221,19 @@ export type Meta = {
     pageCount?: number
     hasPreviousPage?: boolean
     hasNextPage?: boolean
+}
+
+export type Mmda = {
+    id: number,
+    name: string,
+    type?: string,
+    capital?: string,
+    code?: string, 
+    region?: Region,
+    towns?: Town[],
+    hubs?: Hub[],
+    createdAt: string,
+    updatedAt: string,
 }
 
 export type NextOfKin = {
@@ -295,6 +340,15 @@ export type ProductStats = {
     sold: {period: string, statistics: number, sold: number}
 }
 
+export type Region = {
+    id: number,
+    name: string,
+    mmdas?: Mmda[],
+    hubs?: Hub[],
+    createdAt: string,
+    updatedAt: string,
+}   
+
 export type Store = {
     id: number,
     storeId?: string,
@@ -366,6 +420,19 @@ export type Tax = {
     taxPercent: number,
     createdAt?: string,
     updatedAt?:string,
+}
+
+export type Town = {
+    id: number,
+    name: string,
+    postcode?: string,
+    landmark?: string,
+    latitude?: string,
+    longitude?: string,
+    mmda?: Mmda,
+    hubs?: Hub[],
+    createdAt: string,
+    updatedAt: string,
 }
 
 export type User = {

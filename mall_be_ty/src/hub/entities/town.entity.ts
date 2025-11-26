@@ -1,5 +1,6 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, CreateDateColumn, UpdateDateColumn, } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, CreateDateColumn, UpdateDateColumn, OneToMany, } from "typeorm";
 import { Mmda } from "./metropolitan.entity";
+import { Hub } from "./hub.entity";
 
 @Entity("town")
 export class Town {
@@ -25,6 +26,9 @@ export class Town {
     onDelete: "CASCADE",
   })
   mmda: Mmda;
+
+  @OneToMany(() => Hub, (hub) => hub.mmda)
+  hubs: Hub[];
 
   @CreateDateColumn()
   createdAt: Date;

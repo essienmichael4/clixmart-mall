@@ -29,6 +29,7 @@ import AccountsLedger from './pages/Commission/AccountsLedger'
 import Departments from './pages/User/Departments'
 import UsersTablePage from './pages/User/UsersTablePage'
 import DepartmentDetails from './pages/User/DepartmentDetails'
+import Hubs from './pages/Hub/Hubs'
 
 function App() {
 
@@ -60,6 +61,7 @@ function App() {
             <Route path='/orders' element={<Orders />} />
             <Route path='/orders/:id' element={<OrderDetails />} />
             <Route path='/settings' element={<Settings />} />
+            <Route path='/hubs' element={<Hubs />} />
             <Route path='/users' element={<Users />} >
               <Route index element={<UsersTablePage />} />
               <Route path='departments' element={<Departments />} />

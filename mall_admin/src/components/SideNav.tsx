@@ -1,5 +1,6 @@
 import logo from '../assets/logo.jpeg';
 import { MdLocalShipping, MdDeliveryDining  } from "react-icons/md";
+import { FaHubspot } from "react-icons/fa6";
 import { RiGuideLine } from "react-icons/ri";
 import { Activity, BaggageClaim, GripVertical, LayoutDashboard, PackageSearch, Settings, ShoppingBag, Store, Users, FileText, Landmark, Captions } from 'lucide-react';
 import { Link, NavLink } from 'react-router-dom';
@@ -47,6 +48,7 @@ const SideNav = ({ isToggled }: SideNavProps) => {
         { to: '/deliveries', label: 'Deliveries', icon: RiGuideLine  },
         { to: '/carriers', label: 'Carriers', icon: MdDeliveryDining  },
         { to: '/couriers', label: 'Couriers', icon: MdLocalShipping },
+        { to: '/hubs', label: 'Hubs', icon: FaHubspot },
       ],
     },
     {

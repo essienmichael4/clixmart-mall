@@ -22,6 +22,7 @@ import { TrackingModule } from './tracking/tracking.module';
 import { DepartmentModule } from './department/department.module';
 import { DeliveryModule } from './delivery/delivery.module';
 import { HubModule } from './hub/hub.module';
+import { LocationModule } from './location/location.module';
 
 @Module({
   imports: [
@@ -58,7 +59,8 @@ import { HubModule } from './hub/hub.module';
     TrackingModule,
     DepartmentModule,
     DeliveryModule,
-    HubModule,],
+    HubModule,
+    LocationModule,],
   controllers: [AppController],
   providers: [AppService],
 })

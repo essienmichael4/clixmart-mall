@@ -1,7 +1,9 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
 import { HubService } from './hub.service';
 import { CreateHubDto } from './dto/create-hub.dto';
 import { UpdateHubDto } from './dto/update-hub.dto';
+import { HubTypeDto } from './dto/requests';
+import { PageOptionsDto } from 'src/common/dto/pageOptions.dto';
 
 @Controller('hubs')
 export class HubController {
@@ -12,9 +14,24 @@ export class HubController {
     return this.hubService.create(createHubDto);
   }
 
+  @Post("types")
+  createHubTypes(@Body() hubTypeDto: HubTypeDto) {
+    return this.hubService.createHubType(hubTypeDto);
+  }
+
   @Get()
-  findAll() {
-    return this.hubService.findAll();
+  findAll(@Query() pageOptionsDto:PageOptionsDto, @Query("search") search?:string) {
+    return this.hubService.findAll(pageOptionsDto, search);
+  }
+
+  @Get("types")
+  findAllHubTypes() {
+    return this.hubService.findAllHubTypes();
+  }
+
+  @Get("types/:id")
+  findHubType(@Param('id') id: string) {
+    return this.hubService.findHubType(+id);
   }
 
   @Get(':id')

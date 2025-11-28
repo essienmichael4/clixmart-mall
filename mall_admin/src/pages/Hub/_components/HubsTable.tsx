@@ -49,9 +49,9 @@ const HubsTable = ({page, limit, setLimit, setPage, search}:FilterProps) => {
                 {new Date(row.original.createdAt as string).toDateString()}
             </div>
         },{
-        accessorKey: "updatedAt",
+        accessorKey: "ids",
         header:({column})=>(<DataTableColumnHeader column={column} title='Actions' />),
-        cell:({row}) => <div>
+        cell:({}) => <div>
                     <span className="flex gap-2 items-center">
                         {/* <EditDepartment department={row.original} trigger={<button><Edit className="w-4 h-4 text-emerald-400"/></button>} />
                         <DeleteDepartment department={row.original} trigger={<button><Trash2 className="w-4 h-4 text-rose-400" /></button>} /> */}

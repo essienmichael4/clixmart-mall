@@ -2,7 +2,7 @@ import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, One
 import { Product } from "./product.entity";
 // import { User } from "./user.entity";
 
-@Entity({name: "productImage"})
+@Entity({name: "product_image"})
 export class ProductImage {
     @PrimaryGeneratedColumn()
     id: number

@@ -9,9 +9,10 @@ import { UploadModule } from 'src/upload/upload.module';
 import { Address } from './entities/address.entity';
 import { MonthHistory } from 'src/product/entities/MonthHistory.entity';
 import { YearHistory } from 'src/product/entities/YearHistory.entity';
+import { Department } from './entities/department.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([User, ProfileImage, Address, MonthHistory, YearHistory]), UploadModule],
+  imports: [TypeOrmModule.forFeature([User, ProfileImage, Department, Address, MonthHistory, YearHistory]), UploadModule],
   controllers: [UserController],
   providers: [UserService, JwtService],
   exports:[UserService]

@@ -26,12 +26,14 @@ import { PageOptionsDto } from 'src/common/dto/pageOptions.dto';
 import { PageMetaDto } from 'src/common/dto/pageMeta.dto';
 import { PageDto } from 'src/common/dto/page.dto';
 import { endOfDay, parseISO, startOfDay } from 'date-fns';
+import { OrderStatus } from 'src/order/entities/order.entity';
 
 @Injectable()
 export class CommissionService {
   constructor(
     @InjectRepository(User) private readonly userRepo:Repository<User>,
     @InjectRepository(Store) private readonly storeRepo:Repository<Store>,
+    @InjectRepository(VendorPayout) private readonly vendorPayoutRepo:Repository<VendorPayout>,
     @InjectRepository(OrderItem) private readonly orderItemRepo:Repository<OrderItem>,
     @InjectRepository(Category) private readonly categoryRepo:Repository<Category>,
     @InjectRepository(CommissionTransaction) private readonly commissionTransactionRepo:Repository<CommissionTransaction>,
@@ -289,6 +291,47 @@ export class CommissionService {
           currentAccount: "DESC",
           unpaid: "DESC",
           due: "DESC"
+        }
+      }
+    })
+  }
+
+  findStoreTransactions(storeName: string){
+    return this.commissionTransactionRepo.find({
+      relations: {
+        vendor: true,
+        orderItem: {
+          order: true,
+          product: {
+            store: true
+          }
+        }
+      },
+      where: {
+        orderItem: {
+          order: {
+            status: OrderStatus.DELIVERED,  
+          },
+          product: {
+            store: {
+              slug: storeName
+            }
+          }
+        },
+        processedStatus: ProcessedStatus.PROCESSED,
+        
+      }
+    })
+  }
+
+  async findStorePayouts(storeName: string,){
+    return this.vendorPayoutRepo.find({
+      relations:{
+        store:true
+      },
+      where: {
+        store: {
+          slug: storeName
         }
       }
     })

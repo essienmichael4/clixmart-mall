@@ -41,6 +41,16 @@ export class CreateUserDto {
     @IsEnum(Role)
     @IsOptional()
     role?:Role
+
+    @ApiProperty({
+        type: String,
+        isArray: true,
+        description: "option values",
+        example: ["Operations Manager", "Carrier"],
+        required: false
+    })
+    @IsOptional()
+    departments?:string[]
 }
 
 export class FindUsersDto {

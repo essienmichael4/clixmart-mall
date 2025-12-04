@@ -9,9 +9,9 @@ const Layout = () => {
       <div className="container mx-auto px-4">
         <Outlet />
       </div>
-      <div className="container mx-auto px-4">
+      {/* <div className="container mx-auto px-4 bg-cyan-600"> */}
         <Footer />
-      </div>
+      {/* </div> */}
     </>
   )
 }

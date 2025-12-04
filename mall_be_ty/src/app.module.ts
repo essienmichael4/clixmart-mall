@@ -19,6 +19,10 @@ import { SettingsModule } from './settings/settings.module';
 import { CommissionModule } from './commission/commission.module';
 import { ReportModule } from './report/report.module';
 import { TrackingModule } from './tracking/tracking.module';
+import { DepartmentModule } from './department/department.module';
+import { DeliveryModule } from './delivery/delivery.module';
+import { HubModule } from './hub/hub.module';
+import { LocationModule } from './location/location.module';
 
 @Module({
   imports: [
@@ -28,9 +32,9 @@ import { TrackingModule } from './tracking/tracking.module';
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({
-        type: 'postgres',
+        type: 'mysql',
         host: configService.get("DB_HOST"),
-        port: +configService.get("DB_PORT"),
+        // port: +configService.get("DB_PORT"),
         username: configService.get("DB_USERNAME"),
         password: configService.get("DB_PASSWORD"),
         database: configService.get("DB_NAME"),
@@ -52,7 +56,11 @@ import { TrackingModule } from './tracking/tracking.module';
     SettingsModule,
     CommissionModule,
     ReportModule,
-    TrackingModule],
+    TrackingModule,
+    DepartmentModule,
+    DeliveryModule,
+    HubModule,
+    LocationModule,],
   controllers: [AppController],
   providers: [AppService],
 })

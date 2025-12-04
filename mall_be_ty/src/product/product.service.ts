@@ -339,7 +339,7 @@ export class ProductService {
         category: true,
         subCategory: {
           secondLevelSubCategories: {
-            thirdLevelSubCategories: true
+            // thirdLevelSubCategories: true
           }
         },
         brand:true

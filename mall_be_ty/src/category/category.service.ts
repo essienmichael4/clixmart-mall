@@ -8,7 +8,7 @@ import { CreateSubCategoryDto, CreateSubLevelSubCategoryDto, EditSubCategoryDto 
 import { v4 } from 'uuid';
 import { CategoryResponseDto } from './dto/categoryResponse.dto';
 import { UploadService } from 'src/upload/upload.service';
-import { ThirdLevelSubCategory } from './entities/thirdLevelSubcategory.entity';
+// import { ThirdLevelSubCategory } from './entities/thirdLevelSubcategory.entity';
 import { SecondLevelSubCategory } from './entities/secondLevelSubCategory.entity';
 
 @Injectable()
@@ -17,7 +17,7 @@ export class CategoryService {
     @InjectRepository(Category) private readonly categoryRepo:Repository<Category>,
     @InjectRepository(SubCategory) private readonly subCategoryRepo:Repository<SubCategory>,
     @InjectRepository(SecondLevelSubCategory) private readonly secondLevelSubCategoryRepo:Repository<SecondLevelSubCategory>,
-    @InjectRepository(ThirdLevelSubCategory) private readonly thirdLevelSubCategoryRepo:Repository<ThirdLevelSubCategory>,
+    // @InjectRepository(ThirdLevelSubCategory) private readonly thirdLevelSubCategoryRepo:Repository<ThirdLevelSubCategory>,
     private readonly uploadService:UploadService,
   ){}
 
@@ -78,33 +78,33 @@ export class CategoryService {
     }
   }
 
-  async createThirdLevelSubCategory(createSubLevelSubCategoryDto: CreateSubLevelSubCategoryDto) {
-    try{      
-      const secondLevelSubCategory = await this.secondLevelSubCategoryRepo.findOneBy({name: createSubLevelSubCategoryDto.subCategory.toLowerCase()})
+  // async createThirdLevelSubCategory(createSubLevelSubCategoryDto: CreateSubLevelSubCategoryDto) {
+  //   try{      
+  //     const secondLevelSubCategory = await this.secondLevelSubCategoryRepo.findOneBy({name: createSubLevelSubCategoryDto.subCategory.toLowerCase()})
       
-      if(!secondLevelSubCategory) throw new HttpException("Sub Category does not exist", 400)
+  //     if(!secondLevelSubCategory) throw new HttpException("Sub Category does not exist", 400)
 
-      const thirdLevelSubCategoryEntity =  this.thirdLevelSubCategoryRepo.create()
-      const saveEntity = {
-        ...thirdLevelSubCategoryEntity,
-        name: createSubLevelSubCategoryDto.name.toLowerCase(),
-        subCategoryId: v4(),
-        slug: this.generateSlug(createSubLevelSubCategoryDto.name.toLowerCase()),
-        secondLevelSubCategory
-      }
+  //     const thirdLevelSubCategoryEntity =  this.thirdLevelSubCategoryRepo.create()
+  //     const saveEntity = {
+  //       ...thirdLevelSubCategoryEntity,
+  //       name: createSubLevelSubCategoryDto.name.toLowerCase(),
+  //       subCategoryId: v4(),
+  //       slug: this.generateSlug(createSubLevelSubCategoryDto.name.toLowerCase()),
+  //       secondLevelSubCategory
+  //     }
 
-      return this.thirdLevelSubCategoryRepo.save(saveEntity)
-    }catch(err){
-      throw err
-    }
-  }
+  //     return this.thirdLevelSubCategoryRepo.save(saveEntity)
+  //   }catch(err){
+  //     throw err
+  //   }
+  // }
 
   async findAllCategories() {
     const categories = await this.categoryRepo.find({
       relations: {
         subCategories: {
           secondLevelSubCategories:{
-            thirdLevelSubCategories: true
+            // thirdLevelSubCategories: true
           }
         },
         
@@ -132,7 +132,7 @@ export class CategoryService {
     return this.subCategoryRepo.find({
       relations: {
         secondLevelSubCategories: {
-          thirdLevelSubCategories: true
+          // thirdLevelSubCategories: true
         }
       }
     });
@@ -141,7 +141,7 @@ export class CategoryService {
   findAllSecondLevelSubCategories() {
     return this.secondLevelSubCategoryRepo.find({
       relations: {
-        thirdLevelSubCategories: true
+        // thirdLevelSubCategories: true
       }
     });
   }
@@ -151,7 +151,7 @@ export class CategoryService {
       relations: {
         category: true,
         secondLevelSubCategories: {
-          thirdLevelSubCategories: true
+          // thirdLevelSubCategories: true
         }
       },
       where: {
@@ -168,7 +168,7 @@ export class CategoryService {
     const secondLevelSubCategories = await this.secondLevelSubCategoryRepo.find({
       relations: {
         subCategory: true,
-        thirdLevelSubCategories: true
+        // thirdLevelSubCategories: true
       },
       where: {
         subCategory: {
@@ -180,20 +180,20 @@ export class CategoryService {
     return secondLevelSubCategories
   }
 
-  async findSubCategoryThird(secondLevelSubCategory:string) {
-    const secondLevelSubCategories = await this.thirdLevelSubCategoryRepo.find({
-      relations: {
-        secondLevelSubCategory: true
-      },
-      where: {
-        secondLevelSubCategory: {
-          name: secondLevelSubCategory
-        }
-      }
-    });
+  // async findSubCategoryThird(secondLevelSubCategory:string) {
+  //   const secondLevelSubCategories = await this.thirdLevelSubCategoryRepo.find({
+  //     relations: {
+  //       secondLevelSubCategory: true
+  //     },
+  //     where: {
+  //       secondLevelSubCategory: {
+  //         name: secondLevelSubCategory
+  //       }
+  //     }
+  //   });
 
-    return secondLevelSubCategories
-  }
+  //   return secondLevelSubCategories
+  // }
 
   async findOneById(id: number) {
     const category = await this.categoryRepo.findOne({
@@ -209,7 +209,7 @@ export class CategoryService {
       relations: {
         subCategories: {
           secondLevelSubCategories: {
-            thirdLevelSubCategories: true
+            // thirdLevelSubCategories: true
           }
         }
       }

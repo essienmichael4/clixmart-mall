@@ -8,7 +8,7 @@ export enum ReviewStatus {
     REJECTED = 'REJECTED'
 }
 
-@Entity({name: "productReview"})
+@Entity({name: "product_review"})
 export class ProductReview {
     @PrimaryGeneratedColumn()
     id: number
@@ -28,7 +28,7 @@ export class ProductReview {
     @UpdateDateColumn()
     updatedAt: Date;
 
-    @ManyToOne(() => User, (user) => user.products)
+    @ManyToOne(() => User, (user) => user.productReviews)
     @JoinColumn({ name: 'reviewedBy' })
     user: User;
 

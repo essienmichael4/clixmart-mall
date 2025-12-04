@@ -1,9 +1,8 @@
-import { AuthType } from '@/lib/types'
 import useAuth from './useAuth'
 import axios from 'axios'
 
 const useRefreshToken = () => {
-    const {auth, setAuth} = useAuth()
+    const {auth, dispatch} = useAuth()
 
     const refresh = async ()=>{
         const response = await axios.get(`"https://api.clixmartonline.com/auth/refresh`, {
@@ -12,19 +11,16 @@ const useRefreshToken = () => {
             }
         })
 
-        setAuth(prev =>{
-            const auth:AuthType = {
-                id: prev?.id,
-                role: prev?.role,
-                name: prev!.name,
-                email: prev!.email,
-                backendTokens: {
-                    accessToken: response.data?.accessToken,
-                    refreshToken: prev!.backendTokens.refreshToken
-                }
+        dispatch({type: "ADD_AUTH", payload:{
+            id: auth?.id,
+            name: auth!.name,
+            email: auth!.email,
+            role: auth?.role,
+            backendTokens: {
+                accessToken: response.data?.accessToken,
+                refreshToken: auth!.backendTokens.refreshToken
             }
-            return auth
-        })
+        }})
         
         return response.data.accessToken
     }

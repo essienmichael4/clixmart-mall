@@ -1,16 +1,14 @@
 import { Column, CreateDateColumn, Entity, Index, JoinColumn, JoinTable, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
-import { Category } from "./category.entity";
 import { Product } from "src/product/entities/product.entity";
-import { Brand } from "src/brand/entities/brand.entity";
 import { SubCategory } from "./subcategory.entity";
-import { ThirdLevelSubCategory } from "./thirdLevelSubcategory.entity";
+// import { ThirdLevelSubCategory } from "./thirdLevelSubcategory.entity";
 
 export enum Deleted {
     TRUE = 'TRUE',
     FALSE = 'FALSE',
 }
 
-@Entity({name: "secondLevelSubCategory"})
+@Entity({name: "second_level_sub_category"})
 export class SecondLevelSubCategory {
     @PrimaryGeneratedColumn()
     id: number
@@ -40,6 +38,6 @@ export class SecondLevelSubCategory {
     @JoinColumn({ name: 'subCategory' })
     subCategory: SubCategory;
 
-    @OneToMany(() => ThirdLevelSubCategory, (sss) => sss.secondLevelSubCategory, { cascade: true })
-    thirdLevelSubCategories: ThirdLevelSubCategory[];
+    // @OneToMany(() => ThirdLevelSubCategory, (sss) => sss.secondLevelSubCategory, { cascade: true })
+    // thirdLevelSubCategories: ThirdLevelSubCategory[];
 }

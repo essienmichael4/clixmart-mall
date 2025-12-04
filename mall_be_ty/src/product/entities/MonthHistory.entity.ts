@@ -1,6 +1,6 @@
 import { Entity, Column, PrimaryColumn } from "typeorm"
 
-@Entity({name: "monthHistory"})
+@Entity({name: "month_history"})
 export class MonthHistory {
     @PrimaryColumn()
     day: number;

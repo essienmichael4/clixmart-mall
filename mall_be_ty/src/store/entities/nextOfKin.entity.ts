@@ -1,7 +1,7 @@
 import { Column, Entity, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import { Store } from "./store.entity";
 
-@Entity({name: "nextOfKin"})
+@Entity({name: "next_of_kin"})
 export class NextOfKin {
     @PrimaryGeneratedColumn()
     id: number

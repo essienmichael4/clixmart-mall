@@ -6,7 +6,7 @@ export enum Mode {
     BANK = 'BANK',
 }
 
-@Entity({name: "paymentDetail"})
+@Entity({name: "payment_detail"})
 export class PaymentDetail {
     @PrimaryGeneratedColumn()
     id: number

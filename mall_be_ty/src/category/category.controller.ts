@@ -93,7 +93,7 @@ export class CategoryController {
   @ApiConsumes("application/json")
   @Post("third-level-sub-categories")
   async createThirdLevelSubCategory(@Body() createSubLevelSubCategoryDto: CreateSubLevelSubCategoryDto) {
-    return  await this.categoryService.createThirdLevelSubCategory(createSubLevelSubCategoryDto);
+    // return  await this.categoryService.createThirdLevelSubCategory(createSubLevelSubCategoryDto);
   }
 
   @HttpCode(HttpStatus.OK)

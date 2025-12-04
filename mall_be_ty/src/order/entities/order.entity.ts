@@ -1,8 +1,9 @@
 import { User } from "src/user/entities/user.entity";
-import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, JoinColumn, ManyToMany, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { OrderItem } from "./orderItem.entity";
 import { Address } from "src/user/entities/address.entity";
 import { Tracking } from "./orderTracking.entity";
+import { Shipment } from "src/delivery/entities/shipment.entity";
 
 export enum Deleted {
     TRUE = 'TRUE',
@@ -79,4 +80,7 @@ export class Order {
 
     @OneToOne(()=> Tracking, (tracking)=> tracking.order)
     tracking: Tracking
+
+    @ManyToMany(() => Shipment, shipment => shipment.orders)
+    shipments: Shipment[];
 }

@@ -11,6 +11,8 @@ import { Department } from "./department.entity";
 import { Hub } from "src/hub/entities/hub.entity";
 import { Delivery } from "src/delivery/entities/delivery.entity";
 import { Order } from "src/order/entities/order.entity";
+import { Driver } from "src/delivery/entities/driver.entity";
+import { Courier } from "src/delivery/entities/courier.entity";
 
 export enum Deleted {
     TRUE = 'TRUE',
@@ -61,6 +63,12 @@ export class User {
     @OneToOne(()=> ProfileImage, (profileImage)=> profileImage.user, {cascade: true, onDelete: "SET NULL"})
     @JoinColumn()
     profileImage: ProfileImage
+
+    @OneToOne(() => Driver, (driver) => driver.user, { nullable: true })
+    driver: Driver;
+
+    @OneToMany(() => Courier, (courier) => courier.user)
+    courier: Courier[];
     
     @OneToMany(()=> Address, (address)=> address.user, {cascade: true})
     addresses: Address[]

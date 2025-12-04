@@ -49,7 +49,7 @@ const HubTypesPicker = ({ values, selected = [], onChange, }: Props) => {
     <>
       {/* Selected tags */}
       <div className="flex flex-wrap gap-1 pb-2">
-        {value.map((item, index) => (
+        {value.map((item) => (
           <div
             key={item}
             className="px-2 flex gap-1 items-center text-xs py-1 bg-gray-200 rounded-full"

@@ -1,17 +1,10 @@
-import {
-  Entity,
-  PrimaryGeneratedColumn,
-  Column,
-  ManyToOne,
-  CreateDateColumn,
-  UpdateDateColumn,
-  DeleteDateColumn,
-  JoinColumn,
-} from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, CreateDateColumn, UpdateDateColumn, DeleteDateColumn, JoinColumn, } from 'typeorm';
 import { User } from 'src/user/entities/user.entity';
 import { Hub } from 'src/hub/entities/hub.entity';
 import { Mmda } from 'src/hub/entities/metropolitan.entity';
 import { Department } from 'src/user/entities/department.entity';
+import { Driver } from './driver.entity';
+import { Vehicle } from './vehicle.entity';
 
 export enum DeliveryStatus {
   PENDING = 'PENDING',
@@ -88,30 +81,42 @@ export class Delivery {
   })
   receiver?: User;
 
-    // GHANA MMDA RELATIONS
-    @ManyToOne(() => Mmda, { nullable: true })
-    @JoinColumn({ name: "pickupMmdaId" })
-    pickupMmda?: Mmda;
+  // GHANA MMDA RELATIONS
+  @ManyToOne(() => Mmda, { nullable: true })
+  @JoinColumn({ name: "pickupMmdaId" })
+  pickupMmda?: Mmda;
 
-    @ManyToOne(() => Mmda, { nullable: true })
-    @JoinColumn({ name: "dropoffMmdaId" })
-    dropoffMmda?: Mmda;
+  @ManyToOne(() => Mmda, { nullable: true })
+  @JoinColumn({ name: "dropoffMmdaId" })
+  dropoffMmda?: Mmda;
 
-    @ManyToOne(() => Hub, hub => hub.deliveries, { nullable: true })
-    @JoinColumn({ name: "hubId" })
-    hub?: Hub;
+  @ManyToOne(() => Driver, (driver) => driver.deliveries, {
+    nullable: true,
+    onDelete: "SET NULL",
+  })
+  driver: Driver;
 
-    @ManyToOne(() => Hub, { nullable: true })
-    @JoinColumn({ name: "pickupHubId" })
-    pickupHub?: Hub;
+  @ManyToOne(() => Vehicle, (vehicle) => vehicle.deliveries, {
+    nullable: true,
+    onDelete: "SET NULL",
+  })
+  vehicle: Vehicle;
 
-    @ManyToOne(() => Hub, { nullable: true })
-    @JoinColumn({ name: "dropoffHubId" })
-    dropoffHub?: Hub;
+  @ManyToOne(() => Hub, hub => hub.deliveries, { nullable: true, onDelete: "SET NULL" })
+  @JoinColumn({ name: "hubId" })
+  hub?: Hub;
 
-    @ManyToOne(() => Department, department => department.deliveries, { nullable: true })
-    @JoinColumn({ name: "departmentId" })
-    department?: Department;
+  @ManyToOne(() => Hub, { nullable: true })
+  @JoinColumn({ name: "pickupHubId" })
+  pickupHub?: Hub;
+
+  @ManyToOne(() => Hub, { nullable: true })
+  @JoinColumn({ name: "dropoffHubId" })
+  dropoffHub?: Hub;
+
+  @ManyToOne(() => Department, department => department.deliveries, { nullable: true })
+  @JoinColumn({ name: "departmentId" })
+  department?: Department;
 
   @CreateDateColumn()
   createdAt: Date;

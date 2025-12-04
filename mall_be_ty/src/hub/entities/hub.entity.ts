@@ -5,6 +5,11 @@ import { Delivery } from 'src/delivery/entities/delivery.entity';
 import { Region } from './region.entity';
 import { Mmda } from './metropolitan.entity';
 import { Town } from './town.entity';
+import { Driver } from 'src/delivery/entities/driver.entity';
+import { Vehicle } from 'src/delivery/entities/vehicle.entity';
+import { Carrier } from 'src/delivery/entities/carrier.entity';
+import { Courier } from 'src/delivery/entities/courier.entity';
+import { Shipment } from 'src/delivery/entities/shipment.entity';
 
 @Entity('hub')
 export class Hub {
@@ -76,6 +81,15 @@ export class Hub {
 
     @OneToMany(() => Delivery, delivery => delivery.dropoffHub)
     dropoffDeliveries: Delivery[];
+
+    @OneToMany(() => Carrier, (carrier) => carrier.hub)
+    carriers: Carrier[];
+
+    @OneToMany(() => Courier, (courier) => courier.hub)
+    couriers: Courier[];
+
+    @OneToMany(() => Shipment, (shipment) => shipment.hub)
+    shipments: Shipment[];
 
     @CreateDateColumn()
     createdAt: Date;

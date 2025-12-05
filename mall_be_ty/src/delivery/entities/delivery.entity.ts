@@ -20,7 +20,7 @@ export enum DeliveryType {
   RETURN = 'RETURN',
 }
 
-@Entity('deliveries')
+@Entity('delivery')
 export class Delivery {
   @PrimaryGeneratedColumn()
   id: number;

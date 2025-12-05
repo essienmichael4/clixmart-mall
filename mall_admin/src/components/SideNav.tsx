@@ -45,9 +45,9 @@ const SideNav = ({ isToggled }: SideNavProps) => {
     {
       title: 'Deliveries & Couriers',
       links: [
-        { to: '/deliveries', label: 'Deliveries', icon: RiGuideLine  },
-        { to: '/carriers', label: 'Carriers', icon: MdDeliveryDining  },
-        { to: '/couriers', label: 'Couriers', icon: MdLocalShipping },
+        { to: '/deliveries', label: 'Deliveries', icon: RiGuideLine },
+        { to: '/carriers', label: 'Carriers', icon: MdLocalShipping },
+        { to: '/couriers', label: 'Couriers', icon: MdDeliveryDining },
         { to: '/hubs', label: 'Hubs', icon: FaHubspot },
       ],
     },

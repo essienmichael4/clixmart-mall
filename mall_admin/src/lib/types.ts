@@ -65,6 +65,13 @@ export type Brand = {
     categories?: Category[]
 } 
 
+export type Carrier = {
+    id: number,
+    name: string,
+    createdAt:string,
+    updatedAt:string,
+}
+
 export type CategoryList = {
     id:number,
     categoryId?: string,
@@ -111,6 +118,13 @@ export type CommissionTransaction = {
     processedStatus?:string,
     orderItem: OrderItem,
     vendor: User,
+}
+
+export type Courier = {
+    id: number,
+    name: string,
+    createdAt:string,
+    updatedAt:string,
 }
 
 export type Data = {

@@ -30,6 +30,10 @@ import Departments from './pages/User/Departments'
 import UsersTablePage from './pages/User/UsersTablePage'
 import DepartmentDetails from './pages/User/DepartmentDetails'
 import Hubs from './pages/Hub/Hubs'
+import Carriers from './pages/Delivery/Carriers'
+import CarrierDetails from './pages/Delivery/CarrierDetails'
+import Couriers from './pages/Delivery/Couriers'
+import CourierDetails from './pages/Delivery/CourierDetails'
 
 function App() {
 
@@ -44,6 +48,10 @@ function App() {
             <Route path='/brands/:id' element={<Brand />} />
             <Route path='/categories' element={<Categories />} />
             <Route path='/categories/:id' element={<CategoryDetails />} />
+            <Route path='/carriers' element={<Carriers />} />
+            <Route path='/carriers/:id' element={<CarrierDetails />} />
+            <Route path='/couriers' element={<Couriers />} />
+            <Route path='/couriers/:id' element={<CourierDetails />} />
             <Route path='/commissions' element={<Commissions />} >
               <Route index element={<CategoryCommissions />}></Route>
               <Route path='statements' element={<Statements />}>

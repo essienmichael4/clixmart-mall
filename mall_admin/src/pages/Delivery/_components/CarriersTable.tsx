@@ -1,7 +1,6 @@
 import { DataTableColumnHeader } from "@/components/DataTable/ColumnHeader";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { useHubs } from "@/hooks/useHubs";
-import { Hub } from "@/lib/types";
+import { Carrier } from "@/lib/types";
 import { ColumnDef, flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } from "@tanstack/react-table";
 import { ChevronsLeft, ChevronLeft, ChevronRight, ChevronsRight } from "lucide-react";
 import { Link } from "react-router-dom";
@@ -16,10 +15,10 @@ interface FilterProps{
 
 const emptyData: any[]= []
 
-const HubsTable = ({page, limit, setLimit, setPage, search}:FilterProps) => {
-    const {hubs, meta} = useHubs(1, 10, search)
+const CarriersTable = ({page, limit, setLimit, setPage, search}:FilterProps) => {
+    const {carriers, meta} = {carriers: [], meta: {pageCount: 0}}
 
-    const columns:ColumnDef<Hub>[] =[{
+    const columns:ColumnDef<Carrier>[] =[{
             accessorKey: "id",
             header:({column})=>(<DataTableColumnHeader column={column} title='ID' />),
             cell:({row}) => <div>
@@ -32,15 +31,6 @@ const HubsTable = ({page, limit, setLimit, setPage, search}:FilterProps) => {
             header:({column})=>(<DataTableColumnHeader column={column} title='Name' />),
             cell:({row}) => <div>
                 <p className='-mb-1 font-medium'>{row.original.name}</p>
-            </div>
-        },{
-            accessorKey: "type",
-            header:({column})=>(<DataTableColumnHeader column={column} title='Hub type' />),
-            cell:({row}) => <div className="flex gap-2">
-                {row.original.types.map((type)=>{
-                    return <span>{type.name}</span>
-                })}
-                
             </div>
         },{
             accessorKey: "createdAt",
@@ -60,7 +50,7 @@ const HubsTable = ({page, limit, setLimit, setPage, search}:FilterProps) => {
     }]
 
     const table = useReactTable({
-        data: hubs || emptyData,
+        data: carriers || emptyData,
         columns,
         manualPagination: true,
         getCoreRowModel: getCoreRowModel(),
@@ -121,66 +111,66 @@ const HubsTable = ({page, limit, setLimit, setPage, search}:FilterProps) => {
                 </Table>
             </div>
             <div className="flex text-xs items-center justify-between space-x-2 py-4 mt-4">
-                  <div>
+                <div>
                     <span className="mr-2">Items per page</span>
                     <select 
-                      className="border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 p-2"
-                      value={limit}
-                      onChange={e=> {setLimit(Number(e.target.value))}} >
+                        className="border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 p-2"
+                        value={limit}
+                        onChange={e=> {setLimit(Number(e.target.value))}} >
 
-                      {[10,20,50,100].map((pageSize)=>(
+                        {[10,20,50,100].map((pageSize)=>(
                         <option key={pageSize} value={pageSize}>
-                          {pageSize}
+                            {pageSize}
                         </option>
-                      ))}
+                        ))}
                     </select>
-                  </div>
+                </div>
 
-                  <div className="flex space-x-2">
-                      <button
-                        className="p-2 rounded-md bg-gray-100 text-gray-600 hover:bg-gray-200 disabled:opacity-50"
-                        onClick={()=>setPage(1)}
-                        disabled={page === 1}>
-                        <ChevronsLeft size={16} />
-                      </button>
-                      <button
-                        className="p-2 rounded-md bg-gray-100 text-gray-600 hover:bg-gray-200 disabled:opacity-50"
-                        onClick={()=>setPage(page - 1)}
-                        disabled={page === 1}>
-                        <ChevronLeft size={16} />
-                      </button>
+                <div className="flex space-x-2">
+                    <button
+                    className="p-2 rounded-md bg-gray-100 text-gray-600 hover:bg-gray-200 disabled:opacity-50"
+                    onClick={()=>setPage(1)}
+                    disabled={page === 1}>
+                    <ChevronsLeft size={16} />
+                    </button>
+                    <button
+                    className="p-2 rounded-md bg-gray-100 text-gray-600 hover:bg-gray-200 disabled:opacity-50"
+                    onClick={()=>setPage(page - 1)}
+                    disabled={page === 1}>
+                    <ChevronLeft size={16} />
+                    </button>
 
-                      <span className="flex items-center">
-                        <input 
-                          className="w-16 p-2 rounded-md border border-gray-300 text-center"
-                          min={1}
-                          max={table.getPageCount()}
-                          type="number"
-                          value={table.getState().pagination.pageIndex + 1}
-                          onChange={e=> {
-                            const page = e.target.value ? Number(e.target.value) - 1 : 0
-                            setPage(page)
-                          }}
-                        />
-                        <span className="ml-1">of {meta?.pageCount}</span>
-                      </span>
+                    <span className="flex items-center">
+                    <input 
+                        className="w-16 p-2 rounded-md border border-gray-300 text-center"
+                        min={1}
+                        max={table.getPageCount()}
+                        type="number"
+                        value={table.getState().pagination.pageIndex + 1}
+                        onChange={e=> {
+                        const page = e.target.value ? Number(e.target.value) - 1 : 0
+                        setPage(page)
+                        }}
+                    />
+                    <span className="ml-1">of {meta?.pageCount}</span>
+                    </span>
 
-                      <button
-                        className="p-2 rounded-md bg-gray-100 text-gray-600 hover:bg-gray-200 disabled:opacity-50"
-                        onClick={()=>setPage(page + 1)}
-                        disabled={ page === Number(meta?.pageCount) }>
-                        <ChevronRight size={16} />
-                      </button>
-                      <button
-                        className="p-2 rounded-md bg-gray-100 text-gray-600 hover:bg-gray-200 disabled:opacity-50"
-                        onClick={()=>setPage(Number(meta?.pageCount))}
-                        disabled={page === Number(meta?.pageCount)}>
-                        <ChevronsRight size={16} />
-                      </button>
-                  </div>
+                    <button
+                    className="p-2 rounded-md bg-gray-100 text-gray-600 hover:bg-gray-200 disabled:opacity-50"
+                    onClick={()=>setPage(page + 1)}
+                    disabled={ page === Number(meta?.pageCount) }>
+                    <ChevronRight size={16} />
+                    </button>
+                    <button
+                    className="p-2 rounded-md bg-gray-100 text-gray-600 hover:bg-gray-200 disabled:opacity-50"
+                    onClick={()=>setPage(Number(meta?.pageCount))}
+                    disabled={page === Number(meta?.pageCount)}>
+                    <ChevronsRight size={16} />
+                    </button>
+                </div>
             </div>
         </div>
     )
 }
 
-export default HubsTable
+export default CarriersTable

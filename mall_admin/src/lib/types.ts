@@ -460,6 +460,13 @@ export type User = {
     address?: Address
 }
 
+export type Vehicle = {
+    id: number,
+    registrationNumber: string,
+    brand: string,
+    modle: string
+} 
+
 export type VendorPayout = {
     vendor: User,
     transactions: CommissionTransaction[],

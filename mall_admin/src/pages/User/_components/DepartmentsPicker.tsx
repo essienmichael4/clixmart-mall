@@ -75,13 +75,13 @@ const DepartmentsPicker = ({ values, selected = [], onChange, removeDepartment }
           </Button>
         </PopoverTrigger>
 
-        <PopoverContent className="w-[200px] p-0">
+        <PopoverContent className="w-[250px] p-0">
           <Command>
             <CommandInput placeholder="Search department..." />
             <CommandGroup>
               <CommandList className="h-48 overflow-auto">
                 {values.length === 0 && (
-                  <CommandItem>No departments available</CommandItem>
+                  <CommandItem className="text-xs">No departments available</CommandItem>
                 )}
 
                 {values.map((opt) => (

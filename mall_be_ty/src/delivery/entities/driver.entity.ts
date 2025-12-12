@@ -17,6 +17,9 @@ export class Driver {
     @PrimaryGeneratedColumn()
     id: number;
 
+    @Column({ nullable: true })
+    contact: string;
+
     @OneToOne(() => User, (user) => user.driver, {
         onDelete: "CASCADE", // if user is deleted, driver is deleted
     })

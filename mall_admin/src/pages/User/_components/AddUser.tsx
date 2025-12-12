@@ -27,7 +27,7 @@ const AddUser = ({trigger}:Props) => {
     const axios_instance_token = useAxiosToken()
     const departmentsQuery = useQuery<Department[]>({
         queryKey: ["departments"],
-        queryFn: async () => await axios_instance_token.get(`/department`).then(res => res.data)
+        queryFn: async () => await axios_instance_token.get(`/departments`).then(res => res.data)
     })
     const [selectedDepartments, setSelectedDepartments] = useState<string[]>([])
     const queryClient = useQueryClient()
@@ -153,7 +153,7 @@ const AddUser = ({trigger}:Props) => {
                         />}
                         {auth?.role === "ADMIN" || auth?.role === "SUPERADMIN" && (
                             <FormItem className='flex flex-col'>
-                                <FormLabel className='my-1 text-xs'>Departments</FormLabel>
+                                <FormLabel className='text-xs'>Departments</FormLabel>
                                 <FormControl>
                                     <DepartmentsPicker
                                         values={departmentsQuery.data ? departmentsQuery.data.map(d => d.name) : []}
@@ -163,7 +163,7 @@ const AddUser = ({trigger}:Props) => {
                                         removeDepartment={removeDepartment}
                                     />
                                 </FormControl>
-                                <FormDescription>Select one or more departments to assign</FormDescription>
+                                <FormDescription className='text-xs'>Select one or more departments to assign</FormDescription>
                             </FormItem>
                         )}
                     </form>

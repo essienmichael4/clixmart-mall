@@ -44,6 +44,4 @@ export const UserPasswordUpdateSchema = z.object({
 
 export type UserUpdateSchemaType = z.infer<typeof UserUpdateSchema>
 export type UserPasswordUpdateSchemaType = z.infer<typeof UserPasswordUpdateSchema>
-
-
 export type RegisterUserSchemaType = z.infer<typeof RegisterUserSchema>

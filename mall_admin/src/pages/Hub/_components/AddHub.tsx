@@ -8,24 +8,26 @@ import { Button } from '@/components/ui/button'
 import { useMutation, useQueryClient, useQuery } from '@tanstack/react-query'
 import { toast } from 'sonner'
 import axios from 'axios'
-import { Loader2 } from 'lucide-react'
+import { Loader2, PlusSquare } from 'lucide-react'
 import useAxiosToken from '@/hooks/useAxiosToken'
-import { HubType } from '@/lib/types'
+import { Hub, HubType } from '@/lib/types'
 import { HubSchemaType, HubSchema } from '@/schema/hub'
 import HubTypePicker from './HubTypePicker'
 import TownPicker from '@/components/TownPicker'
 import MmdaPicker from '@/components/MmdaPicker'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import RegionPicker from '@/components/RegionPicker'
-interface Props{
-    trigger?: React.ReactNode,
+
+interface Props {
+    successCallback?: (hub:Hub)=>void,
+    variant: "link" | "default" | "destructive" | "outline" | "secondary" | "ghost" | null | undefined
 }
 
-const AddHub = ({trigger}:Props) => {
+const AddHub = ({successCallback, variant}: Props) => {
     const [open, setOpen] = useState(false)
     const axios_instance_token = useAxiosToken()
-    const [selectedTypes, setSelectedTypes] = useState<string[]>([])
     const queryClient = useQueryClient()
+    const [selectedTypes, setSelectedTypes] = useState<string[]>([])
 
     const hubTypesQuery = useQuery<HubType[]>({
         queryKey: ["hubs", "types"],
@@ -53,7 +55,7 @@ const AddHub = ({trigger}:Props) => {
 
     const {mutate, isPending} = useMutation({
         mutationFn: createHub ,
-        onSuccess: ()=>{
+        onSuccess: (data)=>{
             toast.success("Hub added successfully", {
                 id: "create-hub"
             })
@@ -64,6 +66,7 @@ const AddHub = ({trigger}:Props) => {
                 name: "",
             })
 
+            successCallback && successCallback(data)
             setSelectedTypes([])
 
             setOpen(prev => !prev)
@@ -89,7 +92,12 @@ const AddHub = ({trigger}:Props) => {
 
     return (
         <Dialog open={open} onOpenChange={setOpen}>
-            <DialogTrigger asChild>{trigger}</DialogTrigger>
+            <DialogTrigger asChild>
+                <Button variant={variant} className={`${variant== "default" && "bg-cyan-900 rounded-md text-white"} flex items-center text-xs justify-start border-separate p-3 border-b text-muted-foreground rounded-none`} >
+                    <PlusSquare className='mr-2 h-3 w-3' />
+                    New Hub
+                </Button>
+            </DialogTrigger>
             <DialogContent className='w-[90%] mx-auto rounded-2xl'>
                 <DialogHeader className='items-start'>
                     <DialogTitle>

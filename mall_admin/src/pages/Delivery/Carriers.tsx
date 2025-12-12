@@ -1,8 +1,9 @@
 import { Separator } from "@/components/ui/separator"
-import { Search } from "lucide-react"
+import { Plus, Search } from "lucide-react"
 import { useState } from "react"
 import { useDebounce } from "use-debounce"
 import CarriersTable from "./_components/CarriersTable"
+import AddCarrier from "./_components/AddCarrier"
 
 const Carriers = () => {
   const [search, setSearch] = useState("")
@@ -17,9 +18,9 @@ const Carriers = () => {
           <h1 className="text-2xl font-semibold">Carriers</h1>
           <p className="text-xs text-gray-400">This is the Carries management page for all inter-city and inter region transports.</p>
         </div>
-        {/* <AddHub trigger={
-          <button className="text-xs flex gap-1 items-center text-white py-2 px-4 bg-cyan-900 rounded-md"><Plus className="w-3 h-3 text-white" /> New Hub</button>
-        } /> */}
+        <AddCarrier trigger={
+          <button className="text-xs flex gap-1 items-center text-white py-2 px-4 bg-cyan-900 rounded-md"><Plus className="w-3 h-3 text-white" /> New Carrier</button>
+        } />
       </div>
       <Separator className="mb-2" />
       <div className="flex items-center justify-between">
